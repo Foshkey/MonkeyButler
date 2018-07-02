@@ -8,12 +8,9 @@ using MonkeyButler.Handlers;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace MonkeyButler
-{
-    internal class Program
-    {
-        public static void Main(string[] args)
-        {
+namespace MonkeyButler {
+    internal class Program {
+        public static void Main(string[] args) {
             var serviceProvider = new Services().BuildServiceProvider();
             var program = serviceProvider.GetService<Program>();
             program.RunAsync().GetAwaiter().GetResult();
@@ -26,8 +23,7 @@ namespace MonkeyButler
         private readonly MessageHandler _messageHandler;
         private readonly UserJoinedHandler _userJoinedHandler;
 
-        public Program(DiscordSocketClient client, CommandService commands, Credentials credentials, DiscordLogger discordLogger, MessageHandler messageHandler, UserJoinedHandler userJoinedHandler)
-        {
+        public Program(DiscordSocketClient client, CommandService commands, Credentials credentials, DiscordLogger discordLogger, MessageHandler messageHandler, UserJoinedHandler userJoinedHandler) {
             _client = client;
             _commands = commands;
             _credentials = credentials;
@@ -36,8 +32,7 @@ namespace MonkeyButler
             _userJoinedHandler = userJoinedHandler;
         }
 
-        public async Task RunAsync()
-        {
+        public async Task RunAsync() {
             RegisterEvents();
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
 
@@ -46,8 +41,7 @@ namespace MonkeyButler
             await Task.Delay(-1);
         }
 
-        private void RegisterEvents()
-        {
+        private void RegisterEvents() {
             _client.Log += _discordLogger.Log;
             _client.MessageReceived += _messageHandler.HandleMessage;
             _client.UserJoined += _userJoinedHandler.HandleUser;
