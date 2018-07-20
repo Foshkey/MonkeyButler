@@ -289,4 +289,4 @@ __pycache__/
 
 # Configurations
 *.cfg
-appsettings.json
+appsettings*.json
