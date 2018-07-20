@@ -1,44 +1,38 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Config;
-using MonkeyButler.Diagnostics;
 using MonkeyButler.Handlers;
 
-namespace MonkeyButler
-{
-    internal class Services : ServiceCollection
-    {
-        public Services()
-        {
-            ConfigureLogging();
-            RegisterDiscordServices();
-            RegisterBotServices();
-
-            this.AddSingleton<Program>();
+namespace MonkeyButler {
+    static class Services {
+        public static IServiceCollection AddDiscord(this IServiceCollection servcies) {
+            return servcies
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig {
+                    LogLevel = LogSeverity.Verbose,
+                    MessageCacheSize = 1000
+                }))
+                .AddSingleton(new CommandService(new CommandServiceConfig {
+                    LogLevel = LogSeverity.Verbose,
+                    DefaultRunMode = RunMode.Async,
+                    CaseSensitiveCommands = false
+                }));
         }
 
-        private void ConfigureLogging()
-        {
-            this.AddSingleton(new LoggerFactory()
-                .AddConsole(LogLevel.Trace)
-                .AddDebug());
-            this.AddLogging();
+        public static IServiceCollection AddHandlers(this IServiceCollection services) {
+            return services
+                .AddSingleton<ILogHandler, LogHandler>()
+                .AddSingleton<IMessageHandler, MessageHandler>()
+                .AddSingleton<IUserJoinedHandler, UserJoinedHandler>();
         }
 
-        private void RegisterBotServices()
-        {
-            this.AddSingleton<Credentials>();
-            this.AddSingleton<DiscordLogger>();
-            this.AddSingleton<MessageHandler>();
-            this.AddSingleton<UserJoinedHandler>();
-        }
-
-        private void RegisterDiscordServices()
-        {
-            this.AddSingleton(new DiscordSocketClient());
-            this.AddSingleton(new CommandService());
+        public static IServiceCollection AddLogging(this IServiceCollection services, IConfiguration configuration) {
+            return services.AddLogging(configure =>
+                configure//.AddConfiguration(configuration)
+                    .AddConsole()
+            );
         }
     }
 }

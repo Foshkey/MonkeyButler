@@ -2,21 +2,21 @@
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Handlers
-{
-    internal class UserJoinedHandler
-    {
+namespace MonkeyButler.Handlers {
+    interface IUserJoinedHandler {
+        Task OnUserJoinedAsync(SocketGuildUser user);
+    }
+
+    class UserJoinedHandler : IUserJoinedHandler {
         private readonly ILogger<UserJoinedHandler> _logger;
 
-        public UserJoinedHandler(ILogger<UserJoinedHandler> logger)
-        {
+        public UserJoinedHandler(ILogger<UserJoinedHandler> logger) {
             _logger = logger;
         }
 
-        public async Task HandleUser(SocketGuildUser arg)
-        {
-            _logger.LogTrace($"{arg.Username} has joined the server.");
-            await arg.Guild.DefaultChannel.SendMessageAsync($"Welcome {arg.Mention}!");
+        public async Task OnUserJoinedAsync(SocketGuildUser user) {
+            _logger.LogTrace($"{user.Username} has joined the server.");
+            await user.Guild.DefaultChannel.SendMessageAsync($"Welcome {user.Mention}!");
         }
     }
 }
