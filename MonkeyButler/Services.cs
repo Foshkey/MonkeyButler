@@ -30,7 +30,7 @@ namespace MonkeyButler {
 
         public static IServiceCollection AddLogging(this IServiceCollection services, IConfiguration configuration) {
             return services.AddLogging(configure =>
-                configure//.AddConfiguration(configuration)
+                configure.AddConfiguration(configuration.GetSection("Logging"))
                     .AddConsole()
             );
         }

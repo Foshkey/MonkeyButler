@@ -289,6 +289,4 @@ __pycache__/
 
 # Configurations
 *.cfg
-
-# Credentials
-Credentials.json
+appsettings.json
