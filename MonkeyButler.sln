@@ -5,7 +5,12 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler", "MonkeyButler\MonkeyButler.csproj", "{02C67291-94DE-4F0B-98B8-2CF343E79679}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Tests", "MonkeyButler.Tests\MonkeyButler.Tests.csproj", "{8E431223-3EF6-4926-8E9D-8CB4F70225FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Tests", "MonkeyButler.Tests\MonkeyButler.Tests.csproj", "{8E431223-3EF6-4926-8E9D-8CB4F70225FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{95F7BA90-70F1-450E-8526-EE75CDEC73BF}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
