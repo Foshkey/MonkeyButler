@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler", "MonkeyButler\MonkeyButler.csproj", "{02C67291-94DE-4F0B-98B8-2CF343E79679}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Tests", "MonkeyButler.Tests\MonkeyButler.Tests.csproj", "{8E431223-3EF6-4926-8E9D-8CB4F70225FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{02C67291-94DE-4F0B-98B8-2CF343E79679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02C67291-94DE-4F0B-98B8-2CF343E79679}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02C67291-94DE-4F0B-98B8-2CF343E79679}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E431223-3EF6-4926-8E9D-8CB4F70225FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E431223-3EF6-4926-8E9D-8CB4F70225FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E431223-3EF6-4926-8E9D-8CB4F70225FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E431223-3EF6-4926-8E9D-8CB4F70225FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
