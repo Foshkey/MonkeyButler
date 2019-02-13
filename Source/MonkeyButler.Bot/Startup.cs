@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Bot.Configuration.Options;
+using MonkeyButler.Lodestone;
 
 namespace MonkeyButler.Bot {
     internal class Startup {
@@ -24,6 +25,7 @@ namespace MonkeyButler.Bot {
         private void ConfigureServices(IServiceCollection services) => services
             .AddDiscord()
             .AddHandlers()
+            .AddLodestone()
             .AddSingleton(_configuration)
             .AddLogging(_configuration)
             .AddTransient<IBot, Bot>();
