@@ -15,14 +15,16 @@ namespace MonkeyButler.Bot {
         private readonly ILogHandler _logHandler;
         private readonly IMessageHandler _messageHandler;
         private readonly IUserJoinedHandler _userJoinedHandler;
+        private readonly IServiceProvider _serviceProvider;
         private readonly Settings _settings;
 
-        public Bot(CommandService commands, DiscordSocketClient discordClient, ILogHandler logHandler, IMessageHandler messageHandler, IUserJoinedHandler userJoinedHandler, IOptions<Settings> settingsAccessor) {
+        public Bot(CommandService commands, DiscordSocketClient discordClient, ILogHandler logHandler, IMessageHandler messageHandler, IUserJoinedHandler userJoinedHandler, IServiceProvider serviceProvider, IOptions<Settings> settingsAccessor) {
             _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
             _logHandler = logHandler ?? throw new ArgumentNullException(nameof(logHandler));
             _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
             _userJoinedHandler = userJoinedHandler ?? throw new ArgumentNullException(nameof(userJoinedHandler));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _settings = settingsAccessor?.Value ?? throw new ArgumentNullException(nameof(settingsAccessor));
         }
 
@@ -35,7 +37,7 @@ namespace MonkeyButler.Bot {
 
             await _discordClient.LoginAsync(TokenType.Bot, _settings.Tokens.Discord);
             await _discordClient.StartAsync();
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         }
 
         private void HookHandlers() {
