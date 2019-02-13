@@ -2,7 +2,7 @@
 using Discord.Commands;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Modules.Commands {
+namespace MonkeyButler.Bot.Modules.Commands {
     public class Say : ModuleBase<SocketCommandContext> {
         [Command("say"), Alias("s")]
         [Summary("Make the bot say something.")]

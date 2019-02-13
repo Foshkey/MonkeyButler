@@ -3,7 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Modules.Commands.Moderation {
+namespace MonkeyButler.Bot.Modules.Commands.Moderation {
     [Group("Moderation")]
     public class Kick : ModuleBase<SocketCommandContext> {
         [Command("kick")]

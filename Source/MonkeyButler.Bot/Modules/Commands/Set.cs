@@ -3,7 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Modules.Commands {
+namespace MonkeyButler.Bot.Modules.Commands {
     [Group("Set")]
     public class Set : ModuleBase<SocketCommandContext> {
         [Command("nickname"), Priority(1)]
