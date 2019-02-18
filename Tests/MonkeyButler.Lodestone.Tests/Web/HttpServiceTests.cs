@@ -8,15 +8,18 @@ using Xunit;
 using Xunit.Categories;
 using SUT = MonkeyButler.Lodestone.Web.HttpService;
 
-namespace MonkeyButler.Lodestone.Tests.Web {
-    public class HttpServiceTests {
+namespace MonkeyButler.Lodestone.Tests.Web
+{
+    public class HttpServiceTests
+    {
         private Mock<ILogger<SUT>> _loggerMock = new Mock<ILogger<SUT>>();
         private HttpCriteria _criteria = new HttpCriteria();
 
         private Task<HttpResponse> Process() => new SUT(_loggerMock.Object).Process(_criteria);
 
         [Fact]
-        public async Task NullCriteriaShouldThrowException() {
+        public async Task NullCriteriaShouldThrowException()
+        {
             _criteria = null;
 
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(Process);
@@ -27,7 +30,8 @@ namespace MonkeyButler.Lodestone.Tests.Web {
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public async Task NullUrlShouldThrowException(string url) {
+        public async Task NullUrlShouldThrowException(string url)
+        {
             _criteria.Url = url;
 
             var ex = await Assert.ThrowsAsync<ArgumentException>(Process);
@@ -37,7 +41,8 @@ namespace MonkeyButler.Lodestone.Tests.Web {
 
         [Fact]
         [IntegrationTest]
-        public async Task GoogleShouldReturnData() {
+        public async Task GoogleShouldReturnData()
+        {
             _criteria.Url = "https://google.com";
 
             var response = await Process();
@@ -49,7 +54,8 @@ namespace MonkeyButler.Lodestone.Tests.Web {
 
         [Fact]
         [IntegrationTest]
-        public async Task NoResponseShouldBeHandled() {
+        public async Task NoResponseShouldBeHandled()
+        {
             _criteria.Url = "https://somerandomdomainelkwsjefoieajldkfj.com";
 
             var response = await Process();

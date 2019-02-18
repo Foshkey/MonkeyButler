@@ -1,22 +1,28 @@
-﻿using Discord;
+﻿using System.Threading.Tasks;
+using Discord;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
-namespace MonkeyButler.Bot.Handlers {
-    internal class LogHandler : ILogHandler {
+namespace MonkeyButler.Bot.Handlers
+{
+    internal class LogHandler : ILogHandler
+    {
         private readonly ILogger<LogHandler> _logger;
 
-        public LogHandler(ILogger<LogHandler> logger) {
+        public LogHandler(ILogger<LogHandler> logger)
+        {
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         }
 
-        public async Task OnLogAsync(LogMessage log) {
+        public async Task OnLogAsync(LogMessage log)
+        {
             _logger.Log(GetLogLevel(log.Severity), log.Exception, log.ToString());
             await Task.CompletedTask;
         }
 
-        private static LogLevel GetLogLevel(LogSeverity severity) {
-            switch (severity) {
+        private static LogLevel GetLogLevel(LogSeverity severity)
+        {
+            switch (severity)
+            {
                 case LogSeverity.Critical: return LogLevel.Critical;
                 case LogSeverity.Error: return LogLevel.Error;
                 case LogSeverity.Warning: return LogLevel.Warning;
@@ -28,7 +34,8 @@ namespace MonkeyButler.Bot.Handlers {
         }
     }
 
-    internal interface ILogHandler {
+    internal interface ILogHandler
+    {
         Task OnLogAsync(LogMessage log);
     }
 }

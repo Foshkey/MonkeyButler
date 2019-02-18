@@ -1,8 +1,10 @@
-﻿namespace MonkeyButler.Lodestone.SearchCharacter {
+﻿namespace MonkeyButler.Lodestone.SearchCharacter
+{
     /// <summary>
     /// Criteria model for <see cref="ISearchCharacter"/>
     /// </summary>
-    public class SearchCharacterCriteria {
+    public class SearchCharacterCriteria
+    {
         /// <summary>
         /// The query, typically representing the character name.
         /// </summary>

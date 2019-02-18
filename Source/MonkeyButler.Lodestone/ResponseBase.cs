@@ -1,10 +1,12 @@
 ﻿using System.Net;
 
-namespace MonkeyButler.Lodestone {
+namespace MonkeyButler.Lodestone
+{
     /// <summary>
     /// Base model for responses.
     /// </summary>
-    public class ResponseBase {
+    public class ResponseBase
+    {
         /// <summary>
         /// The http status code of the response.
         /// </summary>

@@ -8,8 +8,10 @@ using Microsoft.Extensions.Options;
 using MonkeyButler.Bot.Configuration.Options;
 using MonkeyButler.Bot.Handlers;
 
-namespace MonkeyButler.Bot {
-    internal class Bot : IBot {
+namespace MonkeyButler.Bot
+{
+    internal class Bot : IBot
+    {
         private readonly DiscordSocketClient _discordClient;
         private readonly CommandService _commands;
         private readonly ILogHandler _logHandler;
@@ -18,7 +20,8 @@ namespace MonkeyButler.Bot {
         private readonly IServiceProvider _serviceProvider;
         private readonly Settings _settings;
 
-        public Bot(CommandService commands, DiscordSocketClient discordClient, ILogHandler logHandler, IMessageHandler messageHandler, IUserJoinedHandler userJoinedHandler, IServiceProvider serviceProvider, IOptions<Settings> settingsAccessor) {
+        public Bot(CommandService commands, DiscordSocketClient discordClient, ILogHandler logHandler, IMessageHandler messageHandler, IUserJoinedHandler userJoinedHandler, IServiceProvider serviceProvider, IOptions<Settings> settingsAccessor)
+        {
             _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
             _logHandler = logHandler ?? throw new ArgumentNullException(nameof(logHandler));
@@ -28,8 +31,10 @@ namespace MonkeyButler.Bot {
             _settings = settingsAccessor?.Value ?? throw new ArgumentNullException(nameof(settingsAccessor));
         }
 
-        public async Task StartAsync() {
-            if (string.IsNullOrWhiteSpace(_settings.Tokens?.Discord)) {
+        public async Task StartAsync()
+        {
+            if (string.IsNullOrWhiteSpace(_settings.Tokens?.Discord))
+            {
                 throw new Exception("Please enter your bot's token in the 'appsettings.json' file found in the applications root directory.");
             }
 
@@ -40,7 +45,8 @@ namespace MonkeyButler.Bot {
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         }
 
-        private void HookHandlers() {
+        private void HookHandlers()
+        {
             _discordClient.Log += _logHandler.OnLogAsync;
             _commands.Log += _logHandler.OnLogAsync;
             _discordClient.MessageReceived += _messageHandler.OnMessageAsync;
@@ -48,7 +54,8 @@ namespace MonkeyButler.Bot {
         }
     }
 
-    internal interface IBot {
+    internal interface IBot
+    {
         /// <summary>
         /// Starts the Bot, adds modules and handlers, and connects.
         /// </summary>

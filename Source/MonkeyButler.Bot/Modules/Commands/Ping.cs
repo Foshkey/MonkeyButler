@@ -1,11 +1,14 @@
-﻿using Discord.Commands;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Discord.Commands;
 
-namespace MonkeyButler.Bot.Modules.Commands {
-    public class Ping : ModuleBase<SocketCommandContext> {
+namespace MonkeyButler.Bot.Modules.Commands
+{
+    public class Ping : ModuleBase<SocketCommandContext>
+    {
         [Command("ping")]
         [Summary("Pings the bot.")]
-        public async Task PingAsync() {
+        public async Task PingAsync()
+        {
             await ReplyAsync("Pong!");
         }
     }

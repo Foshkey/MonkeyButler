@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Lodestone.SearchCharacter {
-    internal class SearchCharacterService : ISearchCharacter {
-        public Task<SearchCharacterResponse> Process(SearchCharacterCriteria criteria) {
+namespace MonkeyButler.Lodestone.SearchCharacter
+{
+    internal class SearchCharacterService : ISearchCharacter
+    {
+        public Task<SearchCharacterResponse> Process(SearchCharacterCriteria criteria)
+        {
             throw new NotImplementedException();
         }
     }
@@ -11,7 +14,8 @@ namespace MonkeyButler.Lodestone.SearchCharacter {
     /// <summary>
     /// The SearchCharacter service, which will search lodestone with the given criteria, and return a list of characters matching the criteria.
     /// </summary>
-    public interface ISearchCharacter {
+    public interface ISearchCharacter
+    {
         /// <summary>
         /// Processes the search.
         /// </summary>

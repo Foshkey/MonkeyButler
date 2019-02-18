@@ -2,11 +2,13 @@
 using MonkeyButler.Lodestone.SearchCharacter;
 using MonkeyButler.Lodestone.Web;
 
-namespace MonkeyButler.Lodestone {
+namespace MonkeyButler.Lodestone
+{
     /// <summary>
     /// Extensions class
     /// </summary>
-    public static class Extensions {
+    public static class Extensions
+    {
         /// <summary>
         /// Adds the necessary services for <see cref="Lodestone"/>.
         /// </summary>

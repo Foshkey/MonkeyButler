@@ -4,15 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Bot.Configuration.Options;
 using MonkeyButler.Lodestone;
 
-namespace MonkeyButler.Bot {
-    internal class Startup {
+namespace MonkeyButler.Bot
+{
+    internal class Startup
+    {
         private readonly IConfiguration _configuration;
 
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration)
+        {
             _configuration = configuration;
         }
 
-        public async Task RunAsync() {
+        public async Task RunAsync()
+        {
             var services = new ServiceCollection();
             ConfigureServices(services);
             ConfigureOptions(services);
