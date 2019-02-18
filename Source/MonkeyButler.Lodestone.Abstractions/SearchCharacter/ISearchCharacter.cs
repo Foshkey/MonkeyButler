@@ -1,16 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace MonkeyButler.Lodestone.SearchCharacter
+namespace MonkeyButler.Lodestone
 {
-    internal class SearchCharacterService : ISearchCharacter
-    {
-        public Task<SearchCharacterResponse> Process(SearchCharacterCriteria criteria)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     /// <summary>
     /// The SearchCharacter service, which will search lodestone with the given criteria, and return a list of characters matching the criteria.
     /// </summary>

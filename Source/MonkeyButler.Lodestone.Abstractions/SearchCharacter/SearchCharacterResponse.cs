@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MonkeyButler.Models;
 
-namespace MonkeyButler.Lodestone.SearchCharacter
+namespace MonkeyButler.Lodestone
 {
     /// <summary>
     /// Response model for <see cref="ISearchCharacter"/>

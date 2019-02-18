@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.Lodestone.SearchCharacter
+﻿namespace MonkeyButler.Lodestone
 {
     /// <summary>
     /// Criteria model for <see cref="ISearchCharacter"/>

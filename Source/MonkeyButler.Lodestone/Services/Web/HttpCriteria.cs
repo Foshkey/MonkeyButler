@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.Lodestone.Web
+﻿namespace MonkeyButler.Lodestone.Services.Web
 {
     internal class HttpCriteria
     {

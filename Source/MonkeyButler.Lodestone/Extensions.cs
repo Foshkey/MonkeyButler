@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.Lodestone.SearchCharacter;
-using MonkeyButler.Lodestone.Web;
+using MonkeyButler.Lodestone.Commands;
+using MonkeyButler.Lodestone.Services.Web;
 
 namespace MonkeyButler.Lodestone
 {
@@ -16,6 +16,6 @@ namespace MonkeyButler.Lodestone
         /// <returns>The service collection for builder patterns.</returns>
         public static IServiceCollection AddLodestone(this IServiceCollection services) => services
             .AddSingleton<IHttpService, HttpService>()
-            .AddSingleton<ISearchCharacter, SearchCharacterService>();
+            .AddSingleton<ISearchCharacter, SearchCharacter>();
     }
 }
