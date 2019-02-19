@@ -3,7 +3,7 @@
 namespace MonkeyButler.Models.Character
 {
     /// <summary>
-    /// Model representing a FFXIV Character.
+    /// Model representing a FFXIV Character fully.
     /// </summary>
     public class Character : XivApiModel
     {
@@ -93,7 +93,7 @@ namespace MonkeyButler.Models.Character
         public int Race { get; set; }
 
         /// <summary>
-        /// The home world of the character.
+        /// The home server of the character.
         /// </summary>
         public string Server { get; set; }
 
