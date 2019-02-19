@@ -5,7 +5,7 @@ namespace MonkeyButler.XivApi.Character
     /// <summary>
     /// A response model of the character service.
     /// </summary>
-    public class CharacterResponse
+    public class CharacterResponse : ResponseBase
     {
         /// <summary>
         /// The achievements of the character.

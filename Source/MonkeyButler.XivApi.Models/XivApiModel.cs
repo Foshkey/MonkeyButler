@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MonkeyButler.XivApi.Models
+﻿namespace MonkeyButler.XivApi.Models
 {
     /// <summary>
     /// A parent model for XIV API models.
@@ -10,6 +8,6 @@ namespace MonkeyButler.XivApi.Models
         /// <summary>
         /// The datetime that the model was last parsed.
         /// </summary>
-        public DateTime ParseDate { get; set; }
+        public long ParseDate { get; set; }
     }
 }

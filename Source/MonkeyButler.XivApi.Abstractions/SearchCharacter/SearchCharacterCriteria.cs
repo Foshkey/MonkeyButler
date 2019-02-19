@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria model for <see cref="ISearchCharacter"/>
     /// </summary>
-    public class SearchCharacterCriteria
+    public class SearchCharacterCriteria : CriteriaBase
     {
         /// <summary>
         /// The character name to search for.
