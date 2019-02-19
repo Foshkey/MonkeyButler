@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MonkeyButler.Lodestone
+namespace MonkeyButler.XivApi
 {
     /// <summary>
     /// Base model for responses.

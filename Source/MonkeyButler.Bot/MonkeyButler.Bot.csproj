@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonkeyButler.Lodestone\MonkeyButler.Lodestone.csproj" />
+    <ProjectReference Include="..\MonkeyButler.Lodestone\MonkeyButler.XivApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

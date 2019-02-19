@@ -2,13 +2,13 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Lodestone.Services.Web;
+using MonkeyButler.XivApi.Services.Web;
 using Moq;
 using Xunit;
 using Xunit.Categories;
-using SUT = MonkeyButler.Lodestone.Services.Web.HttpService;
+using SUT = MonkeyButler.XivApi.Services.Web.HttpService;
 
-namespace MonkeyButler.Lodestone.Tests.Web
+namespace MonkeyButler.XivApi.Tests.Web
 {
     public class HttpServiceTests
     {

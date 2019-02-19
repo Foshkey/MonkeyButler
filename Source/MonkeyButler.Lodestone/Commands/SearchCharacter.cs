@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.Lodestone.Commands
+namespace MonkeyButler.XivApi.Commands
 {
     internal class SearchCharacter : ISearchCharacter
     {

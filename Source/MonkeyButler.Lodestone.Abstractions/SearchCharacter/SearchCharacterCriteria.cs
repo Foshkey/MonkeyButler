@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.Lodestone
+﻿namespace MonkeyButler.XivApi
 {
     /// <summary>
     /// Criteria model for <see cref="ISearchCharacter"/>

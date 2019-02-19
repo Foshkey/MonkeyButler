@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Bot.Configuration.Options;
-using MonkeyButler.Lodestone;
+using MonkeyButler.XivApi;
 
 namespace MonkeyButler.Bot
 {
@@ -29,7 +29,7 @@ namespace MonkeyButler.Bot
         private void ConfigureServices(IServiceCollection services) => services
             .AddDiscord()
             .AddHandlers()
-            .AddLodestone()
+            .AddXivApi()
             .AddSingleton(_configuration)
             .AddLogging(_configuration)
             .AddTransient<IBot, Bot>();

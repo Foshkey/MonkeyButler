@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace MonkeyButler.Lodestone
+namespace MonkeyButler.XivApi
 {
     /// <summary>
-    /// The SearchCharacter service, which will search lodestone with the given criteria, and return a list of characters matching the criteria.
+    /// The SearchCharacter service, which will search XIVAPI with the given criteria, and return a list of characters matching the criteria.
     /// </summary>
     public interface ISearchCharacter
     {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Categories;
 
-namespace MonkeyButler.Lodestone.Tests
+namespace MonkeyButler.XivApi.Tests
 {
     public class ExtensionsTests
     {
@@ -13,7 +13,7 @@ namespace MonkeyButler.Lodestone.Tests
         {
             var services = new ServiceCollection()
                 .AddLogging() // Should be the only external dependency
-                .AddLodestone();
+                .AddXivApi();
             var serviceProvider = services.BuildServiceProvider();
 
             foreach (var service in services)

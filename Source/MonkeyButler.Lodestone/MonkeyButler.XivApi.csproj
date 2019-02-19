@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonkeyButler.Lodestone.Abstractions\MonkeyButler.Lodestone.Abstractions.csproj" />
+    <ProjectReference Include="..\MonkeyButler.Lodestone.Abstractions\MonkeyButler.XivApi.Abstractions.csproj" />
     <ProjectReference Include="..\MonkeyButler.Models\MonkeyButler.Models.csproj" />
   </ItemGroup>
 

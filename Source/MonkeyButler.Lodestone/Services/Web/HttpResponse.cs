@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.Lodestone.Services.Web
+﻿namespace MonkeyButler.XivApi.Services.Web
 {
     internal class HttpResponse : ResponseBase
     {

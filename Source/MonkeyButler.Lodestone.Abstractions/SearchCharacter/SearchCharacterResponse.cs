@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MonkeyButler.Models;
+using MonkeyButler.Models.Character;
 
-namespace MonkeyButler.Lodestone
+namespace MonkeyButler.XivApi
 {
     /// <summary>
     /// Response model for <see cref="ISearchCharacter"/>
@@ -11,6 +11,6 @@ namespace MonkeyButler.Lodestone
         /// <summary>
         /// List of characters found.
         /// </summary>
-        public List<Character> Characters { get; set; }
+        public List<CharacterBrief> Characters { get; set; }
     }
 }

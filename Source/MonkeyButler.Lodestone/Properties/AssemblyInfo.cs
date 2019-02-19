@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("MonkeyButler.Lodestone.Tests")]
+[assembly: InternalsVisibleTo("MonkeyButler.XivApi.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

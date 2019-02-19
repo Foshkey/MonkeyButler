@@ -16,13 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{529AAB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E70E02AF-416B-4856-A20F-30E1F402E184}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Lodestone", "Source\MonkeyButler.Lodestone\MonkeyButler.Lodestone.csproj", "{EEEDAA6F-27A4-4060-BFDA-5A917067E7CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.XivApi", "Source\MonkeyButler.Lodestone\MonkeyButler.XivApi.csproj", "{EEEDAA6F-27A4-4060-BFDA-5A917067E7CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Models", "Source\MonkeyButler.Models\MonkeyButler.Models.csproj", "{985CF162-3DD6-4595-AA98-F212B8DAAEFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Lodestone.Tests", "Tests\MonkeyButler.Lodestone.Tests\MonkeyButler.Lodestone.Tests.csproj", "{C4402095-70B1-434B-83F5-AC9E5BE796D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.XivApi.Tests", "Tests\MonkeyButler.Lodestone.Tests\MonkeyButler.XivApi.Tests.csproj", "{C4402095-70B1-434B-83F5-AC9E5BE796D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Lodestone.Abstractions", "Source\MonkeyButler.Lodestone.Abstractions\MonkeyButler.Lodestone.Abstractions.csproj", "{B83ED5FB-5115-45B5-81C3-898A49B46B93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.XivApi.Abstractions", "Source\MonkeyButler.Lodestone.Abstractions\MonkeyButler.XivApi.Abstractions.csproj", "{B83ED5FB-5115-45B5-81C3-898A49B46B93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
