@@ -90,7 +90,7 @@ namespace MonkeyButler.XivApi.Models.Character
         /// <summary>
         /// The race of the character.
         /// </summary>
-        public int Race { get; set; }
+        public Race Race { get; set; }
 
         /// <summary>
         /// The home server of the character.
