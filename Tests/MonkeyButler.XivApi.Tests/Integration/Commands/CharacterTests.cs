@@ -38,5 +38,29 @@ namespace MonkeyButler.XivApi.Tests.Integration.Commands
             Assert.Equal("20th Sun of the 2nd Astral Moon", response.Body.Character.Nameday);
             Assert.Equal("Diabolos", response.Body.Character.Server);
         }
+
+        [Fact]
+        [IntegrationTest]
+        public async Task ShouldHandleError()
+        {
+            var httpServiceMock = new Mock<IHttpService>();
+            httpServiceMock.Setup(x => x.SendAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
+            {
+                Content = new HttpContentMock(@"Integration\SampleResponses\Error.json"),
+                StatusCode = HttpStatusCode.BadRequest
+            });
+
+            var services = IntegrationHelper.GetServiceCollection()
+                .AddSingleton(httpServiceMock.Object)
+                .BuildServiceProvider();
+
+            var response = await services.GetService<ICharacter>().Process(new CharacterCriteria()
+            {
+                Id = 1234,
+                Key = "TestKey"
+            });
+
+            Assert.Null(response.Body);
+        }
     }
 }

@@ -1,0 +1,17 @@
+﻿{
+  "Error": true,
+  "Subject": "XIVAPI Service Error",
+  "Message": "Could not find a valid key in the URL request. Please check the URL you are requesting against has the key field. It should look like this: ?something=ewf&key=your_key.",
+  "Hash": "4b36c4dd7d7c3854fc5e409e4bfb5ee7e6b83344",
+  "Debug": {
+    "File": "#119 /src/Service/Apps/AppRequest.php",
+    "Method": "GET",
+    "Path": "/character/13099353",
+    "Action": "App\\Controller\\LodestoneCharacterController::index",
+    "JSON": null,
+    "Code": 400,
+    "Date": "2019-02-22 19:33:23",
+    "Note": "Get on discord: https://discord.gg/MFFVHWC and complain to @Vekien :)",
+    "Env": "prod"
+  }
+}
