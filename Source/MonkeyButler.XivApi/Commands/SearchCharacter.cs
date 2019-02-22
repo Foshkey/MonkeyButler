@@ -17,11 +17,23 @@ namespace MonkeyButler.XivApi.Commands
 
         public async Task<Response<SearchCharacterResponse>> Process(SearchCharacterCriteria criteria)
         {
+            _commandService.ValidateCriteriaBase(criteria);
+
+            if (string.IsNullOrEmpty(criteria.Name))
+            {
+                throw new ArgumentException($"{nameof(criteria.Name)} cannot be null or empty.", nameof(criteria));
+            }
+
+            if (string.IsNullOrEmpty(criteria.Server))
+            {
+                throw new ArgumentException($"{nameof(criteria.Server)} cannot be null or empty.", nameof(criteria));
+            }
+
             var name = WebUtility.HtmlEncode(criteria.Name);
             var server = WebUtility.HtmlEncode(criteria.Server);
             var url = $"https://xivapi.com/character/search?name={name}&server={server}&key={criteria.Key}";
 
-            return await _commandService.Process<SearchCharacterResponse>(new Uri(url));
+            return await _commandService.Execute<SearchCharacterResponse>(new Uri(url));
         }
     }
 }

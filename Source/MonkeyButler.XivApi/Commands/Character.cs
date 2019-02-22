@@ -16,9 +16,16 @@ namespace MonkeyButler.XivApi.Commands
 
         public async Task<Response<CharacterResponse>> Process(CharacterCriteria criteria)
         {
+            _commandService.ValidateCriteriaBase(criteria);
+
+            if (criteria.Id == 0)
+            {
+                throw new ArgumentException($"{nameof(criteria.Id)} cannot be 0.", nameof(criteria));
+            }
+
             var url = $"https://xivapi.com/character/{criteria.Id}?key={criteria.Key}";
 
-            return await _commandService.Process<CharacterResponse>(new Uri(url));
+            return await _commandService.Execute<CharacterResponse>(new Uri(url));
         }
     }
 }

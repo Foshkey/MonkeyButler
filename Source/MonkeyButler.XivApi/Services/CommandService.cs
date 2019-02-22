@@ -14,7 +14,7 @@ namespace MonkeyButler.XivApi.Services
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
-        public async Task<Response<T>> Process<T>(Uri uri)
+        public async Task<Response<T>> Execute<T>(Uri uri)
         {
             var response = await _httpService.SendAsync(uri);
 
@@ -30,10 +30,24 @@ namespace MonkeyButler.XivApi.Services
 
             return result;
         }
+
+        public void ValidateCriteriaBase(CriteriaBase criteria)
+        {
+            if (criteria == null)
+            {
+                throw new ArgumentNullException(nameof(criteria));
+            }
+
+            if (string.IsNullOrEmpty(criteria.Key))
+            {
+                throw new ArgumentException($"{nameof(criteria.Key)} cannot be null or empty.", nameof(criteria));
+            }
+        }
     }
 
     internal interface ICommandService
     {
-        Task<Response<T>> Process<T>(Uri uri);
+        Task<Response<T>> Execute<T>(Uri uri);
+        void ValidateCriteriaBase(CriteriaBase criteria);
     }
 }
