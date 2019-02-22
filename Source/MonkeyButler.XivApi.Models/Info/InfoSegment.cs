@@ -1,4 +1,6 @@
-﻿namespace MonkeyButler.XivApi.Models.Info
+﻿using System;
+
+namespace MonkeyButler.XivApi.Models.Info
 {
     /// <summary>
     /// A model representing a segment of info.
@@ -13,6 +15,6 @@
         /// <summary>
         /// The DateTime of when the segment was last updated.
         /// </summary>
-        public long Updated { get; set; }
+        public DateTime Updated { get; set; }
     }
 }

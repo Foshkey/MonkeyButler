@@ -1,4 +1,6 @@
-﻿namespace MonkeyButler.XivApi.Models.Character
+﻿using System;
+
+namespace MonkeyButler.XivApi.Models.Character
 {
     /// <summary>
     /// A model representing an achievement.
@@ -8,7 +10,7 @@
         /// <summary>
         /// The DateTime that the achievement as achieved.
         /// </summary>
-        public long Date { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// The Id of the achievement.

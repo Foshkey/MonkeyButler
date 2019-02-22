@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MonkeyButler.XivApi.Models.FreeCompany
 {
@@ -35,7 +36,7 @@ namespace MonkeyButler.XivApi.Models.FreeCompany
         /// <summary>
         /// A DateTime representing when the free company was formed.
         /// </summary>
-        public long Formed { get; set; }
+        public DateTime Formed { get; set; }
 
         /// <summary>
         /// The grand company that the free company is allied with.

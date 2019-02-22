@@ -6,9 +6,9 @@ namespace MonkeyButler.XivApi.Services
     internal class CommandService : ICommandService
     {
         private readonly IHttpService _httpService;
-        private readonly ISerializer _serializer;
+        private readonly IDeserializer _serializer;
 
-        public CommandService(IHttpService httpService, ISerializer serializer)
+        public CommandService(IHttpService httpService, IDeserializer serializer)
         {
             _httpService = httpService ?? throw new ArgumentNullException(nameof(httpService));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));

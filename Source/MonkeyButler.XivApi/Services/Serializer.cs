@@ -1,11 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace MonkeyButler.XivApi.Services
 {
-    internal class Serializer : ISerializer
+    internal class Deserializer : IDeserializer
     {
-        private readonly JsonSerializer _jsonSerializer = new JsonSerializer();
+        private readonly JsonSerializer _jsonSerializer;
+
+        public Deserializer(JsonSerializer jsonSerializer)
+        {
+            _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
+        }
 
         public T Deserialize<T>(Stream serializedStream)
         {
@@ -15,16 +21,10 @@ namespace MonkeyButler.XivApi.Services
                 return _jsonSerializer.Deserialize<T>(jsonTextReader);
             }
         }
-
-        public T Deserialize<T>(string serialized) => JsonConvert.DeserializeObject<T>(serialized);
-
-        public string Serialize<T>(T deserialized) => JsonConvert.SerializeObject(deserialized);
     }
 
-    internal interface ISerializer
+    internal interface IDeserializer
     {
         T Deserialize<T>(Stream serializedStream);
-        T Deserialize<T>(string serialized);
-        string Serialize<T>(T deserialized);
     }
 }

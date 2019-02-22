@@ -2,6 +2,7 @@
 using MonkeyButler.XivApi.Character;
 using MonkeyButler.XivApi.SearchCharacter;
 using MonkeyButler.XivApi.Services;
+using Newtonsoft.Json;
 
 namespace MonkeyButler.XivApi
 {
@@ -20,6 +21,15 @@ namespace MonkeyButler.XivApi
             .AddSingleton<ISearchCharacter, Commands.SearchCharacter>()
             .AddSingleton<ICommandService, CommandService>()
             .AddSingleton<IHttpService, HttpService>()
-            .AddSingleton<ISerializer, Serializer>();
+            .AddSingleton<IDeserializer, Deserializer>()
+            .AddJsonSerializer();
+
+        private static IServiceCollection AddJsonSerializer(this IServiceCollection services) => services
+            .AddSingleton(provider =>
+            {
+                var serializer = new JsonSerializer();
+                serializer.Converters.Add(new DateTimeJsonConverter());
+                return serializer;
+            });
     }
 }
