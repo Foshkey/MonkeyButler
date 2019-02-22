@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Categories;
 
-namespace MonkeyButler.XivApi.Tests
+namespace MonkeyButler.XivApi.Tests.Integration
 {
     public class ExtensionsTests
     {
@@ -11,9 +11,7 @@ namespace MonkeyButler.XivApi.Tests
         [IntegrationTest]
         public void AllServicesShouldBeRegistered()
         {
-            var services = new ServiceCollection()
-                .AddLogging() // Should be the only external dependency
-                .AddXivApi();
+            var services = IntegrationHelper.GetServiceCollection();
             var serviceProvider = services.BuildServiceProvider();
 
             foreach (var service in services)

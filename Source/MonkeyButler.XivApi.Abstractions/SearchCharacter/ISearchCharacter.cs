@@ -12,6 +12,6 @@ namespace MonkeyButler.XivApi.SearchCharacter
         /// </summary>
         /// <param name="criteria">The criteria for the search.</param>
         /// <returns>A response model containing a list of characters found.</returns>
-        Task<SearchCharacterResponse> Process(SearchCharacterCriteria criteria);
+        Task<Response<SearchCharacterResponse>> Process(SearchCharacterCriteria criteria);
     }
 }

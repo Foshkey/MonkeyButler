@@ -7,7 +7,7 @@ namespace MonkeyButler.XivApi.SearchCharacter
     /// <summary>
     /// Response model for <see cref="ISearchCharacter"/> Service.
     /// </summary>
-    public class SearchCharacterResponse : ResponseBase
+    public class SearchCharacterResponse
     {
         /// <summary>
         /// The pagination of the response.

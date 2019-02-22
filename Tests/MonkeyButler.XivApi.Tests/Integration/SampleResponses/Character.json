@@ -1,0 +1,632 @@
+﻿{
+  "Achievements": null,
+  "Character": {
+    "ActiveClassJob": {
+      "ClassID": 33,
+      "ExpLevel": 0,
+      "ExpLevelMax": 0,
+      "ExpLevelTogo": 0,
+      "JobID": 33,
+      "Level": 70
+    },
+    "Avatar": "https://img2.finalfantasyxiv.com/f/7df16da0e79a61a3d9eb0b2d66d4cfed_7b33d33ae3ecb996f778a5f67a6a0af6fc0_96x96.jpg",
+    "Bio": "-",
+    "ClassJobs": {
+      "10_10": {
+        "ClassID": 10,
+        "ExpLevel": 59430,
+        "ExpLevelMax": 124800,
+        "ExpLevelTogo": 65370,
+        "JobID": 10,
+        "Level": 27
+      },
+      "11_11": {
+        "ClassID": 11,
+        "ExpLevel": 50515,
+        "ExpLevelMax": 63900,
+        "ExpLevelTogo": 13385,
+        "JobID": 11,
+        "Level": 21
+      },
+      "12_12": {
+        "ClassID": 12,
+        "ExpLevel": 0,
+        "ExpLevelMax": 300,
+        "ExpLevelTogo": 300,
+        "JobID": 12,
+        "Level": 1
+      },
+      "13_13": {
+        "ClassID": 13,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 13,
+        "Level": 0
+      },
+      "14_14": {
+        "ClassID": 14,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 14,
+        "Level": 0
+      },
+      "15_15": {
+        "ClassID": 15,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 15,
+        "Level": 0
+      },
+      "16_16": {
+        "ClassID": 16,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 16,
+        "Level": 70
+      },
+      "17_17": {
+        "ClassID": 17,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 17,
+        "Level": 70
+      },
+      "18_18": {
+        "ClassID": 18,
+        "ExpLevel": 1209,
+        "ExpLevelMax": 4200,
+        "ExpLevelTogo": 2991,
+        "JobID": 18,
+        "Level": 6
+      },
+      "1_19": {
+        "ClassID": 1,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 19,
+        "Level": 70
+      },
+      "26_27": {
+        "ClassID": 26,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 27,
+        "Level": 70
+      },
+      "26_28": {
+        "ClassID": 26,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 28,
+        "Level": 70
+      },
+      "29_30": {
+        "ClassID": 29,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 30,
+        "Level": 70
+      },
+      "2_20": {
+        "ClassID": 2,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 20,
+        "Level": 70
+      },
+      "31_31": {
+        "ClassID": 31,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 31,
+        "Level": 70
+      },
+      "32_32": {
+        "ClassID": 32,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 32,
+        "Level": 70
+      },
+      "33_33": {
+        "ClassID": 33,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 33,
+        "Level": 70
+      },
+      "34_34": {
+        "ClassID": 34,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 34,
+        "Level": 70
+      },
+      "35_35": {
+        "ClassID": 35,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 35,
+        "Level": 70
+      },
+      "36_36": {
+        "ClassID": 36,
+        "ExpLevel": 9352,
+        "ExpLevelMax": 109800,
+        "ExpLevelTogo": 100448,
+        "JobID": 36,
+        "Level": 26
+      },
+      "3_21": {
+        "ClassID": 3,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 21,
+        "Level": 70
+      },
+      "4_22": {
+        "ClassID": 4,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 22,
+        "Level": 70
+      },
+      "5_23": {
+        "ClassID": 5,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 23,
+        "Level": 70
+      },
+      "6_24": {
+        "ClassID": 6,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 24,
+        "Level": 70
+      },
+      "7_25": {
+        "ClassID": 7,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 25,
+        "Level": 70
+      },
+      "8_8": {
+        "ClassID": 8,
+        "ExpLevel": 2448,
+        "ExpLevelMax": 30500,
+        "ExpLevelTogo": 28052,
+        "JobID": 8,
+        "Level": 15
+      },
+      "9_9": {
+        "ClassID": 9,
+        "ExpLevel": 0,
+        "ExpLevelMax": 0,
+        "ExpLevelTogo": 0,
+        "JobID": 9,
+        "Level": 0
+      }
+    },
+    "FreeCompanyId": "9232097761132862678",
+    "GearSet": {
+      "Attributes": {
+        1: 149,
+        2: 292,
+        3: 2022,
+        4: 304,
+        5: 2900,
+        6: 949,
+        7: 40975,
+        8: 17132,
+        9: 1000,
+        19: 364,
+        20: 149,
+        21: 2190,
+        22: 364,
+        24: 3828,
+        27: 1760,
+        33: 2900,
+        34: 2900,
+        44: 1606,
+        45: 364,
+        46: 1544
+      },
+      "ClassID": 33,
+      "Gear": {
+        "Body": {
+          "Creator": null,
+          "Dye": 13117,
+          "ID": 21446,
+          "Materia": [
+            18019,
+            18019
+          ],
+          "Mirage": 20495
+        },
+        "Bracelets": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 23465,
+          "Materia": [
+            18019
+          ],
+          "Mirage": null
+        },
+        "Earrings": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21460,
+          "Materia": [
+            18019
+          ],
+          "Mirage": 4208
+        },
+        "Feet": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 23678,
+          "Materia": [
+            18019,
+            18019
+          ],
+          "Mirage": 20498
+        },
+        "Hands": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21541,
+          "Materia": [
+            18019,
+            18019
+          ],
+          "Mirage": 20496
+        },
+        "Head": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21445,
+          "Materia": [
+            18020,
+            18029
+          ],
+          "Mirage": 2856
+        },
+        "Legs": {
+          "Creator": null,
+          "Dye": 13117,
+          "ID": 21448,
+          "Materia": [
+            18019,
+            18019
+          ],
+          "Mirage": 20497
+        },
+        "MainHand": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21411,
+          "Materia": [
+            18019,
+            18019
+          ],
+          "Mirage": 16998
+        },
+        "Necklace": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21465,
+          "Materia": [
+            18020
+          ],
+          "Mirage": 9292
+        },
+        "Ring1": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 23704,
+          "Materia": [
+            18020
+          ],
+          "Mirage": 9295
+        },
+        "Ring2": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 21569,
+          "Materia": [
+            18020
+          ],
+          "Mirage": 9295
+        },
+        "SoulCrystal": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 8840,
+          "Materia": [],
+          "Mirage": null
+        },
+        "Waist": {
+          "Creator": null,
+          "Dye": null,
+          "ID": 23679,
+          "Materia": [
+            18020
+          ],
+          "Mirage": null
+        }
+      },
+      "GearKey": "33_33",
+      "JobID": 33,
+      "Level": 70
+    },
+    "Gender": 1,
+    "GrandCompany": {
+      "NameID": 1,
+      "RankID": 11
+    },
+    "GuardianDeity": 9,
+    "ID": 13099353,
+    "Minions": [
+      54,
+      75,
+      79,
+      199,
+      313,
+      5,
+      148,
+      12,
+      14,
+      18,
+      27,
+      31,
+      32,
+      35,
+      36,
+      48,
+      88,
+      41,
+      44,
+      47,
+      56,
+      80,
+      82,
+      93,
+      102,
+      139,
+      142,
+      157,
+      178,
+      179,
+      181,
+      216,
+      245,
+      269,
+      274,
+      285,
+      287,
+      290,
+      215,
+      259,
+      281,
+      305,
+      101,
+      160,
+      195,
+      232,
+      299,
+      110,
+      134,
+      141,
+      197,
+      242,
+      243,
+      246,
+      288,
+      241,
+      283,
+      16,
+      137,
+      162,
+      247,
+      256,
+      253,
+      289,
+      49,
+      266,
+      277,
+      171,
+      76,
+      263,
+      261,
+      262,
+      217,
+      248,
+      118,
+      130,
+      218,
+      133,
+      224,
+      21,
+      71,
+      276,
+      84,
+      249,
+      173,
+      193,
+      219,
+      228,
+      250,
+      264,
+      260,
+      293,
+      252,
+      85,
+      122,
+      104,
+      119,
+      304,
+      6,
+      231,
+      268,
+      280,
+      286,
+      307,
+      308,
+      52,
+      149,
+      51,
+      96,
+      154,
+      105,
+      116,
+      70,
+      239,
+      77,
+      167,
+      92,
+      129,
+      214,
+      270,
+      62,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      300,
+      72,
+      74,
+      67,
+      68,
+      69
+    ],
+    "Mounts": [
+      1,
+      41,
+      45,
+      25,
+      84,
+      6,
+      21,
+      121,
+      145,
+      174,
+      8,
+      56,
+      9,
+      18,
+      32,
+      122,
+      33,
+      146,
+      150,
+      46,
+      49,
+      54,
+      148,
+      59,
+      70,
+      106,
+      110,
+      140,
+      153,
+      152,
+      125,
+      130,
+      97,
+      99,
+      136,
+      139,
+      142,
+      160,
+      154,
+      180,
+      55,
+      58,
+      62,
+      112,
+      164,
+      22,
+      28,
+      29,
+      30,
+      31,
+      40,
+      43,
+      47,
+      67,
+      100,
+      42,
+      75,
+      76,
+      77,
+      78,
+      90,
+      98,
+      104,
+      105,
+      116,
+      182,
+      50,
+      81,
+      135,
+      87,
+      96
+    ],
+    "Name": "Jolinar Cast",
+    "Nameday": "20th Sun of the 2nd Astral Moon",
+    "ParseDate": 1550840374,
+    "Portrait": "https://img2.finalfantasyxiv.com/f/7df16da0e79a61a3d9eb0b2d66d4cfed_7b33d33ae3ecb996f778a5f67a6a0af6fl0_640x873.jpg",
+    "PvPTeamId": null,
+    "Race": 1,
+    "Server": "Diabolos",
+    "Title": 50,
+    "Town": 3,
+    "Tribe": 2
+  },
+  "FreeCompany": null,
+  "FreeCompanyMembers": null,
+  "Friends": null,
+  "Info": {
+    "Achievements": null,
+    "Character": {
+      "State": 2,
+      "Updated": 1550840378
+    },
+    "FreeCompany": null,
+    "FreeCompanyMembers": null,
+    "Friends": null,
+    "PvPTeam": null
+  },
+  "PvPTeam": null
+}

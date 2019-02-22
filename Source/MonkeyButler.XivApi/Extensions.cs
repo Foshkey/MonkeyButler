@@ -2,7 +2,6 @@
 using MonkeyButler.XivApi.Character;
 using MonkeyButler.XivApi.SearchCharacter;
 using MonkeyButler.XivApi.Services;
-using MonkeyButler.XivApi.Services.Web;
 
 namespace MonkeyButler.XivApi
 {
@@ -19,6 +18,7 @@ namespace MonkeyButler.XivApi
         public static IServiceCollection AddXivApi(this IServiceCollection services) => services
             .AddSingleton<ICharacter, Commands.Character>()
             .AddSingleton<ISearchCharacter, Commands.SearchCharacter>()
+            .AddSingleton<ICommandService, CommandService>()
             .AddSingleton<IHttpService, HttpService>()
             .AddSingleton<ISerializer, Serializer>();
     }

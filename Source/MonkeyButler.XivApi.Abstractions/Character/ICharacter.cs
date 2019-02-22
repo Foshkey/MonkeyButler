@@ -12,6 +12,6 @@ namespace MonkeyButler.XivApi.Character
         /// </summary>
         /// <param name="criteria">The criteria for the request.</param>
         /// <returns>A response model representing the character.</returns>
-        Task<CharacterResponse> Process(CharacterCriteria criteria);
+        Task<Response<CharacterResponse>> Process(CharacterCriteria criteria);
     }
 }
