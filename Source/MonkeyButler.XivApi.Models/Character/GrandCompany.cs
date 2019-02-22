@@ -1,4 +1,6 @@
-﻿namespace MonkeyButler.XivApi.Models.Character
+﻿using MonkeyButler.XivApi.Models.Enumerations;
+
+namespace MonkeyButler.XivApi.Models.Character
 {
     /// <summary>
     /// Model representing a grand company.
@@ -8,7 +10,7 @@
         /// <summary>
         /// Id of the Grand Company.
         /// </summary>
-        public int NameId { get; set; }
+        public GrandCompanyName NameId { get; set; }
 
         /// <summary>
         /// The current rank, if applicable.

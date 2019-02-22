@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MonkeyButler.XivApi.Models.Enumerations;
 
 namespace MonkeyButler.XivApi.Models.Character
 {
@@ -45,7 +46,7 @@ namespace MonkeyButler.XivApi.Models.Character
         /// <summary>
         /// The guardian deity of the character.
         /// </summary>
-        public int GuardianDeity { get; set; }
+        public GuardianDeity GuardianDeity { get; set; }
 
         /// <summary>
         /// The Grand Company that the character belongs to.
@@ -105,11 +106,11 @@ namespace MonkeyButler.XivApi.Models.Character
         /// <summary>
         /// The town of the character.
         /// </summary>
-        public int Town { get; set; }
+        public Town Town { get; set; }
 
         /// <summary>
         /// The tribe of the character.
         /// </summary>
-        public int Tribe { get; set; }
+        public Tribe Tribe { get; set; }
     }
 }

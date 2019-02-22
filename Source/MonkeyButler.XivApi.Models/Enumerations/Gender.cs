@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.XivApi.Models.Character
+﻿namespace MonkeyButler.XivApi.Models.Enumerations
 {
     /// <summary>
     /// Enumeration representing gender of the character.
