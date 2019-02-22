@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using Xunit.Categories;
-using SUT = MonkeyButler.XivApi.Services.HttpService;
+using SUT = MonkeyButler.XivApi.Infrastructure.HttpService;
 
-namespace MonkeyButler.XivApi.Tests.Services
+namespace MonkeyButler.XivApi.Tests.Infrastructure
 {
     public class HttpServiceTests
     {

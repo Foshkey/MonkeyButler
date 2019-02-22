@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace MonkeyButler.XivApi.Character
+namespace MonkeyButler.XivApi.Services.Character
 {
     /// <summary>
-    /// A response model of the character service.
+    /// A response model of <see cref="ICharacterService.GetCharacter(GetCharacterCriteria)"/>.
     /// </summary>
-    public class CharacterResponse
+    public class GetCharacterResponse
     {
         /// <summary>
         /// The achievements of the character.

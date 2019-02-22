@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.XivApi.Character;
-using MonkeyButler.XivApi.SearchCharacter;
-using MonkeyButler.XivApi.Services;
+using MonkeyButler.XivApi.Infrastructure;
+using MonkeyButler.XivApi.Services.Character;
 using Newtonsoft.Json;
 
 namespace MonkeyButler.XivApi
@@ -17,9 +16,8 @@ namespace MonkeyButler.XivApi
         /// <param name="services">The service collection to which the services will be added.</param>
         /// <returns>The service collection for builder patterns.</returns>
         public static IServiceCollection AddXivApi(this IServiceCollection services) => services
-            .AddSingleton<ICharacter, Commands.Character>()
-            .AddSingleton<ISearchCharacter, Commands.SearchCharacter>()
-            .AddSingleton<ICommandService, CommandService>()
+            .AddSingleton<ICharacterService, CharacterService>()
+            .AddSingleton<IExecutionService, ExecutionService>()
             .AddSingleton<IHttpService, HttpService>()
             .AddSingleton<IDeserializer, Deserializer>()
             .AddJsonSerializer();

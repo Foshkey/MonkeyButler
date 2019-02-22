@@ -1,13 +1,13 @@
 ﻿using System;
 using MonkeyButler.XivApi.Attributes;
 
-namespace MonkeyButler.XivApi.Character
+namespace MonkeyButler.XivApi.Services.Character
 {
     /// <summary>
     /// An enum representing the data parameter of the character service.
     /// </summary>
     [Flags()]
-    public enum CharacterData
+    public enum GetCharacterData
     {
         /// <summary>
         /// Requests for achievements data.

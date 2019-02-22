@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.XivApi.Services
+namespace MonkeyButler.XivApi.Infrastructure
 {
-    internal class CommandService : ICommandService
+    internal class ExecutionService : IExecutionService
     {
         private readonly IHttpService _httpService;
         private readonly IDeserializer _serializer;
 
-        public CommandService(IHttpService httpService, IDeserializer serializer)
+        public ExecutionService(IHttpService httpService, IDeserializer serializer)
         {
             _httpService = httpService ?? throw new ArgumentNullException(nameof(httpService));
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
@@ -45,7 +45,7 @@ namespace MonkeyButler.XivApi.Services
         }
     }
 
-    internal interface ICommandService
+    internal interface IExecutionService
     {
         Task<Response<T>> Execute<T>(Uri uri);
         void ValidateCriteriaBase(CriteriaBase criteria);

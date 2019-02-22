@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace MonkeyButler.XivApi.Services
+namespace MonkeyButler.XivApi.Infrastructure
 {
     internal class HttpService : IHttpService
     {

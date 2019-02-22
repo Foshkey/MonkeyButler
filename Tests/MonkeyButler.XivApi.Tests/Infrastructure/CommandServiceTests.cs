@@ -1,10 +1,10 @@
 ﻿using System;
-using MonkeyButler.XivApi.Services;
+using MonkeyButler.XivApi.Infrastructure;
 using Moq;
 using Xunit;
-using SUT = MonkeyButler.XivApi.Services.CommandService;
+using SUT = MonkeyButler.XivApi.Infrastructure.ExecutionService;
 
-namespace MonkeyButler.XivApi.Tests.Services
+namespace MonkeyButler.XivApi.Tests.Infrastructure
 {
     public class CommandServiceTests
     {

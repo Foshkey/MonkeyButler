@@ -2,12 +2,12 @@
 using MonkeyButler.XivApi.Models;
 using MonkeyButler.XivApi.Models.Character;
 
-namespace MonkeyButler.XivApi.SearchCharacter
+namespace MonkeyButler.XivApi.Services.Character
 {
     /// <summary>
-    /// Response model for <see cref="ISearchCharacter"/> Service.
+    /// Response model for <see cref="ICharacterService.CharacterSearch(CharacterSearchCriteria)"/> Service.
     /// </summary>
-    public class SearchCharacterResponse
+    public class CharacterSearchResponse
     {
         /// <summary>
         /// The pagination of the response.

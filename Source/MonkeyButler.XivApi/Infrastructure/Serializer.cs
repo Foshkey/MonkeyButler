@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace MonkeyButler.XivApi.Services
+namespace MonkeyButler.XivApi.Infrastructure
 {
     internal class Deserializer : IDeserializer
     {

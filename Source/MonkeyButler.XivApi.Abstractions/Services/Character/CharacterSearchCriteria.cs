@@ -1,9 +1,9 @@
-﻿namespace MonkeyButler.XivApi.SearchCharacter
+﻿namespace MonkeyButler.XivApi.Services.Character
 {
     /// <summary>
-    /// Criteria model for <see cref="ISearchCharacter"/>
+    /// Criteria model for <see cref="ICharacterService.CharacterSearch(CharacterSearchCriteria)"/>
     /// </summary>
-    public class SearchCharacterCriteria : CriteriaBase
+    public class CharacterSearchCriteria : CriteriaBase
     {
         /// <summary>
         /// The character name to search for.
