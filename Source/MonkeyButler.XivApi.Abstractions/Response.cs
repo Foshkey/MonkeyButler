@@ -8,7 +8,7 @@ namespace MonkeyButler.XivApi
     public class Response<T>
     {
         /// <summary>
-        /// The response body, deserialized.
+        /// The response body, deserialized. Null if the response was unsuccessful.
         /// </summary>
         public T Body { get; set; }
 
@@ -16,5 +16,10 @@ namespace MonkeyButler.XivApi
         /// The original http response message.
         /// </summary>
         public HttpResponseMessage HttpResponse { get; set; }
+
+        /// <summary>
+        /// The error response body, deserialized. Null if the response was successful.
+        /// </summary>
+        public ErrorResponse Error { get; set; }
     }
 }

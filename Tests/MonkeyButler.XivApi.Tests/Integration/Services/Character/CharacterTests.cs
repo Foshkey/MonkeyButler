@@ -61,6 +61,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
             });
 
             Assert.Null(response.Body);
+            Assert.True(response.Error.Error);
         }
 
         [Fact]
@@ -112,6 +113,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
             });
 
             Assert.Null(response.Body);
+            Assert.True(response.Error.Error);
         }
     }
 }

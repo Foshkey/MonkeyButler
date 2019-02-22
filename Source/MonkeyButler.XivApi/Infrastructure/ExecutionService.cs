@@ -27,6 +27,10 @@ namespace MonkeyButler.XivApi.Infrastructure
             {
                 result.Body = _serializer.Deserialize<T>(await response.Content.ReadAsStreamAsync());
             }
+            else
+            {
+                result.Error = _serializer.Deserialize<ErrorResponse>(await response.Content.ReadAsStreamAsync());
+            }
 
             return result;
         }
