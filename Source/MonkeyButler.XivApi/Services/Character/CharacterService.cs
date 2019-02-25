@@ -28,8 +28,8 @@ namespace MonkeyButler.XivApi.Services.Character
                 throw new ArgumentException($"{nameof(criteria.Server)} cannot be null or empty.", nameof(criteria));
             }
 
-            var name = WebUtility.HtmlEncode(criteria.Name);
-            var server = WebUtility.HtmlEncode(criteria.Server);
+            var name = WebUtility.UrlEncode(criteria.Name);
+            var server = WebUtility.UrlEncode(criteria.Server);
             var url = $"https://xivapi.com/character/search?name={name}&server={server}&key={criteria.Key}";
 
             return await _executionService.Execute<CharacterSearchResponse>(new Uri(url));

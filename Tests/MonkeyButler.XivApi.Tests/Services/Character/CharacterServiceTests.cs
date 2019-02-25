@@ -14,16 +14,7 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
 
         private SUT BuildTarget() => new SUT(_commandServiceMock.Object);
 
-        [Fact]
-        public async Task GetCharacterShouldThrowExceptionIfIdIs0()
-        {
-            var ex = await Assert.ThrowsAsync<ArgumentException>(() => BuildTarget().GetCharacter(new GetCharacterCriteria()
-            {
-                Id = 0
-            }));
-
-            Assert.Contains("Id cannot be 0.", ex.Message);
-        }
+        #region "CharacterSearch"
 
         [Theory]
         [InlineData(null, "Diabolos", "Name cannot be null or empty")]
@@ -39,6 +30,38 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
             }));
 
             Assert.Contains(expectedException, ex.Message);
+        }
+
+        [Theory]
+        [InlineData("Jolinar Cast", "Diabolos", "TestKey", "https://xivapi.com/character/search?name=Jolinar+Cast&server=Diabolos&key=TestKey")]
+        [InlineData("T'yr", "Diabolos", "TestKey", "https://xivapi.com/character/search?name=T%27yr&server=Diabolos&key=TestKey")]
+        public async Task CharacterSearchShouldBuildUrl(string name, string server, string key, string expectedUrl)
+        {
+            var criteria = new CharacterSearchCriteria()
+            {
+                Key = key,
+                Name = name,
+                Server = server
+            };
+
+            await BuildTarget().CharacterSearch(criteria);
+
+            _commandServiceMock.Verify(x => x.Execute<CharacterSearchResponse>(new Uri(expectedUrl)));
+        }
+
+        #endregion
+
+        #region "GetCharacter"
+
+        [Fact]
+        public async Task GetCharacterShouldThrowExceptionIfIdIs0()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => BuildTarget().GetCharacter(new GetCharacterCriteria()
+            {
+                Id = 0
+            }));
+
+            Assert.Contains("Id cannot be 0.", ex.Message);
         }
 
         [Theory]
@@ -58,5 +81,7 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
 
             _commandServiceMock.Verify(x => x.Execute<GetCharacterResponse>(new Uri(expectedUrl)));
         }
+
+        #endregion
     }
 }
