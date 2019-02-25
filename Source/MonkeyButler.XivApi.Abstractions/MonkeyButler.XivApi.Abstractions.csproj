@@ -5,9 +5,5 @@
     <Authors>Joshua Nelson</Authors>
     <DocumentationFile>$(OutputDir)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\MonkeyButler.XivApi.Models\MonkeyButler.XivApi.Models.csproj" />
-  </ItemGroup>
 
 </Project>
