@@ -40,5 +40,23 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
 
             Assert.Contains(expectedException, ex.Message);
         }
+
+        [Theory]
+        [InlineData(123, "TestKey", (GetCharacterData)0, "https://xivapi.com/character/123?key=TestKey")]
+        [InlineData(123, "TestKey", GetCharacterData.FreeCompany, "https://xivapi.com/character/123?key=TestKey&data=FC")]
+        [InlineData(456, "TestKey", GetCharacterData.FreeCompany | GetCharacterData.FriendsList, "https://xivapi.com/character/456?key=TestKey&data=FR,FC")]
+        public async Task GetCharacterShouldBuildUrl(long id, string key, GetCharacterData data, string expectedUrl)
+        {
+            var criteria = new GetCharacterCriteria()
+            {
+                Data = data,
+                Id = id,
+                Key = key
+            };
+
+            await BuildTarget().GetCharacter(criteria);
+
+            _commandServiceMock.Verify(x => x.Execute<GetCharacterResponse>(new Uri(expectedUrl)));
+        }
     }
 }

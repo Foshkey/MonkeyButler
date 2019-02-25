@@ -46,6 +46,13 @@ namespace MonkeyButler.XivApi.Services.Character
 
             var url = $"https://xivapi.com/character/{criteria.Id}?key={criteria.Key}";
 
+            var dataString = criteria.Data.ToApiString();
+
+            if (!string.IsNullOrEmpty(dataString))
+            {
+                url = $"{url}&data={dataString}";
+            }
+
             return await _executionService.Execute<GetCharacterResponse>(new Uri(url));
         }
     }
