@@ -6,13 +6,15 @@ namespace MonkeyButler.XivApi.Infrastructure
     internal class ExecutionService : IExecutionService
     {
         private readonly IHttpService _httpService;
-        private readonly IDeserializer _serializer;
+        private readonly IDeserializer _deserializer;
 
-        public ExecutionService(IHttpService httpService, IDeserializer serializer)
+        public ExecutionService(IHttpService httpService, IDeserializer deserializer)
         {
             _httpService = httpService ?? throw new ArgumentNullException(nameof(httpService));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
         }
+
+        public Task<Response<T>> Execute<T>(string url) => Execute<T>(new Uri(url));
 
         public async Task<Response<T>> Execute<T>(Uri uri)
         {
@@ -25,11 +27,11 @@ namespace MonkeyButler.XivApi.Infrastructure
 
             if (response.IsSuccessStatusCode)
             {
-                result.Body = _serializer.Deserialize<T>(await response.Content.ReadAsStreamAsync());
+                result.Body = _deserializer.Deserialize<T>(await response.Content.ReadAsStreamAsync());
             }
             else
             {
-                result.Error = _serializer.Deserialize<ErrorResponse>(await response.Content.ReadAsStreamAsync());
+                result.Error = _deserializer.Deserialize<ErrorResponse>(await response.Content.ReadAsStreamAsync());
             }
 
             return result;
@@ -51,6 +53,7 @@ namespace MonkeyButler.XivApi.Infrastructure
 
     internal interface IExecutionService
     {
+        Task<Response<T>> Execute<T>(string url);
         Task<Response<T>> Execute<T>(Uri uri);
         void ValidateCriteriaBase(CriteriaBase criteria);
     }

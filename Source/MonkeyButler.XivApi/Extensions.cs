@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.XivApi.Infrastructure;
 using MonkeyButler.XivApi.Services.Character;
 using Newtonsoft.Json;
@@ -23,11 +24,12 @@ namespace MonkeyButler.XivApi
             .AddJsonSerializer();
 
         private static IServiceCollection AddJsonSerializer(this IServiceCollection services) => services
-            .AddSingleton(provider =>
+            .AddSingleton(JsonSerializer.CreateDefault(new JsonSerializerSettings()
             {
-                var serializer = new JsonSerializer();
-                serializer.Converters.Add(new DateTimeJsonConverter());
-                return serializer;
-            });
+                Converters = new List<JsonConverter>()
+                {
+                    new DateTimeJsonConverter()
+                }
+            }));
     }
 }

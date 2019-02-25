@@ -32,7 +32,7 @@ namespace MonkeyButler.XivApi.Services.Character
             var server = WebUtility.UrlEncode(criteria.Server);
             var url = $"https://xivapi.com/character/search?name={name}&server={server}&key={criteria.Key}";
 
-            return await _executionService.Execute<CharacterSearchResponse>(new Uri(url));
+            return await _executionService.Execute<CharacterSearchResponse>(url);
         }
 
         public async Task<Response<GetCharacterResponse>> GetCharacter(GetCharacterCriteria criteria)
@@ -53,7 +53,7 @@ namespace MonkeyButler.XivApi.Services.Character
                 url = $"{url}&data={dataString}";
             }
 
-            return await _executionService.Execute<GetCharacterResponse>(new Uri(url));
+            return await _executionService.Execute<GetCharacterResponse>(url);
         }
     }
 }

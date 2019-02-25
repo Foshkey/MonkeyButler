@@ -9,7 +9,6 @@ namespace MonkeyButler.XivApi
 
         public override bool CanRead => true;
         public override bool CanWrite => false;
-
         public override bool CanConvert(Type objectType) => objectType == typeof(DateTime);
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
