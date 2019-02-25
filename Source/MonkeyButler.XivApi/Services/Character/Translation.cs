@@ -20,7 +20,7 @@ namespace MonkeyButler.XivApi.Services.Character
             var memInfo = typeof(GetCharacterData).GetMember(data.ToString()).FirstOrDefault();
             var attribute = memInfo?.GetCustomAttributes(typeof(ApiNameAttribute), false).FirstOrDefault() as ApiNameAttribute;
 
-            return attribute?.Name;
+            return attribute?.Name ?? data.ToString();
         }
     }
 }
