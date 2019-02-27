@@ -14,11 +14,9 @@ namespace MonkeyButler.XivApi.Infrastructure
             _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
         }
 
-        public Task<Response<T>> Execute<T>(string url) => Execute<T>(new Uri(url));
-
-        public async Task<Response<T>> Execute<T>(Uri uri)
+        public async Task<Response<T>> Execute<T>(string relativeUri)
         {
-            var response = await _httpService.SendAsync(uri);
+            var response = await _httpService.GetAsync(relativeUri);
 
             var result = new Response<T>()
             {
@@ -53,8 +51,7 @@ namespace MonkeyButler.XivApi.Infrastructure
 
     internal interface IExecutionService
     {
-        Task<Response<T>> Execute<T>(string url);
-        Task<Response<T>> Execute<T>(Uri uri);
+        Task<Response<T>> Execute<T>(string relativeUri);
         void ValidateCriteriaBase(CriteriaBase criteria);
     }
 }

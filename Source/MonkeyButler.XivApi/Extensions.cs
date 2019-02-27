@@ -19,6 +19,7 @@ namespace MonkeyButler.XivApi
         public static IServiceCollection AddXivApi(this IServiceCollection services) => services
             .AddSingleton<ICharacterService, CharacterService>()
             .AddSingleton<IExecutionService, ExecutionService>()
+            .AddSingleton<IHttpClientAccessor, HttpClientAccessor>()
             .AddSingleton<IHttpService, HttpService>()
             .AddSingleton<IDeserializer, Deserializer>()
             .AddJsonSerializer();

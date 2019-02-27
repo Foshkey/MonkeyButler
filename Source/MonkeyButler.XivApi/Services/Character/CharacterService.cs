@@ -30,7 +30,7 @@ namespace MonkeyButler.XivApi.Services.Character
 
             var name = WebUtility.UrlEncode(criteria.Name);
             var server = WebUtility.UrlEncode(criteria.Server);
-            var url = $"https://xivapi.com/character/search?name={name}&server={server}&key={criteria.Key}";
+            var url = $"character/search?name={name}&server={server}&key={criteria.Key}";
 
             return await _executionService.Execute<CharacterSearchResponse>(url);
         }
@@ -44,7 +44,7 @@ namespace MonkeyButler.XivApi.Services.Character
                 throw new ArgumentException($"{nameof(criteria.Id)} cannot be 0.", nameof(criteria));
             }
 
-            var url = $"https://xivapi.com/character/{criteria.Id}?key={criteria.Key}";
+            var url = $"character/{criteria.Id}?key={criteria.Key}";
 
             var dataString = criteria.Data.ToApiString();
 

@@ -8,41 +8,39 @@ namespace MonkeyButler.XivApi.Infrastructure
 {
     internal class HttpService : IHttpService
     {
+        private readonly IHttpClientAccessor _httpClientAccessor;
         private readonly ILogger<HttpService> _logger;
 
-        public HttpService(ILogger<HttpService> logger)
+        private readonly Uri _baseUri = new Uri("https://xivapi.com/");
+
+        public HttpService(IHttpClientAccessor httpClientAccessor, ILogger<HttpService> logger)
         {
+            _httpClientAccessor = httpClientAccessor ?? throw new ArgumentNullException(nameof(httpClientAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<HttpResponseMessage> SendAsync(Uri uri)
+        public Task<HttpResponseMessage> GetAsync(string relativeUri) => GetAsync(new Uri(_baseUri, relativeUri));
+
+        public async Task<HttpResponseMessage> GetAsync(Uri uri)
         {
             if (uri == null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            using (var client = new HttpClient())
+            try
             {
-                try
-                {
-                    return await client.GetAsync(uri);
-                }
-                catch (HttpRequestException ex)
-                {
-                    _logger.LogError(ex, "Exception occured with HTTP request. Url: {Url}.", uri.ToString());
+                return await _httpClientAccessor.HttpClient.GetAsync(uri);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Exception occured with HTTP request. Url: {Url}.", uri.ToString());
 
-                    return new HttpResponseMessage()
-                    {
-                        StatusCode = HttpStatusCode.ServiceUnavailable
-                    };
-                }
+                return new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.ServiceUnavailable
+                };
             }
         }
-    }
-
-    internal interface IHttpService
-    {
-        Task<HttpResponseMessage> SendAsync(Uri uri);
     }
 }

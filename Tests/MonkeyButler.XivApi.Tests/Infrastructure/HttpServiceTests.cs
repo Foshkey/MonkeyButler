@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.XivApi.Infrastructure;
 using Moq;
 using Xunit;
 using Xunit.Categories;
@@ -15,7 +16,7 @@ namespace MonkeyButler.XivApi.Tests.Infrastructure
         private Mock<ILogger<SUT>> _loggerMock = new Mock<ILogger<SUT>>();
         private Uri _uri;
 
-        private Task<HttpResponseMessage> Process() => new SUT(_loggerMock.Object).SendAsync(_uri);
+        private Task<HttpResponseMessage> Process() => new SUT(new HttpClientAccessor(), _loggerMock.Object).GetAsync(_uri);
 
         [Fact]
         public async Task NullCriteriaShouldThrowException()

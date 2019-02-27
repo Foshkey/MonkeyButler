@@ -33,8 +33,8 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
         }
 
         [Theory]
-        [InlineData("Jolinar Cast", "Diabolos", "TestKey", "https://xivapi.com/character/search?name=Jolinar+Cast&server=Diabolos&key=TestKey")]
-        [InlineData("T'yr", "Diabolos", "TestKey", "https://xivapi.com/character/search?name=T%27yr&server=Diabolos&key=TestKey")]
+        [InlineData("Jolinar Cast", "Diabolos", "TestKey", "character/search?name=Jolinar+Cast&server=Diabolos&key=TestKey")]
+        [InlineData("T'yr", "Diabolos", "TestKey", "character/search?name=T%27yr&server=Diabolos&key=TestKey")]
         public async Task CharacterSearchShouldBuildUrl(string name, string server, string key, string expectedUrl)
         {
             var criteria = new CharacterSearchCriteria()
@@ -46,7 +46,7 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
 
             await BuildTarget().CharacterSearch(criteria);
 
-            _commandServiceMock.Verify(x => x.Execute<CharacterSearchResponse>(new Uri(expectedUrl)));
+            _commandServiceMock.Verify(x => x.Execute<CharacterSearchResponse>(expectedUrl));
         }
 
         #endregion
@@ -65,9 +65,9 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
         }
 
         [Theory]
-        [InlineData(123, "TestKey", (GetCharacterData)0, "https://xivapi.com/character/123?key=TestKey")]
-        [InlineData(123, "TestKey", GetCharacterData.FreeCompany, "https://xivapi.com/character/123?key=TestKey&data=FC")]
-        [InlineData(456, "TestKey", GetCharacterData.FreeCompany | GetCharacterData.FriendsList, "https://xivapi.com/character/456?key=TestKey&data=FR,FC")]
+        [InlineData(123, "TestKey", (GetCharacterData)0, "character/123?key=TestKey")]
+        [InlineData(123, "TestKey", GetCharacterData.FreeCompany, "character/123?key=TestKey&data=FC")]
+        [InlineData(456, "TestKey", GetCharacterData.FreeCompany | GetCharacterData.FriendsList, "character/456?key=TestKey&data=FR,FC")]
         public async Task GetCharacterShouldBuildUrl(long id, string key, GetCharacterData data, string expectedUrl)
         {
             var criteria = new GetCharacterCriteria()
@@ -79,7 +79,7 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
 
             await BuildTarget().GetCharacter(criteria);
 
-            _commandServiceMock.Verify(x => x.Execute<GetCharacterResponse>(new Uri(expectedUrl)));
+            _commandServiceMock.Verify(x => x.Execute<GetCharacterResponse>(expectedUrl));
         }
 
         #endregion
