@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         public async Task GetCharacterShouldGetResponseAndDeserialize()
         {
             var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage()
+            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
             {
                 Content = new HttpContentMock(@"Integration\SampleResponses\Character.json"),
                 StatusCode = HttpStatusCode.OK
@@ -43,7 +44,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         public async Task GetCharacterShouldHandleError()
         {
             var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage()
+            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
             {
                 Content = new HttpContentMock(@"Integration\SampleResponses\Error.json"),
                 StatusCode = HttpStatusCode.BadRequest
@@ -68,7 +69,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         public async Task CharacterSearchShouldGetResponseAndDeserialize()
         {
             var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage()
+            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
             {
                 Content = new HttpContentMock(@"Integration\SampleResponses\SearchCharacter.json"),
                 StatusCode = HttpStatusCode.OK
@@ -94,7 +95,7 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         public async Task CharacterSearchShouldHandleError()
         {
             var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage()
+            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
             {
                 Content = new HttpContentMock(@"Integration\SampleResponses\Error.json"),
                 StatusCode = HttpStatusCode.BadRequest

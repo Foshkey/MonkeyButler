@@ -10,16 +10,9 @@ namespace MonkeyButler.XivApi.Infrastructure
     public interface IHttpService
     {
         /// <summary>
-        /// Gets the response from the given uri.
+        /// Gets the response from the given URI.
         /// </summary>
-        /// <param name="relativeUri">The relative uri of the request.</param>
-        /// <returns>The http response message.</returns>
-        Task<HttpResponseMessage> GetAsync(string relativeUri);
-
-        /// <summary>
-        /// Gets the response from the given uri.
-        /// </summary>
-        /// <param name="uri">The uri of the request.</param>
+        /// <param name="uri">The URI of the request.</param>
         /// <returns>The http response message.</returns>
         Task<HttpResponseMessage> GetAsync(Uri uri);
     }
