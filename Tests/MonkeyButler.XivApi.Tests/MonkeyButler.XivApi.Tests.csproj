@@ -19,19 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MonkeyButler.Mocks\MonkeyButler.Mocks.csproj" />
     <ProjectReference Include="..\..\Source\MonkeyButler.XivApi\MonkeyButler.XivApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Integration\SampleResponses\Character.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Integration\SampleResponses\Error.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Integration\SampleResponses\SearchCharacter.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.XivApi.Infrastructure;
+using MonkeyButler.Mocks;
 using MonkeyButler.XivApi.Services.Character;
-using Moq;
 using Xunit;
 using Xunit.Categories;
 
@@ -17,15 +14,11 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         [IntegrationTest]
         public async Task GetCharacterShouldGetResponseAndDeserialize()
         {
-            var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
-            {
-                Content = new HttpContentMock(@"Integration\SampleResponses\Character.json"),
-                StatusCode = HttpStatusCode.OK
-            });
-
             var services = IntegrationHelper.GetServiceCollection()
-                .AddSingleton(httpServiceMock.Object)
+                .AddHttpServiceMock(options =>
+                {
+                    options.FileName = "Character";
+                })
                 .BuildServiceProvider();
 
             var response = await services.GetService<ICharacterService>().GetCharacter(new GetCharacterCriteria()
@@ -43,15 +36,12 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         [IntegrationTest]
         public async Task GetCharacterShouldHandleError()
         {
-            var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
-            {
-                Content = new HttpContentMock(@"Integration\SampleResponses\Error.json"),
-                StatusCode = HttpStatusCode.BadRequest
-            });
-
             var services = IntegrationHelper.GetServiceCollection()
-                .AddSingleton(httpServiceMock.Object)
+                .AddHttpServiceMock(options =>
+                {
+                    options.FileName = "Error";
+                    options.StatusCode = HttpStatusCode.BadRequest;
+                })
                 .BuildServiceProvider();
 
             var response = await services.GetService<ICharacterService>().GetCharacter(new GetCharacterCriteria()
@@ -68,15 +58,11 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         [IntegrationTest]
         public async Task CharacterSearchShouldGetResponseAndDeserialize()
         {
-            var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
-            {
-                Content = new HttpContentMock(@"Integration\SampleResponses\SearchCharacter.json"),
-                StatusCode = HttpStatusCode.OK
-            });
-
             var services = IntegrationHelper.GetServiceCollection()
-                .AddSingleton(httpServiceMock.Object)
+                .AddHttpServiceMock(options =>
+                {
+                    options.FileName = "SearchCharacter";
+                })
                 .BuildServiceProvider();
 
             var response = await services.GetService<ICharacterService>().CharacterSearch(new CharacterSearchCriteria()
@@ -94,15 +80,12 @@ namespace MonkeyButler.XivApi.Tests.Integration.Services.Character
         [IntegrationTest]
         public async Task CharacterSearchShouldHandleError()
         {
-            var httpServiceMock = new Mock<IHttpService>();
-            httpServiceMock.Setup(x => x.GetAsync(It.IsAny<Uri>())).ReturnsAsync(new HttpResponseMessage()
-            {
-                Content = new HttpContentMock(@"Integration\SampleResponses\Error.json"),
-                StatusCode = HttpStatusCode.BadRequest
-            });
-
             var services = IntegrationHelper.GetServiceCollection()
-                .AddSingleton(httpServiceMock.Object)
+                .AddHttpServiceMock(options =>
+                {
+                    options.FileName = "Error";
+                    options.StatusCode = HttpStatusCode.BadRequest;
+                })
                 .BuildServiceProvider();
 
             var response = await services.GetService<ICharacterService>().CharacterSearch(new CharacterSearchCriteria()

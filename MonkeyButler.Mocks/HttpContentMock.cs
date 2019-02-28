@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace MonkeyButler.XivApi.Tests.Integration
+namespace MonkeyButler.Mocks
 {
     internal class HttpContentMock : HttpContent
     {
@@ -12,10 +11,18 @@ namespace MonkeyButler.XivApi.Tests.Integration
 
         public HttpContentMock(string filePath)
         {
-            _filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+            _filePath = filePath;
         }
 
-        protected override Task<Stream> CreateContentReadStreamAsync() => Task.FromResult<Stream>(new FileStream(_filePath, FileMode.Open));
+        protected override Task<Stream> CreateContentReadStreamAsync()
+        {
+            if (string.IsNullOrEmpty(_filePath))
+            {
+                return Task.FromResult<Stream>(new MemoryStream());
+            }
+
+            return Task.FromResult<Stream>(new FileStream(_filePath, FileMode.Open));
+        }
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context) => Task.CompletedTask;
 
