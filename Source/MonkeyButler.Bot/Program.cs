@@ -11,7 +11,8 @@ namespace MonkeyButler.Bot
             var configBuilder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("appsettings.private.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.private.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
             var configuration = configBuilder.Build();
             var startup = new Startup(configuration);
             await startup.RunAsync();
