@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,7 +27,15 @@ namespace MonkeyButler.XivApi.Infrastructure
 
             try
             {
-                return await _httpClientAccessor.HttpClient.GetAsync(uri);
+                _logger.LogInformation("Sending request to {Url}.", uri.ToString());
+
+                var stopwatch = Stopwatch.StartNew();
+                var response = await _httpClientAccessor.HttpClient.GetAsync(uri);
+                stopwatch.Stop();
+
+                _logger.LogInformation("Received response with status code {StatusCode} {StatusCodeString} in {TimeInMs} ms.", (int)response.StatusCode, response.StatusCode, stopwatch.ElapsedMilliseconds);
+                _logger.LogDebug("Response Body: {ResponseBody}", await response.Content.ReadAsStringAsync());
+                return response;
             }
             catch (HttpRequestException ex)
             {
