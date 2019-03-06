@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.XivApi.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.XivApi.Abstractions", "Source\MonkeyButler.XivApi.Abstractions\MonkeyButler.XivApi.Abstractions.csproj", "{B83ED5FB-5115-45B5-81C3-898A49B46B93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Mocks", "MonkeyButler.Mocks\MonkeyButler.Mocks.csproj", "{F2097A97-FA5D-4C0E-A535-E84AF1E1D67E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Mocks", "Tests\MonkeyButler.Mocks\MonkeyButler.Mocks.csproj", "{F2097A97-FA5D-4C0E-A535-E84AF1E1D67E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

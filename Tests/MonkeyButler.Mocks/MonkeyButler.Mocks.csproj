@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Source\MonkeyButler.XivApi.Abstractions\MonkeyButler.XivApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Source\MonkeyButler.XivApi.Abstractions\MonkeyButler.XivApi.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

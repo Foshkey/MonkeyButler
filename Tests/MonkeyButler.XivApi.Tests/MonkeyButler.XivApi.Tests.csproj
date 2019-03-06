@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MonkeyButler.Mocks\MonkeyButler.Mocks.csproj" />
+    <ProjectReference Include="..\MonkeyButler.Mocks\MonkeyButler.Mocks.csproj" />
     <ProjectReference Include="..\..\Source\MonkeyButler.XivApi\MonkeyButler.XivApi.csproj" />
   </ItemGroup>
 
