@@ -4,7 +4,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Bot.Configuration.Options;
+using MonkeyButler.Bot.Configuration;
 
 namespace MonkeyButler.Bot.Handlers
 {

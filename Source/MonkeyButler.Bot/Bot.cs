@@ -6,7 +6,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Bot.Configuration.Options;
+using MonkeyButler.Bot.Configuration;
 using MonkeyButler.Bot.Handlers;
 
 namespace MonkeyButler.Bot

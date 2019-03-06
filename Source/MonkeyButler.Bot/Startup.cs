@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.Bot.Configuration.Options;
+using MonkeyButler.Bot.Configuration;
 using MonkeyButler.XivApi;
 
 namespace MonkeyButler.Bot

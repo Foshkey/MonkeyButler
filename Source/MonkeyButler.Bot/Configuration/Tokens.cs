@@ -1,4 +1,4 @@
-﻿namespace MonkeyButler.Bot.Configuration.Options
+﻿namespace MonkeyButler.Bot.Configuration
 {
     internal class Tokens
     {
