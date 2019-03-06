@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Bot.Configuration;
@@ -36,11 +37,22 @@ namespace MonkeyButler.Bot.Modules.Commands
                 return;
             }
 
-            await ReplyAsync($"I found {response.Body.Pagination.ResultsTotal} character(s).");
-            foreach (var result in response.Body.Results)
+            var builder = new EmbedBuilder()
             {
-                await ReplyAsync($"{result.Name} on {result.Server} with Id {result.Id}.");
+                Color = new Color(114, 137, 218),
+                Description = $"There are {response.Body.Pagination.ResultsTotal} character(s) in the search result. Here are the top five."
+            };
+
+            for (var i = 0; i < 5 && i < response.Body.Results.Count; i++)
+            {
+                var result = response.Body.Results[i];
+                builder.AddField(
+                    name: $"{result.Name} on {result.Server}",
+                    value: $"Id: {result.Id}"
+                );
             }
+
+            await ReplyAsync(message: null, isTTS: false, embed: builder.Build());
         }
     }
 }
