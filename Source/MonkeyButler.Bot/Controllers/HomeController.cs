@@ -23,7 +23,7 @@ namespace MonkeyButler.Bot.Controllers
 
             return View(new IndexModel()
             {
-                ConnectionStatus = _discord.ConnectionState.ToString()
+                ConnectionState = _discord.ConnectionState
             });
         }
     }

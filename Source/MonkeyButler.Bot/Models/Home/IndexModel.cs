@@ -1,7 +1,9 @@
-﻿namespace MonkeyButler.Bot.Models.Home
+﻿using Discord;
+
+namespace MonkeyButler.Bot.Models.Home
 {
     public class IndexModel
     {
-        public string ConnectionStatus { get; set; }
+        public ConnectionState ConnectionState { get; set; }
     }
 }
