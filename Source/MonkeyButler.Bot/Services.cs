@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Bot.Handlers;
 
-namespace MonkeyButler
+namespace MonkeyButler.Bot
 {
     internal static class Services
     {
