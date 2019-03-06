@@ -4,12 +4,16 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Bot.Configuration;
 using MonkeyButler.Bot.Handlers;
 
 namespace MonkeyButler.Bot
 {
     internal static class Services
     {
+        public static IServiceCollection ConfigureMonkeyButlerOptions(this IServiceCollection services, IConfiguration configuration) => services
+            .Configure<Settings>(configuration);
+
         public static IServiceCollection AddDiscord(this IServiceCollection services) => services
             .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
             {

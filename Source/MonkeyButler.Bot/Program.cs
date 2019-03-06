@@ -1,21 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 namespace MonkeyButler.Bot
 {
-    internal class Program
+    public class Program
     {
-        internal static async Task Main(string[] args)
-        {
-            var configBuilder = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("appsettings.private.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
-            var configuration = configBuilder.Build();
-            var startup = new Startup(configuration);
-            await startup.RunAsync();
-        }
+        public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) => config
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.Private.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables())
+                .UseStartup<Startup>();
     }
 }

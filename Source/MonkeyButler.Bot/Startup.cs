@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Bot.Configuration;
@@ -6,7 +8,7 @@ using MonkeyButler.XivApi;
 
 namespace MonkeyButler.Bot
 {
-    internal class Startup
+    public class Startup
     {
         private readonly IConfiguration _configuration;
 
@@ -15,26 +17,35 @@ namespace MonkeyButler.Bot
             _configuration = configuration;
         }
 
-        public async Task RunAsync()
+        public void ConfigureServices(IServiceCollection services)
         {
-            var services = new ServiceCollection();
-            ConfigureServices(services);
-            ConfigureOptions(services);
+            services
+                .Configure<Settings>(_configuration)
+                .AddDiscord()
+                .AddHandlers()
+                .AddXivApi()
+                .AddLogging(_configuration)
+                .AddSingleton<IBot, Bot>();
 
-            var provider = services.BuildServiceProvider();
-            await provider.GetRequiredService<IBot>().StartAsync();
-            await Task.Delay(-1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        private void ConfigureServices(IServiceCollection services) => services
-            .AddDiscord()
-            .AddHandlers()
-            .AddXivApi()
-            .AddSingleton(_configuration)
-            .AddLogging(_configuration)
-            .AddTransient<IBot, Bot>();
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
 
-        private void ConfigureOptions(IServiceCollection services) => services
-            .Configure<Settings>(_configuration);
+            app.StartBot();
+
+            app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
+        }
     }
 }

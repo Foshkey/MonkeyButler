@@ -11,12 +11,12 @@ namespace MonkeyButler.Bot.Modules.Commands
     public class Character : ModuleBase<SocketCommandContext>
     {
         private readonly ICharacterService _characterService;
-        private readonly IOptionsSnapshot<Settings> _settingsSnapshot;
+        private readonly IOptions<Settings> _settingsAccessor;
 
-        public Character(ICharacterService characterService, IOptionsSnapshot<Settings> settingsSnapshot)
+        public Character(ICharacterService characterService, IOptions<Settings> settingsAccessor)
         {
             _characterService = characterService ?? throw new ArgumentNullException(nameof(characterService));
-            _settingsSnapshot = settingsSnapshot ?? throw new ArgumentNullException(nameof(settingsSnapshot));
+            _settingsAccessor = settingsAccessor ?? throw new ArgumentNullException(nameof(settingsAccessor));
         }
 
         [Command("Search"), Priority(1)]
@@ -25,7 +25,7 @@ namespace MonkeyButler.Bot.Modules.Commands
         {
             var response = await _characterService.CharacterSearch(new CharacterSearchCriteria()
             {
-                Key = _settingsSnapshot.Value.Tokens.XivApi,
+                Key = _settingsAccessor.Value.Tokens.XivApi,
                 Name = $"{firstName} {lastName}",
                 Server = server
             });
