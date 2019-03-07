@@ -13,7 +13,7 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
         [InlineData(GetCharacterData.Achievements | GetCharacterData.PvpTeam, "AC,PVP")]
         public void ShouldTranslate(GetCharacterData data, string expectedString)
         {
-            var result = data.ToApiString();
+            var result = data.GetApiString();
             Assert.Equal(expectedString, result);
         }
     }

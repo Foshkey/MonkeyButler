@@ -11,6 +11,11 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// The page to return. Default is 1.
+        /// </summary>
+        public int? Page { get; set; }
+
+        /// <summary>
         /// The server to search.
         /// </summary>
         public string Server { get; set; }

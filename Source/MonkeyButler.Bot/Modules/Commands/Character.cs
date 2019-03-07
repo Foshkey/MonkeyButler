@@ -22,12 +22,12 @@ namespace MonkeyButler.Bot.Modules.Commands
 
         [Command("Search"), Priority(1)]
         [Summary("Searches Lodestone for a character.")]
-        public async Task SearchAsync(string firstName, string lastName, string server)
+        public async Task SearchAsync(string firstName, string lastName = null, string server = null)
         {
             var response = await _characterService.CharacterSearch(new CharacterSearchCriteria()
             {
                 Key = _settingsAccessor.Value.Tokens.XivApi,
-                Name = $"{firstName} {lastName}",
+                Name = string.IsNullOrEmpty(lastName) ? firstName : $"{firstName} {lastName}",
                 Server = server
             });
 

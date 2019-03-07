@@ -17,16 +17,13 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
         #region "CharacterSearch"
 
         [Theory]
-        [InlineData(null, "Diabolos", "Name cannot be null or empty")]
-        [InlineData("", "Diabolos", "Name cannot be null or empty")]
-        [InlineData("Jolinar Cast", null, "Server cannot be null or empty")]
-        [InlineData("Jolinar Cast", "", "Server cannot be null or empty")]
-        public async Task CharacterSearchShouldThrowExceptionIfNameOrServerIsNullOrEmpty(string name, string server, string expectedException)
+        [InlineData(null, "Name cannot be null or empty")]
+        [InlineData("", "Name cannot be null or empty")]
+        public async Task CharacterSearchShouldThrowExceptionIfNameIsNullOrEmpty(string name, string expectedException)
         {
             var ex = await Assert.ThrowsAsync<ArgumentException>(() => BuildTarget().CharacterSearch(new CharacterSearchCriteria()
             {
                 Name = name,
-                Server = server
             }));
 
             Assert.Contains(expectedException, ex.Message);
@@ -35,6 +32,8 @@ namespace MonkeyButler.XivApi.Tests.Services.Character
         [Theory]
         [InlineData("Jolinar Cast", "Diabolos", "TestKey", "character/search?name=Jolinar+Cast&server=Diabolos&key=TestKey")]
         [InlineData("T'yr", "Diabolos", "TestKey", "character/search?name=T%27yr&server=Diabolos&key=TestKey")]
+        [InlineData("T'yr", null, "TestKey", "character/search?name=T%27yr&key=TestKey")]
+        [InlineData("T'yr", "", "TestKey", "character/search?name=T%27yr&key=TestKey")]
         public async Task CharacterSearchShouldBuildUrl(string name, string server, string key, string expectedUrl)
         {
             var criteria = new CharacterSearchCriteria()

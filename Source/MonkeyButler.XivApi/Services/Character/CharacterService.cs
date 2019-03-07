@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using MonkeyButler.XivApi.Infrastructure;
 
@@ -23,14 +22,7 @@ namespace MonkeyButler.XivApi.Services.Character
                 throw new ArgumentException($"{nameof(criteria.Name)} cannot be null or empty.", nameof(criteria));
             }
 
-            if (string.IsNullOrEmpty(criteria.Server))
-            {
-                throw new ArgumentException($"{nameof(criteria.Server)} cannot be null or empty.", nameof(criteria));
-            }
-
-            var name = WebUtility.UrlEncode(criteria.Name);
-            var server = WebUtility.UrlEncode(criteria.Server);
-            var url = $"character/search?name={name}&server={server}&key={criteria.Key}";
+            var url = $"character/search?{criteria.GetQueryString()}";
 
             return await _executionService.Execute<CharacterSearchResponse>(url);
         }
@@ -46,7 +38,7 @@ namespace MonkeyButler.XivApi.Services.Character
 
             var url = $"character/{criteria.Id}?key={criteria.Key}";
 
-            var dataString = criteria.Data.ToApiString();
+            var dataString = criteria.Data.GetApiString();
 
             if (!string.IsNullOrEmpty(dataString))
             {
