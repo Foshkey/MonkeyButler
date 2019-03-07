@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 namespace MonkeyButler.XivApi
 {
     /// <summary>
-    /// Extensions class
+    /// Extensions class for services.
     /// </summary>
-    public static class Extensions
+    public static class ServiceExtensions
     {
         /// <summary>
         /// Adds the necessary services for <see cref="XivApi"/>.

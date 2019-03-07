@@ -57,7 +57,7 @@ namespace MonkeyButler.Bot
                 await _discordClient.StartAsync();
 
                 _logger.LogTrace("Adding modules.");
-                await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
+                await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
 
                 _logger.LogInformation("Bot successfully logged in and started.");
             }
@@ -74,14 +74,5 @@ namespace MonkeyButler.Bot
             _discordClient.MessageReceived += _messageHandler.OnMessageAsync;
             _discordClient.UserJoined += _userJoinedHandler.OnUserJoinedAsync;
         }
-    }
-
-    internal interface IBot
-    {
-        /// <summary>
-        /// Starts the Bot, adds modules and handlers, and connects.
-        /// </summary>
-        /// <returns></returns>
-        Task StartAsync();
     }
 }

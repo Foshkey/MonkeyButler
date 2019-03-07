@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
-namespace MonkeyButler.Bot.Controllers
+namespace MonkeyButler.Mvc.Controllers
 {
     public class ErrorController : Controller
     {

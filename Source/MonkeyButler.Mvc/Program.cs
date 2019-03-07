@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace MonkeyButler.Bot
+namespace MonkeyButler.Mvc
 {
     public class Program
     {

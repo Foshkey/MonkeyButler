@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace MonkeyButler.Bot.Models.Home
+namespace MonkeyButler.Mvc.Models.Home
 {
     public class IndexModel
     {

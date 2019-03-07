@@ -8,25 +8,40 @@ using MonkeyButler.XivApi.Services.Character;
 
 namespace MonkeyButler.Bot.Modules.Commands
 {
+    /// <summary>
+    /// Class for Character commands.
+    /// </summary>
     [Group("Character")]
     public class Character : ModuleBase<SocketCommandContext>
     {
         private readonly ICharacterService _characterService;
         private readonly IOptions<Settings> _settingsAccessor;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="characterService">The character service for XIVAPI.</param>
+        /// <param name="settingsAccessor">The options for settings.</param>
         public Character(ICharacterService characterService, IOptions<Settings> settingsAccessor)
         {
             _characterService = characterService ?? throw new ArgumentNullException(nameof(characterService));
             _settingsAccessor = settingsAccessor ?? throw new ArgumentNullException(nameof(settingsAccessor));
         }
 
-        [Command("Search"), Priority(1)]
-        [Summary("Searches Lodestone for a character.")]
+        /// <summary>
+        /// Searches Lodestone for characters.
+        /// </summary>
+        /// <param name="firstName">First name of a character.</param>
+        /// <param name="lastName">Last name of a character.</param>
+        /// <param name="server">The server to search.</param>
+        /// <returns></returns>
+        [Command("Search")]
+        [Summary("Searches Lodestone for characters.")]
         public async Task SearchAsync(string firstName, string lastName = null, string server = null)
         {
             var response = await _characterService.CharacterSearch(new CharacterSearchCriteria()
             {
-                Key = _settingsAccessor.Value.Tokens.XivApi,
+                Key = _settingsAccessor.Value?.Tokens?.XivApi,
                 Name = string.IsNullOrEmpty(lastName) ? firstName : $"{firstName} {lastName}",
                 Server = server
             });

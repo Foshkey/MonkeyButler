@@ -1,19 +1,19 @@
 ﻿using System;
-using Discord.WebSocket;
+using Discord;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Bot.Models.Home;
+using MonkeyButler.Mvc.Models.Home;
 
-namespace MonkeyButler.Bot.Controllers
+namespace MonkeyButler.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly DiscordSocketClient _discord;
+        private readonly IDiscordClient _discordClient;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(DiscordSocketClient discord, ILogger<HomeController> logger)
+        public HomeController(IDiscordClient discordClient, ILogger<HomeController> logger)
         {
-            _discord = discord ?? throw new ArgumentNullException(nameof(discord));
+            _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -23,7 +23,7 @@ namespace MonkeyButler.Bot.Controllers
 
             return View(new IndexModel()
             {
-                ConnectionState = _discord.ConnectionState
+                ConnectionState = _discordClient.ConnectionState
             });
         }
     }

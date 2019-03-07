@@ -7,17 +7,29 @@ using Microsoft.Extensions.Configuration;
 
 namespace MonkeyButler.Bot.Modules.Commands
 {
+    /// <summary>
+    /// Class for Help commands.
+    /// </summary>
     public class Help : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _commandService;
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="configuration">The application configuration.</param>
         public Help(CommandService commandService, IConfiguration configuration)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+        /// <summary>
+        /// Base help command.
+        /// </summary>
+        /// <returns></returns>
         [Command("help")]
         public async Task HelpAsync()
         {
@@ -52,8 +64,13 @@ namespace MonkeyButler.Bot.Modules.Commands
             await ReplyAsync("", false, builder.Build());
         }
 
+        /// <summary>
+        /// Help command for specific command.
+        /// </summary>
+        /// <param name="command">The command to get help with.</param>
+        /// <returns></returns>
         [Command("help")]
-        public async Task HelpAsync(string command)
+        public async Task HelpAsync([Remainder] string command)
         {
             var result = _commandService.Search(Context, command);
 
