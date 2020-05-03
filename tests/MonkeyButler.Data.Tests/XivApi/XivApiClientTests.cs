@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,24 +10,9 @@ namespace MonkeyButler.Data.Tests.XivApi
 {
     public class XivApiClientTests
     {
-        private SUT Target
-        {
-            get
-            {
-                var config = new ConfigurationBuilder()
-                    .AddInMemoryCollection(new Dictionary<string, string>()
-                    {
-                        ["XivApi:BaseUrl"] = "https://xivapi.com",
-                        ["XivApi:Key"] = ""
-                    }).Build();
+        private readonly IServiceCollection _services = new ServiceCollection().AddTestDataServices();
 
-                var services = new ServiceCollection()
-                    .AddDataServices(config)
-                    .BuildServiceProvider();
-
-                return services.GetRequiredService<SUT>();
-            }
-        }
+        private SUT Target => _services.BuildServiceProvider().GetRequiredService<SUT>();
 
         [Fact(Skip = "External call")]
         public async Task SearchCharacterShouldReturnCharacter()
@@ -35,6 +21,18 @@ namespace MonkeyButler.Data.Tests.XivApi
             var server = "Diabolos";
 
             var response = await Target.SearchCharacter(name, server);
+
+            response.EnsureSuccessStatusCode();
+            var str = await response.Content.ReadAsStringAsync();
+            Assert.NotEmpty(str);
+        }
+
+        [Fact(Skip = "External call")]
+        public async Task GetCharacterShouldReturnCharacter()
+        {
+            var id = 13099353;
+
+            var response = await Target.GetCharacter(id);
 
             response.EnsureSuccessStatusCode();
             var str = await response.Content.ReadAsStringAsync();

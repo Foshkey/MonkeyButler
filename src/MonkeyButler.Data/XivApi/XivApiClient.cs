@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Data.Options;
 
@@ -9,45 +10,74 @@ namespace MonkeyButler.Data.XivApi
     internal class XivApiClient : IXivApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<XivApiClient> _logger;
         private readonly IOptionsMonitor<XivApiOptions> _xivApiOptions;
 
-        public XivApiClient(HttpClient httpClient, IOptionsMonitor<XivApiOptions> xivApiOptions)
+        public XivApiClient(HttpClient httpClient, ILogger<XivApiClient> logger, IOptionsMonitor<XivApiOptions> xivApiOptions)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _xivApiOptions = xivApiOptions ?? throw new ArgumentNullException(nameof(xivApiOptions));
         }
 
-        public Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data)
+        private string _privateKey
         {
-            var key = _xivApiOptions.CurrentValue.Key;
-            var uri = $"/character/{lodestoneId}?private_key={key}";
+            get
+            {
+                var key = _xivApiOptions.CurrentValue.Key;
+
+                if (string.IsNullOrEmpty(key))
+                {
+                    var message = "XivApi:Key is not defined in configuration.";
+                    _logger.LogError(message);
+                    throw new InvalidOperationException(message);
+                }
+
+                return key!;
+            }
+        }
+
+        public async Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data = null)
+        {
+            var uri = $"/character/{lodestoneId}?private_key={_privateKey}";
 
             if (!string.IsNullOrEmpty(data))
             {
                 uri += $"&data={data}";
             }
 
-            return _httpClient.GetAsync(uri);
+            _logger.LogInformation("Sending HTTP GET [Uri]", uri);
+
+            var response = await _httpClient.GetAsync(uri);
+
+            _logger.LogInformation("Received HTTP [StatusCode]", response.StatusCode);
+
+            return response;
         }
 
-        public Task<HttpResponseMessage> SearchCharacter(string name, string? server)
+        public async Task<HttpResponseMessage> SearchCharacter(string name, string? server = null)
         {
-            var key = _xivApiOptions.CurrentValue.Key;
-            var uri = $"/character/search?private_key={key}&name={name}";
+            var uri = $"/character/search?private_key={_privateKey}&name={name}";
 
             if (!string.IsNullOrEmpty(server))
             {
                 uri += $"&server={server}";
             }
 
-            return _httpClient.GetAsync(uri);
+            _logger.LogInformation("Sending HTTP GET [Uri]", uri);
+
+            var response = await _httpClient.GetAsync(uri);
+
+            _logger.LogInformation("Received HTTP [StatusCode]", response.StatusCode);
+
+            return response;
         }
     }
 
     internal interface IXivApiClient
     {
-        Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data);
+        Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data = null);
 
-        Task<HttpResponseMessage> SearchCharacter(string name, string? server);
+        Task<HttpResponseMessage> SearchCharacter(string name, string? server = null);
     }
 }
