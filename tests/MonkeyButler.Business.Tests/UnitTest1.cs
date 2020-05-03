@@ -1,5 +1,4 @@
-using System;
-using Xunit;
+﻿using Xunit;
 
 namespace MonkeyButler.Business.Tests
 {
@@ -8,7 +7,6 @@ namespace MonkeyButler.Business.Tests
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MonkeyButler.Data.Options
+﻿namespace MonkeyButler.Data.Options
 {
     internal class XivApiOptions
     {
         public string? Token { get; set; }
+        public string? BaseUrl { get; set; }
     }
 }
