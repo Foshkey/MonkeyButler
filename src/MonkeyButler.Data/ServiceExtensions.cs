@@ -11,7 +11,7 @@ namespace MonkeyButler.Data
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<JsonSerializerOptions>(options =>
+            services.Configure<JsonSerializerOptions>("XivApi", options =>
             {
                 options.PropertyNameCaseInsensitive = true;
                 options.Converters.Add(new DateTimeOffsetNumberJsonConverter());

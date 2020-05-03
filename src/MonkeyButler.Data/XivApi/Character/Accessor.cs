@@ -10,13 +10,15 @@ namespace MonkeyButler.Data.XivApi.Character
     internal class Accessor : IAccessor
     {
         private readonly IXivApiClient _xivApiClient;
-        private readonly IOptions<JsonSerializerOptions> _jsonOptions;
+        private readonly IOptionsMonitor<JsonSerializerOptions> _jsonOptions;
 
-        public Accessor(IXivApiClient xivApiClient, IOptions<JsonSerializerOptions> jsonOptions)
+        public Accessor(IXivApiClient xivApiClient, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
         {
             _xivApiClient = xivApiClient ?? throw new ArgumentNullException(nameof(xivApiClient));
             _jsonOptions = jsonOptions ?? throw new ArgumentNullException(nameof(jsonOptions));
         }
+
+        private JsonSerializerOptions _xivApiJsonOptions => _jsonOptions.Get("XivApi");
 
         public async Task<GetData> Get(GetQuery query)
         {
@@ -25,7 +27,7 @@ namespace MonkeyButler.Data.XivApi.Character
             response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<GetData>(stream, _jsonOptions.Value);
+            var data = await JsonSerializer.DeserializeAsync<GetData>(stream, _xivApiJsonOptions);
 
             return data;
         }
@@ -45,8 +47,7 @@ namespace MonkeyButler.Data.XivApi.Character
             response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
-            var str = await response.Content.ReadAsStringAsync();
-            var data = await JsonSerializer.DeserializeAsync<SearchData>(stream, _jsonOptions.Value);
+            var data = await JsonSerializer.DeserializeAsync<SearchData>(stream, _xivApiJsonOptions);
 
             return data;
         }
