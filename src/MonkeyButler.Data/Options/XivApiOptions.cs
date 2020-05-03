@@ -2,7 +2,7 @@
 {
     internal class XivApiOptions
     {
-        public string? Token { get; set; }
+        public string? Key { get; set; }
         public string? BaseUrl { get; set; }
     }
 }

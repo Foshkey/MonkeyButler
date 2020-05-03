@@ -19,12 +19,28 @@ namespace MonkeyButler.Data.XivApi
 
         public Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data)
         {
-            throw new NotImplementedException();
+            var key = _xivApiOptions.CurrentValue.Key;
+            var uri = $"/character/{lodestoneId}?private_key={key}";
+
+            if (!string.IsNullOrEmpty(data))
+            {
+                uri += $"&data={data}";
+            }
+
+            return _httpClient.GetAsync(uri);
         }
 
         public Task<HttpResponseMessage> SearchCharacter(string name, string? server)
         {
-            throw new NotImplementedException();
+            var key = _xivApiOptions.CurrentValue.Key;
+            var uri = $"/character/search?private_key={key}&name={name}";
+
+            if (!string.IsNullOrEmpty(server))
+            {
+                uri += $"&server={server}";
+            }
+
+            return _httpClient.GetAsync(uri);
         }
     }
 
