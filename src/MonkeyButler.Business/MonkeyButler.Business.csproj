@@ -15,5 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\MonkeyButler.Data\MonkeyButler.Data.csproj" />
   </ItemGroup>
-
 </Project>

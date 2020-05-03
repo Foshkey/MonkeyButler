@@ -17,5 +17,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\MonkeyButler.Business\MonkeyButler.Business.csproj" />
   </ItemGroup>
-
 </Project>

@@ -37,7 +37,7 @@ namespace MonkeyButler.Data.XivApi
             }
         }
 
-        public async Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data = null)
+        public async Task<HttpResponseMessage> GetCharacter(long lodestoneId, string? data = null)
         {
             var uri = $"/character/{lodestoneId}?private_key={_privateKey}";
 
@@ -76,7 +76,7 @@ namespace MonkeyButler.Data.XivApi
 
     internal interface IXivApiClient
     {
-        Task<HttpResponseMessage> GetCharacter(int lodestoneId, string? data = null);
+        Task<HttpResponseMessage> GetCharacter(long lodestoneId, string? data = null);
 
         Task<HttpResponseMessage> SearchCharacter(string name, string? server = null);
     }
