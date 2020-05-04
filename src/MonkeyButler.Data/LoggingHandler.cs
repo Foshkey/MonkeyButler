@@ -95,12 +95,12 @@ namespace MonkeyButler.Data
             args.Add(response.RequestMessage.Method);
             args.Add(response.RequestMessage.RequestUri);
 
-            message.AppendLine().Append("Request Headers: {Headers}");
+            message.AppendLine().Append("Request Headers: {RequestHeaders}");
             args.Add(GetLog(response.RequestMessage.Headers));
 
             if (response.RequestMessage.Content is object)
             {
-                message.AppendLine().Append("Request Content: {Content}");
+                message.AppendLine().Append("Request Content: {RequestContent}");
                 args.Add(await response.RequestMessage.Content.ReadAsStringAsync());
             }
 
@@ -108,12 +108,12 @@ namespace MonkeyButler.Data
             args.Add((int)response.StatusCode);
             args.Add(response.StatusCode);
 
-            message.AppendLine().Append("Response Headers: {Headers}");
+            message.AppendLine().Append("Response Headers: {ResponseHeaders}");
             args.Add(GetLog(response.Headers));
 
             if (response.Content is object)
             {
-                message.AppendLine().Append("Response Content: {Content}");
+                message.AppendLine().Append("Response Content: {ResponseContent}");
                 args.Add(await response.Content.ReadAsStringAsync());
             }
 
