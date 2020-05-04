@@ -58,9 +58,10 @@ namespace MonkeyButler.Data
 
         private async Task LogResponse(HttpResponseMessage response)
         {
-            var message = new StringBuilder("Received HTTP {StatusCode} from {Uri}");
+            var message = new StringBuilder("Received HTTP {StatusCode} {Status} from {Uri}");
             var args = new List<object>()
             {
+                (int)response.StatusCode,
                 response.StatusCode,
                 response.RequestMessage.RequestUri
             };
@@ -78,6 +79,45 @@ namespace MonkeyButler.Data
             }
 
             _logger.LogInformation(message.ToString(), args.ToArray());
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _ = LogWarning(response);
+            }
+        }
+
+        private async Task LogWarning(HttpResponseMessage response)
+        {
+            var message = new StringBuilder("Response status code did not indicate success.");
+            var args = new List<object>();
+
+            message.AppendLine().Append("Request: HTTP {Method} {Uri}");
+            args.Add(response.RequestMessage.Method);
+            args.Add(response.RequestMessage.RequestUri);
+
+            message.AppendLine().Append("Request Headers: {Headers}");
+            args.Add(GetLog(response.RequestMessage.Headers));
+
+            if (response.RequestMessage.Content is object)
+            {
+                message.AppendLine().Append("Request Content: {Content}");
+                args.Add(await response.RequestMessage.Content.ReadAsStringAsync());
+            }
+
+            message.AppendLine().Append("Response: HTTP {StatusCode} {Status}");
+            args.Add((int)response.StatusCode);
+            args.Add(response.StatusCode);
+
+            message.AppendLine().Append("Response Headers: {Headers}");
+            args.Add(GetLog(response.Headers));
+
+            if (response.Content is object)
+            {
+                message.AppendLine().Append("Response Content: {Content}");
+                args.Add(await response.Content.ReadAsStringAsync());
+            }
+
+            _logger.LogWarning(message.ToString(), args.ToArray());
         }
     }
 }
