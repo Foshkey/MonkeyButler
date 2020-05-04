@@ -22,6 +22,11 @@ namespace MonkeyButler.Data.XivApi.Character
 
         public async Task<GetData> Get(GetQuery query)
         {
+            if (query is null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
             var response = await _xivApiClient.GetCharacter(query.Id, query.Data);
 
             response.EnsureSuccessStatusCode();
@@ -34,6 +39,11 @@ namespace MonkeyButler.Data.XivApi.Character
 
         public async Task<SearchData> Search(SearchQuery query)
         {
+            if (query is null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
             if (query.Name is null)
             {
                 throw new ArgumentException($"{nameof(query.Name)} cannot be null.", nameof(query));
