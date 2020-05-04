@@ -36,7 +36,7 @@ namespace MonkeyButler.Data.Models.XivApi.FreeCompany
         /// <summary>
         /// A DateTime representing when the free company was formed.
         /// </summary>
-        public DateTime? Formed { get; set; }
+        public DateTimeOffset? Formed { get; set; }
 
         /// <summary>
         /// The grand company that the free company is allied with.
@@ -46,7 +46,7 @@ namespace MonkeyButler.Data.Models.XivApi.FreeCompany
         /// <summary>
         /// The Id of the free company.
         /// </summary>
-        public long Id { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// The Name of the free company.

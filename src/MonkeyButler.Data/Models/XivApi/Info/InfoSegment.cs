@@ -15,6 +15,6 @@ namespace MonkeyButler.Data.Models.XivApi.Info
         /// <summary>
         /// The DateTime of when the segment was last updated.
         /// </summary>
-        public DateTime? Updated { get; set; }
+        public DateTimeOffset? Updated { get; set; }
     }
 }

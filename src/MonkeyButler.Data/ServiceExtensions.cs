@@ -22,9 +22,10 @@ namespace MonkeyButler.Data
             services.AddHttpClient<IXivApiClient, XivApiClient>(client =>
             {
                 client.BaseAddress = new Uri(configuration["XivApi:BaseUrl"]);
-            });
+            }).AddHttpMessageHandler<LoggingHandler>();
 
             services.AddSingleton<XivApi.Character.IAccessor, XivApi.Character.Accessor>();
+            services.AddSingleton<LoggingHandler>();
 
             return services;
         }

@@ -53,7 +53,7 @@ namespace MonkeyButler.Data.XivApi.Character
         }
     }
 
-    internal interface IAccessor
+    public interface IAccessor
     {
         Task<GetData> Get(GetQuery query);
 

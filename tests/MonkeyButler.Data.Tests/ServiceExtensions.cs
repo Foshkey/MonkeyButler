@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace MonkeyButler.Data.Tests
 {
@@ -15,7 +16,11 @@ namespace MonkeyButler.Data.Tests
 
             return services
                 .AddDataServices(config)
-                .AddLogging();
+                .AddLogging(logBuilder =>
+                {
+                    logBuilder.SetMinimumLevel(LogLevel.Debug);
+                    logBuilder.AddConsole();
+                });
         }
     }
 }

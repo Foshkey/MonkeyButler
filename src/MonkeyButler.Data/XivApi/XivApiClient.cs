@@ -46,11 +46,7 @@ namespace MonkeyButler.Data.XivApi
                 uri += $"&data={data}";
             }
 
-            _logger.LogInformation("Sending HTTP GET [Uri]", uri);
-
             var response = await _httpClient.GetAsync(uri);
-
-            _logger.LogInformation("Received HTTP [StatusCode]", response.StatusCode);
 
             return response;
         }
@@ -64,11 +60,7 @@ namespace MonkeyButler.Data.XivApi
                 uri += $"&server={server}";
             }
 
-            _logger.LogInformation("Sending HTTP GET [Uri]", uri);
-
             var response = await _httpClient.GetAsync(uri);
-
-            _logger.LogInformation("Received HTTP [StatusCode]", response.StatusCode);
 
             return response;
         }
