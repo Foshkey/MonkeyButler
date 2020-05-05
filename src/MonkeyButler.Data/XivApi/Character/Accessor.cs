@@ -63,10 +63,23 @@ namespace MonkeyButler.Data.XivApi.Character
         }
     }
 
+    /// <summary>
+    /// The accessor for characters in xivapi
+    /// </summary>
     public interface IAccessor
     {
+        /// <summary>
+        /// Gets detailed character information.
+        /// </summary>
+        /// <param name="query">The query for getting the information.</param>
+        /// <returns>The detailed character information.</returns>
         Task<GetData> Get(GetQuery query);
 
+        /// <summary>
+        /// Searches for characters based on the query.
+        /// </summary>
+        /// <param name="query">The query for the search.</param>
+        /// <returns>List of characters matching the query.</returns>
         Task<SearchData> Search(SearchQuery query);
     }
 }

@@ -7,8 +7,17 @@ using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Data
 {
+    /// <summary>
+    /// Extensions class for services.
+    /// </summary>
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds the required services for this component.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JsonSerializerOptions>("XivApi", options =>

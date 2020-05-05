@@ -22,6 +22,7 @@ namespace MonkeyButler.Modules.Commands
         /// Constructor.
         /// </summary>
         /// <param name="characterSearchManager">The character service for XIVAPI.</param>
+        /// <param name="logger">Logger for this class.</param>
         public Character(ICharacterSearchManager characterSearchManager, ILogger<Character> logger)
         {
             _characterSearchManager = characterSearchManager ?? throw new ArgumentNullException(nameof(characterSearchManager));

@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>Latest</LangVersion>
-    <Nullable>Enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <UserSecretsId>4b9578be-6de9-4895-94df-dfbce017a0a7</UserSecretsId>
   </PropertyGroup>
 

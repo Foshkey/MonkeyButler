@@ -2,6 +2,9 @@
 
 namespace MonkeyButler.Data.Models.XivApi.Achievements
 {
+    /// <summary>
+    /// Information representing achievements.
+    /// </summary>
     public class AchievementInfo : XivApiModel
     {
         /// <summary>

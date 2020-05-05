@@ -1,9 +1,12 @@
 ﻿namespace MonkeyButler.Business.Models.CharacterSearch
 {
+    /// <summary>
+    /// The criteria for searching for characters.
+    /// </summary>
     public class CharacterSearchCriteria
     {
         /// <summary>
-        /// String query assuming the format of "(First) (Last) (Server)"
+        /// String query for name and server.
         /// </summary>
         public string? Query { get; set; }
     }

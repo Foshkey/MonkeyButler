@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>Latest</LangVersion>
-    <Nullable>Enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <UserSecretsId>57d4f13b-6961-4549-8631-9fa08d15e6f1</UserSecretsId>
   </PropertyGroup>
 

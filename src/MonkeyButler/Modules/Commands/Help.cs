@@ -20,7 +20,7 @@ namespace MonkeyButler.Modules.Commands
         /// Constructor.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="configuration">The application configuration.</param>
+        /// <param name="appOptions">The application options.</param>
         public Help(CommandService commandService, IOptionsMonitor<AppOptions> appOptions)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));

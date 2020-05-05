@@ -12,11 +12,11 @@ namespace MonkeyButler.Business.Engines
             return new Character()
             {
                 AvatarUrl = character.Avatar,
-                CurrentClassJob = new Models.CharacterSearch.ClassJob()
+                CurrentClassJob = details.Character?.ActiveClassJob is object ? new Models.CharacterSearch.ClassJob()
                 {
                     Level = details.Character?.ActiveClassJob?.Level ?? 0,
                     Name = Capitalize(details.Character?.ActiveClassJob?.Name)
-                },
+                } : null,
                 FreeCompany = details.FreeCompany?.Name,
                 Id = character.Id,
                 LodestoneUrl = $"https://na.finalfantasyxiv.com/lodestone/character/{character.Id}",

@@ -87,8 +87,15 @@ namespace MonkeyButler
         }
     }
 
+    /// <summary>
+    /// Interface represting the Monkey Butler bot.
+    /// </summary>
     public interface IBot
     {
+        /// <summary>
+        /// Starts the bot.
+        /// </summary>
+        /// <returns></returns>
         Task Start();
     }
 }
