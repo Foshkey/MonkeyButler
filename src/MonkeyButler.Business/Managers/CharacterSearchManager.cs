@@ -34,8 +34,6 @@ namespace MonkeyButler.Business.Managers
 
         public async Task<CharacterSearchResult> Process(CharacterSearchCriteria criteria)
         {
-            _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
-
             if (criteria is null)
             {
                 throw new ArgumentNullException(nameof(criteria));
@@ -45,6 +43,8 @@ namespace MonkeyButler.Business.Managers
             {
                 throw new ArgumentException($"{nameof(criteria.Query)} cannot be null.", nameof(criteria));
             }
+
+            _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 
             var searchQuery = _characterNameQueryEngine.Parse(criteria.Query);
 

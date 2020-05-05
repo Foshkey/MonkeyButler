@@ -17,6 +17,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [InlineData("hElLo", "Hello")]
         [InlineData("gladiator / paladin", "Gladiator / Paladin")]
         [InlineData("double  space", "Double  Space")]
+        [InlineData("so       many          spaces", "So       Many          Spaces")]
         public void ShouldCapitilizeClassJobName(string? input, string? expectedName)
         {
             var characterBrief = new CharacterBrief();
