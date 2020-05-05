@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Text.Json;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.CharacterSearch;
+using MonkeyButler.Handlers;
+using MonkeyButler.Options;
 
 namespace MonkeyButler
 {
@@ -21,16 +23,36 @@ namespace MonkeyButler
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBusinessServices(_configuration);
+            services.Configure<AppOptions>(_configuration);
+
+            services
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
+                {
+                    LogLevel = LogSeverity.Verbose,
+                    MessageCacheSize = 1000
+                }))
+                .AddSingleton<IDiscordClient, DiscordSocketClient>()
+                .AddSingleton(new CommandService(new CommandServiceConfig()
+                {
+                    LogLevel = LogSeverity.Verbose,
+                    DefaultRunMode = RunMode.Async,
+                    CaseSensitiveCommands = false
+                }));
+
+            services
+                .AddSingleton<ILogHandler, LogHandler>()
+                .AddSingleton<IMessageHandler, MessageHandler>()
+                .AddSingleton<IUserJoinedHandler, UserJoinedHandler>()
+                .AddSingleton<IBot, Bot>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ICharacterSearchManager characterSearchManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot, IDiscordClient discordClient)
         {
+            bot.Start();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -42,12 +64,7 @@ namespace MonkeyButler
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    var results = await characterSearchManager.Process(new CharacterSearchCriteria()
-                    {
-                        Query = "Diabolos Jolinar Cast"
-                    });
-
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(results));
+                    await context.Response.WriteAsync($"Connection status: {discordClient.ConnectionState}");
                 });
             });
         }
