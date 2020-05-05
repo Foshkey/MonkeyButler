@@ -54,6 +54,13 @@ namespace MonkeyButler.Business.Engines
                 return query;
             }
 
+            if (split.Length == 2)
+            {
+                // Neither of the first two words are servers, assume full name.
+                query.Name = input;
+                return query;
+            }
+
             // At this point just assume the very last word is the server.
             query.Name = string.Join(" ", split[..^1]);
             query.Server = split[^1];

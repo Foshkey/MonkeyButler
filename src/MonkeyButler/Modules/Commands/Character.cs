@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -62,6 +63,8 @@ namespace MonkeyButler.Modules.Commands
                 return;
             }
 
+            var tasks = new ConcurrentBag<Task>();
+
             foreach (var character in result.Characters)
             {
                 var embed = new EmbedBuilder()
@@ -72,8 +75,10 @@ namespace MonkeyButler.Modules.Commands
                     .WithDescription(BuildDescription(character))
                     .Build();
 
-                await ReplyAsync(message: null, isTTS: false, embed: embed);
+                tasks.Add(ReplyAsync(message: null, isTTS: false, embed: embed));
             }
+
+            await Task.WhenAll(tasks);
         }
 
         private string BuildDescription(Business.Models.CharacterSearch.Character character)
