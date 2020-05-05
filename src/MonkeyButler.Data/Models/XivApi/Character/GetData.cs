@@ -15,7 +15,7 @@ namespace MonkeyButler.Data.Models.XivApi.Character
         /// <summary>
         /// The character information.
         /// </summary>
-        public Character? Character { get; set; }
+        public CharacterFull? Character { get; set; }
 
         /// <summary>
         /// The free company information of the character.

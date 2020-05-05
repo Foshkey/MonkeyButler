@@ -4,6 +4,6 @@ namespace MonkeyButler.Business.Models.CharacterSearch
 {
     public class CharacterSearchResult
     {
-        public List<Character> Characters { get; set; } = new List<Character>();
+        public IEnumerable<Character>? Characters { get; set; }
     }
 }

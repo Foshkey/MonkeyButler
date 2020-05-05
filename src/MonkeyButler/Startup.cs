@@ -7,8 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi.Character;
+using MonkeyButler.Business.Managers;
+using MonkeyButler.Business.Models.CharacterSearch;
 
 namespace MonkeyButler
 {
@@ -29,7 +29,7 @@ namespace MonkeyButler
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAccessor accessor)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ICharacterSearchManager characterSearchManager)
         {
             if (env.IsDevelopment())
             {
@@ -42,28 +42,12 @@ namespace MonkeyButler
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello!");
-                });
-
-                endpoints.MapGet("/character", async context =>
-                {
-                    var character = await accessor.Get(new GetQuery()
+                    var results = await characterSearchManager.Process(new CharacterSearchCriteria()
                     {
-                        Id = 13099353,
-                        Data = "CJ,FC"
+                        Query = "Diabolos Jolinar Cast"
                     });
 
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(character));
-                });
-
-                endpoints.MapGet("/search", async context =>
-                {
-                    var result = await accessor.Search(new SearchQuery()
-                    {
-                        Name = "Jolinar"
-                    });
-
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(result));
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(results));
                 });
             });
         }

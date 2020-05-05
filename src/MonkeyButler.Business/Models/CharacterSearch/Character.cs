@@ -10,5 +10,6 @@
         public string? Race { get; set; }
         public string? Server { get; set; }
         public string? Tribe { get; set; }
+        public string? LodestoneUrl { get; set; }
     }
 }
