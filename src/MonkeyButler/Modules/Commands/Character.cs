@@ -65,7 +65,7 @@ namespace MonkeyButler.Modules.Commands
 
             var tasks = new ConcurrentBag<Task>();
 
-            foreach (var character in result.Characters)
+            await foreach (var character in result.Characters)
             {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(114, 137, 218))

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,34 +57,40 @@ namespace MonkeyButler.Business.Managers
 
             return new CharacterSearchResult()
             {
-                Characters = await ProcessDetails(topFiveCharacters)
+                Characters = ProcessDetails(topFiveCharacters)
             };
         }
 
-        private async Task<IEnumerable<Character>> ProcessDetails(IEnumerable<CharacterBrief> topFiveCharacters)
+        private async IAsyncEnumerable<Character> ProcessDetails(IEnumerable<CharacterBrief> topFiveCharacters)
         {
-            var tasks = new ConcurrentBag<Task>();
-            var characters = new ConcurrentBag<Character>();
+            var tasks = new List<Task<Character>>();
 
             foreach (var character in topFiveCharacters)
             {
-                var query = new GetQuery()
-                {
-                    Id = character.Id,
-                    Data = "CJ,FC"
-                };
-
-                _logger.LogDebug("Getting details for {Name}. Id: {Id}.", character.Name, character.Id);
-
-                tasks.Add(_accessor.Get(query).ContinueWith(t =>
-                {
-                    characters.Add(_characterResultEngine.Merge(character, t.Result));
-                }));
+                tasks.Add(ProcessDetails(character));
             }
 
-            await Task.WhenAll(tasks);
+            while (tasks.Count != 0)
+            {
+                var task = await Task.WhenAny(tasks);
+                tasks.Remove(task);
+                yield return await task;
+            }
+        }
 
-            return characters;
+        private async Task<Character> ProcessDetails(CharacterBrief character)
+        {
+            var query = new GetQuery()
+            {
+                Id = character.Id,
+                Data = "CJ,FC"
+            };
+
+            _logger.LogDebug("Getting details for {Name}. Id: {Id}.", character.Name, character.Id);
+
+            var details = await _accessor.Get(query);
+
+            return _characterResultEngine.Merge(character, details);
         }
     }
 
