@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -38,9 +40,16 @@ namespace MonkeyButler
             services.AddBusinessServices(_configuration);
             services.Configure<AppOptions>(_configuration);
 
-            services.AddMvcCore();
-            services.AddApiVersioning();
+            // MVC
+            services
+                .AddApiVersioning()
+                .AddMvcCore()
+                .AddFluentValidation(options =>
+                {
+                    options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+                });
 
+            // Discord
             services
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig()
                 {

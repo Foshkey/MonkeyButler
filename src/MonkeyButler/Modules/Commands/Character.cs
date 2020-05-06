@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -58,7 +57,7 @@ namespace MonkeyButler.Modules.Commands
                 return;
             }
 
-            if (result.Characters?.DefaultIfEmpty() is null)
+            if (result.Characters is null)
             {
                 await ReplyAsync("I did not find any characters with that query.");
                 return;
@@ -80,6 +79,11 @@ namespace MonkeyButler.Modules.Commands
             }
 
             await Task.WhenAll(tasks);
+
+            if (tasks.Count == 0)
+            {
+                await ReplyAsync("I did not find any characters with that query.");
+            }
         }
 
         private string BuildDescription(Business.Models.CharacterSearch.Character character)
