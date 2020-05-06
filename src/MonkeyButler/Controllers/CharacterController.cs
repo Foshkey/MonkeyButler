@@ -34,6 +34,7 @@ namespace MonkeyButler.Controllers
         /// <returns></returns>
         [HttpGet("search")]
         [ProducesResponseType(typeof(CharacterSearchResponse), 200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<CharacterSearchResponse>> Search([FromQuery] CharacterSearchRequest request)
         {
             var criteria = new Business.Models.CharacterSearch.CharacterSearchCriteria()
