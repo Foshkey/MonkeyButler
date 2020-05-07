@@ -24,7 +24,7 @@ namespace MonkeyButler.Business
             services
                 .AddSingleton<ICharacterNameQueryEngine, CharacterNameQueryEngine>()
                 .AddSingleton<ICharacterResultEngine, CharacterResultEngine>()
-                .AddSingleton<ICharacterSearchManager, CharacterSearchManager>();
+                .AddScoped<ICharacterSearchManager, CharacterSearchManager>();
 
             return services;
         }

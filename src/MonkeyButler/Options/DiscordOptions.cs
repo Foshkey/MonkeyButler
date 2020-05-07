@@ -1,4 +1,6 @@
-﻿namespace MonkeyButler.Options
+﻿using System;
+
+namespace MonkeyButler.Options
 {
     /// <summary>
     /// Options model for discord settings.
@@ -9,6 +11,11 @@
         /// The prefix to be used for commands.
         /// </summary>
         public char? Prefix { get; set; }
+
+        /// <summary>
+        /// The delay before scope is cleaned up on commands.
+        /// </summary>
+        public TimeSpan? ScopeCleanupDelay { get; set; }
 
         /// <summary>
         /// The bot token for connection.

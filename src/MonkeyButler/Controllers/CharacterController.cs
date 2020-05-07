@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyButler.Business.Managers;
+using MonkeyButler.Business.Models.CharacterSearch;
 using MonkeyButler.Extensions;
 using MonkeyButler.Models.Character;
 
@@ -37,7 +38,7 @@ namespace MonkeyButler.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult<CharacterSearchResponse>> Search([FromQuery] CharacterSearchRequest request)
         {
-            var criteria = new Business.Models.CharacterSearch.CharacterSearchCriteria()
+            var criteria = new CharacterSearchCriteria()
             {
                 Query = request.Query
             };

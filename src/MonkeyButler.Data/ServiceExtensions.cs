@@ -33,8 +33,9 @@ namespace MonkeyButler.Data
                 client.BaseAddress = new Uri(configuration["XivApi:BaseUrl"]);
             }).AddHttpMessageHandler<LoggingHandler>();
 
-            services.AddSingleton<XivApi.Character.IAccessor, XivApi.Character.Accessor>();
             services.AddSingleton<LoggingHandler>();
+
+            services.AddScoped<XivApi.Character.IAccessor, XivApi.Character.Accessor>();
 
             return services;
         }
