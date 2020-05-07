@@ -11,7 +11,7 @@ namespace MonkeyButler.Data.Tests
         {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddUserSecrets(Assembly.GetExecutingAssembly())
+                .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: false, reloadOnChange: true)
                 .Build();
 
             return services
