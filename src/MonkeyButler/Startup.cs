@@ -67,6 +67,7 @@ namespace MonkeyButler
             services
                 .AddSingleton<ILogHandler, LogHandler>()
                 .AddSingleton<IMessageHandler, MessageHandler>()
+                .AddSingleton<IScopeHandler, ScopeHandler>()
                 .AddSingleton<IUserJoinedHandler, UserJoinedHandler>()
                 .AddSingleton<IBot, Bot>();
         }
