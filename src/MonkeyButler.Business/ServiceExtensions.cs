@@ -29,7 +29,8 @@ namespace MonkeyButler.Business
                 .AddSingleton<ICharacterResultEngine, CharacterResultEngine>()
                 .AddSingleton<ICacheManager, CacheManager>()
                 .AddSingleton<ICharacterSearchManager, CharacterSearchManager>()
-                .AddSingleton<IFreeCompanySearchManager, FreeCompanySearchManager>();
+                .AddSingleton<IFreeCompanySearchManager, FreeCompanySearchManager>()
+                .AddSingleton<IVerifyCharacterManager, VerifyCharacterManager>();
 
             return services;
         }
