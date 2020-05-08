@@ -13,20 +13,19 @@ namespace MonkeyButler.Business.Managers
     internal class CharacterSearchManager : ICharacterSearchManager
     {
         private readonly IAccessor _accessor;
-        private readonly ICharacterNameQueryEngine _characterNameQueryEngine;
+        private readonly INameServerEngine _nameServerEngine;
         private readonly ICharacterResultEngine _characterResultEngine;
         private readonly ILogger<CharacterSearchManager> _logger;
 
-        public CharacterSearchManager
-            (
-                IAccessor accessor,
-                ICharacterNameQueryEngine characterNameQueryEngine,
-                ICharacterResultEngine characterResultEngine,
-                ILogger<CharacterSearchManager> logger
-            )
+        public CharacterSearchManager(
+            IAccessor accessor,
+            INameServerEngine nameServerEngine,
+            ICharacterResultEngine characterResultEngine,
+            ILogger<CharacterSearchManager> logger
+        )
         {
             _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
-            _characterNameQueryEngine = characterNameQueryEngine ?? throw new ArgumentNullException(nameof(characterNameQueryEngine));
+            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _characterResultEngine = characterResultEngine ?? throw new ArgumentNullException(nameof(characterResultEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -45,7 +44,12 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 
-            var searchQuery = _characterNameQueryEngine.Parse(criteria.Query);
+            var (name, server) = _nameServerEngine.Parse(criteria.Query);
+            var searchQuery = new SearchQuery()
+            {
+                Name = name,
+                Server = server
+            };
 
             _logger.LogDebug("Searching character. Name: '{Name}'. Server: '{Server}'.", searchQuery.Name, searchQuery.Server);
 

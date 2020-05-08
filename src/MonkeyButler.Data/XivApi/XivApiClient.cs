@@ -64,6 +64,20 @@ namespace MonkeyButler.Data.XivApi
 
             return response;
         }
+
+        public async Task<HttpResponseMessage> SearchFreeCompany(string name, string? server = null)
+        {
+            var uri = $"/freecompany/search?private_key={_privateKey}&name={name}";
+
+            if (!string.IsNullOrEmpty(server))
+            {
+                uri += $"&server={server}";
+            }
+
+            var response = await _httpClient.GetAsync(uri);
+
+            return response;
+        }
     }
 
     internal interface IXivApiClient
@@ -71,5 +85,7 @@ namespace MonkeyButler.Data.XivApi
         Task<HttpResponseMessage> GetCharacter(long lodestoneId, string? data = null);
 
         Task<HttpResponseMessage> SearchCharacter(string name, string? server = null);
+
+        Task<HttpResponseMessage> SearchFreeCompany(string name, string? server = null);
     }
 }

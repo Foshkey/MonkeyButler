@@ -12,17 +12,17 @@ namespace MonkeyButler.Modules.Commands
     /// <summary>
     /// Class for Character commands.
     /// </summary>
-    public class Character : ModuleBase<SocketCommandContext>
+    public class CharacterSearch : ModuleBase<SocketCommandContext>
     {
         private readonly ICharacterSearchManager _characterSearchManager;
-        private readonly ILogger<Character> _logger;
+        private readonly ILogger<CharacterSearch> _logger;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="characterSearchManager">The character service for XIVAPI.</param>
         /// <param name="logger">Logger for this class.</param>
-        public Character(ICharacterSearchManager characterSearchManager, ILogger<Character> logger)
+        public CharacterSearch(ICharacterSearchManager characterSearchManager, ILogger<CharacterSearch> logger)
         {
             _characterSearchManager = characterSearchManager ?? throw new ArgumentNullException(nameof(characterSearchManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -37,7 +37,7 @@ namespace MonkeyButler.Modules.Commands
         [Summary("Searches Lodestone for characters.")]
         public async Task Search([Remainder] string query)
         {
-            _ = ReplyAsync("Searching, please wait...");
+            using var setTyping = Context.Channel.EnterTypingState();
 
             var criteria = new CharacterSearchCriteria()
             {
@@ -86,7 +86,7 @@ namespace MonkeyButler.Modules.Commands
             }
         }
 
-        private string BuildDescription(Business.Models.CharacterSearch.Character character)
+        private string BuildDescription(Character character)
         {
             var desc = $"{character.Server}\n\n{character.Race} {character.Tribe}";
 

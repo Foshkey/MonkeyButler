@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using MonkeyButler.Data.Models.XivApi.Character;
 
 namespace MonkeyButler.Business.Engines
 {
-    internal class CharacterNameQueryEngine : ICharacterNameQueryEngine
+    internal class NameServerEngine : INameServerEngine
     {
         private readonly List<string> _serverNames = new List<string>()
         {
@@ -13,16 +12,15 @@ namespace MonkeyButler.Business.Engines
             "Cerberus", "Louisoix", "Moogle", "Omega", "Ragnarok", "Spriggan", "Light", "Lich", "Odin", "Phoenix", "Shiva", "Twintania", "Zodiark"
         };
 
-        public SearchQuery Parse(string input)
+        public (string name, string? server) Parse(string input)
         {
+            var name = input;
             var split = input.Split(' ');
-            var query = new SearchQuery();
 
             if (split.Length == 1)
             {
                 // Assume just the name
-                query.Name = input;
-                return query;
+                return (input, null);
             }
 
             // First word
@@ -31,9 +29,8 @@ namespace MonkeyButler.Business.Engines
             if (server is object)
             {
                 // First word is server, rest is the name.
-                query.Name = string.Join(" ", split[1..]);
-                query.Server = server;
-                return query;
+                var remaining = string.Join(" ", split[1..]);
+                return (remaining, server);
             }
 
             // Second word
@@ -42,34 +39,32 @@ namespace MonkeyButler.Business.Engines
             if (server is object)
             {
                 // At least the first word is the name.
-                query.Name = split[0];
+                name = split[0];
 
                 if (split.Length > 2)
                 {
                     // Might as well add in the rest
-                    query.Name += " " + string.Join(" ", split[2..]);
+                    name += " " + string.Join(" ", split[2..]);
                 }
 
-                query.Server = server;
-                return query;
+                return (name, server);
             }
 
             if (split.Length == 2)
             {
                 // Neither of the first two words are servers, assume full name.
-                query.Name = input;
-                return query;
+                return (input, null);
             }
 
             // At this point just assume the very last word is the server.
-            query.Name = string.Join(" ", split[..^1]);
-            query.Server = split[^1];
-            return query;
+            name = string.Join(" ", split[..^1]);
+            server = split[^1];
+            return (name, server);
         }
     }
 
-    internal interface ICharacterNameQueryEngine
+    internal interface INameServerEngine
     {
-        SearchQuery Parse(string input);
+        (string name, string? server) Parse(string input);
     }
 }

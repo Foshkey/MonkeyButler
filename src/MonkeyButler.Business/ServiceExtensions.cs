@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Managers;
+using MonkeyButler.Business.Options;
 using MonkeyButler.Data;
 
 namespace MonkeyButler.Business
@@ -21,10 +22,14 @@ namespace MonkeyButler.Business
         {
             services.AddDataServices(configuration);
 
+            services.Configure<GuildOptionsDictionary>(configuration.GetSection("Discord:Guilds"));
+
             services
-                .AddSingleton<ICharacterNameQueryEngine, CharacterNameQueryEngine>()
+                .AddSingleton<INameServerEngine, NameServerEngine>()
                 .AddSingleton<ICharacterResultEngine, CharacterResultEngine>()
-                .AddScoped<ICharacterSearchManager, CharacterSearchManager>();
+                .AddSingleton<ICacheManager, CacheManager>()
+                .AddSingleton<ICharacterSearchManager, CharacterSearchManager>()
+                .AddSingleton<IFreeCompanySearchManager, FreeCompanySearchManager>();
 
             return services;
         }
