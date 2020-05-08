@@ -38,6 +38,14 @@ namespace MonkeyButler.Business.Managers
                 return;
             }
 
+            var cachedGuildOptions = await _cacheAccessor.GetGuildOptions();
+
+            if (cachedGuildOptions is object)
+            {
+                _logger.LogDebug("Options are already cached.");
+                return;
+            }
+
             // First, make sure all FC Ids are defined.
             _logger.LogTrace("Running through guild options and searching FCs if ID is not defined.");
 
@@ -92,7 +100,7 @@ namespace MonkeyButler.Business.Managers
             _logger.LogTrace("Writing guild options to cache.");
 
             // Write to cache.
-            await _cacheAccessor.Write(CacheKeys.GuildOptions, currentGuildOptions);
+            await _cacheAccessor.SetGuildOptions(currentGuildOptions);
         }
     }
 
