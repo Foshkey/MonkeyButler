@@ -3,9 +3,10 @@
 This is a Discord bot working with Final Fantasy XIV data. Built for the Twilight Knights Free Company.
 
 ## Current commands
-| Command | Description |
-| - | - |
-| Search | Searches the Lodestone for characters and returns top five results. |
+| Command | Example | Description |
+| - | - | - |
+| Search | !search Jolinar Cast Diabolos | Searches the Lodestone for characters and returns top five results. |
+| Verify | !verify Jolinar Cast | Verifies the user as a member of the server's Free Company, according to Lodestone. |
 
 ## Built with
 
@@ -50,15 +51,13 @@ dotnet run --project src/MonkeyButler/MonkeyButler.csproj
 
 ## Sample app execution
 
-Running the application will automatically create a socket connection with Discord and start accepting commands. In Discord in the same channel as the Monkey Butler bot, execute commands with the command prefix, by default '`~`'.
+Running the application will automatically create a socket connection with Discord and start accepting commands. In Discord in the same channel as the Monkey Butler bot, execute commands with the command prefix, by default '`!`'.
 
 ```
 User
-> ~search Jolinar Cast Diabolos
+> !search Jolinar Cast Diabolos
 
 Monkey Butler
-> Searching, please wait...
-
 | Jolinar Cast
 |
 | Diabolos (Crystal)

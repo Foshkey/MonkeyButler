@@ -1,9 +1,9 @@
 ﻿using Xunit;
-using SUT = MonkeyButler.Business.Engines.CharacterNameQueryEngine;
+using SUT = MonkeyButler.Business.Engines.NameServerEngine;
 
 namespace MonkeyButler.Business.Tests.Engine
 {
-    public class CharacterNameQueryEngineTests
+    public class NameServerEngineTests
     {
         private SUT BuildTarget() => new SUT();
 
@@ -20,10 +20,10 @@ namespace MonkeyButler.Business.Tests.Engine
         [InlineData("more than three words", "more than three", "words")]
         public void ShouldSplit(string input, string expectedName, string expectedServer)
         {
-            var query = BuildTarget().Parse(input);
+            var (name, server) = BuildTarget().Parse(input);
 
-            Assert.Equal(expectedName, query.Name);
-            Assert.Equal(expectedServer, query.Server);
+            Assert.Equal(expectedName, name);
+            Assert.Equal(expectedServer, server);
         }
     }
 }
