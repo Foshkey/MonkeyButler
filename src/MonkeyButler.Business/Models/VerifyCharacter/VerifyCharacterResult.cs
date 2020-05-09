@@ -6,13 +6,24 @@
     public class VerifyCharacterResult
     {
         /// <summary>
-        /// The status of the result.
+        /// The name of the free company.
         /// </summary>
-        public Status Status { get; set; }
+        public string? FreeCompanyName { get; set; }
+
 
         /// <summary>
         /// The name of the character, if verified.
         /// </summary>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// The status of the result.
+        /// </summary>
+        public Status Status { get; set; }
+
+        /// <summary>
+        /// The verified role of the guild.
+        /// </summary>
+        public string? VerifiedRole { get; set; }
     }
 }

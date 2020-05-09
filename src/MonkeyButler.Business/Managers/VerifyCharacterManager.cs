@@ -97,7 +97,9 @@ namespace MonkeyButler.Business.Managers
                 Status = characterFcId == guildOptions.FreeCompany.Id
                     ? Status.Verified
                     : Status.NotVerified,
-                Name = getData.Character?.Name
+                Name = getData.Character?.Name,
+                FreeCompanyName = guildOptions.FreeCompany.Name,
+                VerifiedRole = guildOptions.VerifiedRole
             };
         }
     }

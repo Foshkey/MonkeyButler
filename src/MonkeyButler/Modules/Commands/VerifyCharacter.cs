@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
+using Discord.Net;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.VerifyCharacter;
 
@@ -9,7 +13,7 @@ namespace MonkeyButler.Modules.Commands
     /// <summary>
     /// Verifies the discord user as a member of the free company.
     /// </summary>
-    public class VerifyCharacter : ModuleBase<SocketCommandContext>
+    public class VerifyCharacter : CommandModule
     {
         private readonly IVerifyCharacterManager _verifyCharacterManager;
 
@@ -40,19 +44,81 @@ namespace MonkeyButler.Modules.Commands
 
             var result = await _verifyCharacterManager.Process(criteria);
 
-            if (result.Status == Status.NotVerified)
+            switch (result.Status)
             {
-                await ReplyAsync("I'm sorry. It appears that you are not a part of this server's free company.");
+                case Status.Verified:
+                    await Task.WhenAll(
+                        ReplyAsync($"According to Lodestone, you are verified as a member of the {result.FreeCompanyName} Free Company, {result.Name}."),
+                        SetPermissions(result),
+                        SetUserName(result)
+                    );
+                    await ReplyAsync("Welcome to our Discord server. If you have any questions, please don't hesitate to ask.");
+                    return;
+
+                case Status.NotVerified:
+                    await Task.WhenAll(
+                        ReplyAsync($"I'm sorry. It appears that you are not a part of the {result.FreeCompanyName}."),
+                        NotifyAdmin($"{Context.User.Mention} failed verification with '{query}'.")
+                    );
+                    return;
+
+                case Status.FreeCompanyUndefined:
+                default:
+                    await Task.WhenAll(
+                        ReplyAsync("It appears that this server is not set up to do character verification."),
+                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `!set verify VerifiedRoleName Free Company Name` in your server.")
+                    );
+                    return;
+            }
+        }
+
+        private async Task SetPermissions(VerifyCharacterResult result)
+        {
+            if (!(Context?.User is IGuildUser user))
+            {
                 return;
             }
 
-            if (result.Status == Status.FreeCompanyUndefined)
+            var role = Context.Guild?.Roles.FirstOrDefault(x => x.Name == result.VerifiedRole);
+
+            if (role is null)
             {
-                await ReplyAsync("It appears that this server is not set up to do character verification.");
+                await ReplyAsync($"However, I could not find the server's verified role ({result.VerifiedRole}). I will notify the server's administrator.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `!set verify VerifiedRoleName Free Company Name` in your server.");
+            }
+
+            try
+            {
+                await user.AddRoleAsync(role);
+                await ReplyAsync($"I have given you the role '{result.VerifiedRole}'.");
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
+            {
+                await ReplyAsync("Unfortunately, I do not have the proper permissions to set your verified role. I will notify the server's administrator.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I do not have the permissions to set the role {result.VerifiedRole}. Please double check your server permissions and I am able to successfully assign the role.");
+            }
+        }
+
+        private async Task SetUserName(VerifyCharacterResult result)
+        {
+            if (!(Context?.User is IGuildUser user))
+            {
                 return;
             }
 
-            await ReplyAsync("Verified!");
+            try
+            {
+                await user.ModifyAsync(properties =>
+                {
+                    properties.Nickname = result.Name;
+                });
+                await ReplyAsync($"Your nickname in this server has been changed to {result.Name}.");
+            }
+            catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
+            {
+                await ReplyAsync("It appears that I do not have the proper permissions to set your nickname. I will notify the server's administrator.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I do not have the permissions to change his/her nickname. Please double check your server permissions and I am able to successfully change users' nicknames.");
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MonkeyButler.Modules.Commands
     /// <summary>
     /// Class for Help commands.
     /// </summary>
-    public class Help : ModuleBase<SocketCommandContext>
+    public class Help : CommandModule
     {
         private readonly CommandService _commandService;
         private readonly IOptionsMonitor<AppOptions> _appOptions;

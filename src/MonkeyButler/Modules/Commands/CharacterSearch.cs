@@ -12,7 +12,7 @@ namespace MonkeyButler.Modules.Commands
     /// <summary>
     /// Class for Character commands.
     /// </summary>
-    public class CharacterSearch : ModuleBase<SocketCommandContext>
+    public class CharacterSearch : CommandModule
     {
         private readonly ICharacterSearchManager _characterSearchManager;
         private readonly ILogger<CharacterSearch> _logger;

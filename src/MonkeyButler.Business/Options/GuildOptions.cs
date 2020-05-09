@@ -4,5 +4,6 @@
     {
         public FreeCompanyOptions? FreeCompany { get; set; }
         public string? Server { get; set; }
+        public string? VerifiedRole { get; set; }
     }
 }
