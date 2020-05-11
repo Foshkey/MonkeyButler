@@ -30,11 +30,13 @@ namespace MonkeyButler.Data
                 options.Converters.Add(new DateTimeOffsetNumberJsonConverter());
             });
 
-            services.Configure<XivApiOptions>(configuration.GetSection("XivApi"));
+            var xivApiConfig = configuration.GetSection("XivApi");
+
+            services.Configure<XivApiOptions>(xivApiConfig);
 
             services.AddHttpClient<IXivApiClient, XivApiClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["XivApi:BaseUrl"]);
+                client.BaseAddress = new Uri(xivApiConfig["BaseUrl"]);
             }).AddHttpMessageHandler<LoggingHandler>();
 
             services.AddSingleton<LoggingHandler>();
