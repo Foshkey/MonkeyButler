@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MonkeyButler.Data.Json;
 using MonkeyButler.Data.Options;
 using MonkeyButler.Data.XivApi;
 
@@ -24,6 +25,8 @@ namespace MonkeyButler.Data
             services.Configure<JsonSerializerOptions>("XivApi", options =>
             {
                 options.PropertyNameCaseInsensitive = true;
+                options.Converters.Add(new IntJsonConverter());
+                options.Converters.Add(new LongJsonConverter());
                 options.Converters.Add(new DateTimeOffsetNumberJsonConverter());
             });
 

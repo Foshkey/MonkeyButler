@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MonkeyButler.Data
+namespace MonkeyButler.Data.Json
 {
     internal class DateTimeOffsetNumberJsonConverter : JsonConverter<DateTimeOffset?>
     {
