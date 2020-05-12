@@ -46,6 +46,7 @@ namespace MonkeyButler.Business.Managers
             }
 
             // Get the guild options for free company definition.
+            _logger.LogTrace("Getting guild options for guild {Id}.", criteria.GuildId);
 
             var guildOptionsDictionary = await _cacheAccessor.GetGuildOptions();
 
@@ -53,13 +54,22 @@ namespace MonkeyButler.Business.Managers
                 !guildOptionsDictionary.TryGetValue(criteria.GuildId, out var guildOptions) ||
                 guildOptions.FreeCompany?.Id is null)
             {
+                _logger.LogDebug("Free Company options not defined for guild {Id}.", criteria.GuildId);
+
                 return new VerifyCharacterResult()
                 {
                     Status = Status.FreeCompanyUndefined
                 };
             }
 
+            var result = new VerifyCharacterResult()
+            {
+                FreeCompanyName = guildOptions.FreeCompany.Name,
+                VerifiedRole = guildOptions.VerifiedRole
+            };
+
             // Search for character.
+            _logger.LogTrace("Searching for character. Query: {Query}.", criteria.Query);
 
             var (name, _) = _nameServerEngine.Parse(criteria.Query);
 
@@ -72,16 +82,17 @@ namespace MonkeyButler.Business.Managers
             var searchData = await _characterAccessor.Search(searchQuery);
 
             var characterId = searchData.Results?.FirstOrDefault()?.Id;
+            _logger.LogDebug("Got character Id {Id}.", characterId);
 
             if (characterId is null)
             {
-                return new VerifyCharacterResult()
-                {
-                    Status = Status.NotVerified
-                };
+                result.Status = Status.NotVerified;
+                result.Name = searchData.Results?.FirstOrDefault()?.Name;
+                return result;
             }
 
             // Get the character.
+            _logger.LogTrace("Getting character with Id {Id}.", characterId);
 
             var getQuery = new GetQuery()
             {
@@ -90,17 +101,23 @@ namespace MonkeyButler.Business.Managers
 
             var getData = await _characterAccessor.Get(getQuery);
 
-            var characterFcId = getData.Character?.FreeCompanyId;
+            var characterFcId = getData?.Character?.FreeCompanyId;
+            _logger.LogDebug("Got character Free Company Id {FcId}.", characterFcId);
 
-            return new VerifyCharacterResult()
+            result.Name = getData?.Character?.Name;
+
+            if (characterFcId == guildOptions.FreeCompany.Id)
             {
-                Status = characterFcId == guildOptions.FreeCompany.Id
-                    ? Status.Verified
-                    : Status.NotVerified,
-                Name = getData.Character?.Name,
-                FreeCompanyName = guildOptions.FreeCompany.Name,
-                VerifiedRole = guildOptions.VerifiedRole
-            };
+                result.Status = Status.Verified;
+                _logger.LogDebug("{Name} has been verified with Free Company Id {FcId}", result.Name, guildOptions.FreeCompany.Id);
+            }
+            else
+            {
+                result.Status = Status.NotVerified;
+                _logger.LogDebug("{Name} failed verification. Character FC: {CFcId}. Guild FC: {FcId}", result.Name, characterFcId, guildOptions.FreeCompany.Id);
+            }
+
+            return result;
         }
     }
 
