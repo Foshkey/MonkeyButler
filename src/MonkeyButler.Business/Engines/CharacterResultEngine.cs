@@ -15,7 +15,7 @@ namespace MonkeyButler.Business.Engines
                 CurrentClassJob = details.Character?.ActiveClassJob is object ? new Models.CharacterSearch.ClassJob()
                 {
                     Level = details.Character?.ActiveClassJob?.Level ?? 0,
-                    Name = Capitalize(details.Character?.ActiveClassJob?.Name)
+                    Name = RemoveDuplicates(Capitalize(details.Character?.ActiveClassJob?.Name))
                 } : null,
                 FreeCompany = details.FreeCompany?.Name,
                 Id = character.Id,
@@ -34,12 +34,32 @@ namespace MonkeyButler.Business.Engines
                 return str;
             }
 
-            var split = str.Split(' ');
-
-            var capitalizedSplit = split
-                .Select(x => x.Length > 0 ? char.ToUpper(x[0]) + x.Substring(1).ToLower() : x);
+            var capitalizedSplit = str.Split(' ')
+                .Select(x => x.Length > 0 
+                    ? char.ToUpper(x[0]) + x.Substring(1).ToLower() 
+                    : x);
 
             return string.Join(" ", capitalizedSplit);
+        }
+
+        // For class-less jobs, XivApi returns e.g. "dark knight / dark knight"
+        private string? RemoveDuplicates(string? str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
+
+            var split = str.Split('/')
+                .Select(x => x.Trim())
+                .ToArray();
+
+            if (split.Length >= 2 && split[0] == split[1])
+            {
+                return split[0];
+            }
+
+            return str;
         }
 
         private string? ConvertRace(Race? race)

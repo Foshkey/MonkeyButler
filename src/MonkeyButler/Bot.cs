@@ -55,7 +55,7 @@ namespace MonkeyButler
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                _logger.LogError("Unable to find discord bot token in configuration {Configuration}. Ensure a valid token is in appsettings.json.", "Discord:Token");
+                _logger.LogError("Unable to find discord bot token in configuration {Configuration}.", "Discord:Token");
                 return;
             }
 

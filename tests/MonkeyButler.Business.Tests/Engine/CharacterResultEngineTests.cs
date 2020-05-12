@@ -38,6 +38,31 @@ namespace MonkeyButler.Business.Tests.Engine
         }
 
         [Theory]
+        [InlineData("Dark Knight", "Dark Knight")]
+        [InlineData("Gladiator / Paladin", "Gladiator / Paladin")]
+        [InlineData("Dark Knight / Dark Knight", "Dark Knight")]
+        [InlineData("dark knight / dark knight", "Dark Knight")]
+        [InlineData("dark knight / Dark Knight", "Dark Knight")]
+        public void ShouldRemoveDuplicates(string? input, string? expectedName)
+        {
+            var characterBrief = new CharacterBrief();
+            var details = new GetData()
+            {
+                Character = new CharacterFull()
+                {
+                    ActiveClassJob = new ClassJob()
+                    {
+                        Name = input
+                    }
+                }
+            };
+
+            var result = BuildTarget().Merge(characterBrief, details);
+
+            Assert.Equal(expectedName, result.CurrentClassJob?.Name);
+        }
+
+        [Theory]
         [InlineData(null, null)]
         [InlineData(Race.Unknown, "Unknown")]
         [InlineData(Race.Hyur, "Hyur")]
