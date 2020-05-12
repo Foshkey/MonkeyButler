@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Options;
@@ -17,7 +15,6 @@ namespace MonkeyButler.Handlers
         private readonly ILogger<MessageHandler> _logger;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
         private readonly IScopeHandler _scopeHandler;
-        private readonly ConcurrentDictionary<ulong, IServiceScope> _serviceScopes = new ConcurrentDictionary<ulong, IServiceScope>();
 
         public MessageHandler(CommandService commands, DiscordSocketClient discordClient, ILogger<MessageHandler> logger, IOptionsMonitor<AppOptions> appOptions, IScopeHandler scopeHandler)
         {
@@ -38,7 +35,7 @@ namespace MonkeyButler.Handlers
             if (userMessage.HasMentionPrefix(_discordClient.CurrentUser, ref argPos) ||
                 currentOptions?.Prefix is object && userMessage.HasCharPrefix(currentOptions.Prefix.Value, ref argPos))
             {
-                _logger.LogTrace($"Received command from {userMessage.Author.Username}: {userMessage}");
+                _logger.LogInformation("Received command from {Username}: {Message}", userMessage.Author.Username, userMessage);
 
                 var context = new SocketCommandContext(_discordClient, userMessage);
                 var scope = _scopeHandler.CreateScope(message.Id);
