@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler", "src\MonkeyButler\MonkeyButler.csproj", "{15E95219-907F-4184-9010-46F89C0B6C09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Business", "src\MonkeyButler.Business\MonkeyButler.Business.csproj", "{66DAFD3D-D179-4424-AA95-1B4D219F432B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Business", "src\MonkeyButler.Business\MonkeyButler.Business.csproj", "{66DAFD3D-D179-4424-AA95-1B4D219F432B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Tests", "tests\MonkeyButler.Tests\MonkeyButler.Tests.csproj", "{CF171A08-4A96-4E98-9C34-60F5ADA9B4DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Tests", "tests\MonkeyButler.Tests\MonkeyButler.Tests.csproj", "{CF171A08-4A96-4E98-9C34-60F5ADA9B4DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{301622E0-AA35-417E-ABFA-FD0C4B73EBE4}"
 EndProject
@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{44F563AF-4D5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Data", "src\MonkeyButler.Data\MonkeyButler.Data.csproj", "{07E75641-A234-41F9-935A-E9A4ED23CC8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Business.Tests", "tests\MonkeyButler.Business.Tests\MonkeyButler.Business.Tests.csproj", "{26EDEF26-C5B6-4D20-A829-CBB78389313D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Business.Tests", "tests\MonkeyButler.Business.Tests\MonkeyButler.Business.Tests.csproj", "{26EDEF26-C5B6-4D20-A829-CBB78389313D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyButler.Data.Tests", "tests\MonkeyButler.Data.Tests\MonkeyButler.Data.Tests.csproj", "{F4BE25C5-1782-479A-81EB-FBCE8F62C000}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyButler.Data.Tests", "tests\MonkeyButler.Data.Tests\MonkeyButler.Data.Tests.csproj", "{F4BE25C5-1782-479A-81EB-FBCE8F62C000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
