@@ -223,5 +223,66 @@ namespace MonkeyButler.Business.Tests.Managers
 
             Assert.Equal(Status.Verified, result.Status);
         }
+
+        [Fact]
+        public async Task ExistingGuildOptionsShouldReturnVerifySet()
+        {
+            var guildId = "8923847";
+            var fcId = "98237492";
+            var guildOptions = new GuildOptionsDictionary()
+            {
+                [guildId] = new GuildOptions()
+                {
+                    FreeCompany = new FreeCompanyOptions()
+                    {
+                        Id = fcId,
+                    },
+                    Server = "Diabolos"
+                }
+            };
+
+            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+                .ReturnsAsync(guildOptions);
+
+            var criteria = new IsVerifySetCriteria()
+            {
+                GuildId = guildId
+            };
+
+            var result = await BuildTarget().IsVerifySet(criteria);
+
+            Assert.True(result.IsSet);
+        }
+
+        [Fact]
+        public async Task MissingGuildOptionsShouldReturnVerifyNotSet()
+        {
+            var guildId = "8923847";
+            var differentGuildId = "8329721";
+            var fcId = "98237492";
+            var guildOptions = new GuildOptionsDictionary()
+            {
+                [guildId] = new GuildOptions()
+                {
+                    FreeCompany = new FreeCompanyOptions()
+                    {
+                        Id = fcId,
+                    },
+                    Server = "Diabolos"
+                }
+            };
+
+            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+                .ReturnsAsync(guildOptions);
+
+            var criteria = new IsVerifySetCriteria()
+            {
+                GuildId = differentGuildId
+            };
+
+            var result = await BuildTarget().IsVerifySet(criteria);
+
+            Assert.False(result.IsSet);
+        }
     }
 }

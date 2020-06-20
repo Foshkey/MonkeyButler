@@ -28,6 +28,44 @@ namespace MonkeyButler.Business.Managers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public async Task<IsVerifySetResult> IsVerifySet(IsVerifySetCriteria criteria)
+        {
+            if (criteria is null)
+            {
+                throw new ArgumentNullException(nameof(criteria));
+            }
+
+            if (criteria.GuildId is null)
+            {
+                throw new ArgumentException($"{nameof(criteria.GuildId)} cannot be null.", nameof(criteria));
+            }
+
+            var result = new IsVerifySetResult()
+            {
+                GuildId = criteria.GuildId
+            };
+
+            // Get the guild options for free company definition.
+            _logger.LogTrace("Getting guild options for guild {Id}.", criteria.GuildId);
+
+            var guildOptionsDictionary = await _cacheAccessor.GetGuildOptions();
+
+            if (guildOptionsDictionary is null ||
+                !guildOptionsDictionary.TryGetValue(criteria.GuildId, out var guildOptions) ||
+                guildOptions.FreeCompany?.Id is null)
+            {
+                _logger.LogDebug("Free Company options not defined for guild {Id}.", criteria.GuildId);
+
+                result.IsSet = false;
+            }
+            else
+            {
+                result.IsSet = true;
+            }
+
+            return result;
+        }
+
         public async Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria)
         {
             if (criteria is null)
@@ -132,5 +170,12 @@ namespace MonkeyButler.Business.Managers
         /// <param name="criteria">The criteria of the verification.</param>
         /// <returns>The result of the verification.</returns>
         Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria);
+
+        /// <summary>
+        /// Checks if the guild is set up for verification.
+        /// </summary>
+        /// <param name="criteria">The criteria for the check.</param>
+        /// <returns>The result of the check.</returns>
+        Task<IsVerifySetResult> IsVerifySet(IsVerifySetCriteria criteria);
     }
 }
