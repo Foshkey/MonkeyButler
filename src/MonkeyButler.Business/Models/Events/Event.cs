@@ -13,6 +13,11 @@ namespace MonkeyButler.Business.Models.Events
         public DateTimeOffset CreationDateTime { get; set; } = DateTimeOffset.UtcNow;
 
         /// <summary>
+        /// The description of the event.
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// The date/time of the event.
         /// </summary>
         public DateTimeOffset EventDateTime { get; set; } = DateTimeOffset.UtcNow;
@@ -26,5 +31,10 @@ namespace MonkeyButler.Business.Models.Events
         /// The roster of the event.
         /// </summary>
         public Roster Roster { get; set; } = new Roster();
+
+        /// <summary>
+        /// The title of the event.
+        /// </summary>
+        public string? Title { get; set; }
     }
 }
