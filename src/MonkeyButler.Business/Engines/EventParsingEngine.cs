@@ -56,7 +56,10 @@ namespace MonkeyButler.Business.Engines
             var dateKeyIndex = wordsList.FindIndex(x => x.Equals(_dateKeyWord, StringComparison.OrdinalIgnoreCase));
 
             var titleEndIndex = GetEndIndex(timeKeyIndex, dateKeyIndex);
-            newEvent.Title = string.Join(' ', words[..titleEndIndex]);
+            if (titleEndIndex < 0)
+            {
+                titleEndIndex = words.Length;
+            }
 
             var timeEndIndex = timeKeyIndex < dateKeyIndex
                 ? dateKeyIndex
@@ -69,18 +72,23 @@ namespace MonkeyButler.Business.Engines
             var timeStr = string.Join(' ', words[(timeKeyIndex + 1)..timeEndIndex]);
             var dateStr = string.Join(' ', words[(dateKeyIndex + 1)..dateEndIndex]);
 
+            var containedAm = timeStr.Contains('a', StringComparison.OrdinalIgnoreCase);
+
             var time = DateTimeOffset.TryParse(timeStr, out var timeParsed)
                 ? timeParsed
-                : FindTimeElsewhere(words);
+                : FindTimeElsewhere(words, timeStr, ref titleEndIndex, ref containedAm);
 
             var date = DateTimeOffset.TryParse(dateStr, out var dateParsed)
                 ? dateParsed
-                : FindDateElsewhere(words, dateStr, now);
+                : FindDateElsewhere(words, dateStr, now, ref titleEndIndex);
 
-            newEvent.EventDateTime = Combine(time, date, now, tzOffset)
-                ?? throw new InvalidOperationException($"Could not determine event date/time with query '{query}'.");
-
-            return newEvent;
+            return new Event()
+            {
+                CreationDateTime = now,
+                EventDateTime = Combine(time, date, now, tzOffset, containedAm)
+                    ?? throw new InvalidOperationException($"Could not determine event date/time with query '{query}'."),
+                Title = CreateTitle(words, titleEndIndex)
+            };
         }
 
         private int GetEndIndex(int i1, int i2)
@@ -98,15 +106,20 @@ namespace MonkeyButler.Business.Engines
             return i1 < i2 ? i1 : i2;
         }
 
-        private DateTimeOffset? FindTimeElsewhere(string[] words)
+        private DateTimeOffset? FindTimeElsewhere(string[] words, string timeStr, ref int titleEndIndex, ref bool containedAm)
         {
             // Strategy for this is try parsing each word, and then sequential pairing of words.
             // Both from right to left, as title is last in priority of parsing.
 
-            foreach (var word in words.Reverse())
+            for (var i = words.Length - 1; i >= 0; i--)
             {
-                if (DateTimeOffset.TryParse(word, out var time))
+                if (DateTimeOffset.TryParse(words[i], out var time))
                 {
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
                     return time;
                 }
             }
@@ -116,14 +129,40 @@ namespace MonkeyButler.Business.Engines
                 var pair = string.Join(' ', words[i], words[i + 1]);
                 if (DateTimeOffset.TryParse(pair, out var time))
                 {
+                    containedAm = pair.Contains('a', StringComparison.OrdinalIgnoreCase);
+
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
                     return time;
+                }
+            }
+
+            // At this point, see if there's a number that we can find reason out of.
+            if (int.TryParse(timeStr, out var timeNum))
+            {
+                return new DateTimeOffset(1, 1, 1, timeNum, 0, 0, TimeSpan.Zero);
+            }
+
+            for (var i = words.Length - 1; i >= 0; i--)
+            {
+                if (int.TryParse(words[i], out var timeNum2))
+                {
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
+                    return new DateTimeOffset(1, 1, 1, timeNum2, 0, 0, TimeSpan.Zero);
                 }
             }
 
             return null;
         }
 
-        private DateTimeOffset? FindDateElsewhere(string[] words, string dateStr, DateTimeOffset now)
+        private DateTimeOffset? FindDateElsewhere(string[] words, string dateStr, DateTimeOffset now, ref int titleEndIndex)
         {
             // Check day of week
             if (_dayOfWeekMap.ContainsKey(dateStr))
@@ -132,19 +171,29 @@ namespace MonkeyButler.Business.Engines
             }
 
             // Day of week in reverse order
-            foreach (var word in words.Reverse())
+            for (var i = words.Length - 1; i >= 0; i--)
             {
-                if (_dayOfWeekMap.ContainsKey(word))
+                if (_dayOfWeekMap.ContainsKey(words[i]))
                 {
-                    return GetNextDay(_dayOfWeekMap[word], now);
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
+                    return GetNextDay(_dayOfWeekMap[words[i]], now);
                 }
             }
 
             // Tomorrow in reverse order
-            foreach (var word in words.Reverse())
+            for (var i = words.Length - 1; i >= 0; i--)
             {
-                if (string.Equals(_tomorrowKeyWord, word, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(_tomorrowKeyWord, words[i], StringComparison.OrdinalIgnoreCase))
                 {
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
                     return now.AddDays(1);
                 }
             }
@@ -155,25 +204,65 @@ namespace MonkeyButler.Business.Engines
         private DateTimeOffset GetNextDay(DayOfWeek dayOfWeek, DateTimeOffset now)
         {
             var diff = dayOfWeek - now.DayOfWeek;
-            if (diff < 0) diff += 7;
+            if (diff <= 0) diff += 7;
 
             return now.AddDays(diff);
         }
 
-        private DateTimeOffset? Combine(DateTimeOffset? time, DateTimeOffset? date, DateTimeOffset now, TimeSpan offset)
+        private string CreateTitle(string[] words, int titleEndIndex)
+        {
+            // Knock off last word of the title if it's "today" or "tomorrow"
+            if (string.Equals(_todayKeyWord, words[titleEndIndex - 1], StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(_tomorrowKeyWord, words[titleEndIndex - 1], StringComparison.OrdinalIgnoreCase))
+            {
+                titleEndIndex--;
+            }
+
+            return string.Join(' ', words[..titleEndIndex]);
+        }
+
+        private DateTimeOffset? Combine(DateTimeOffset? time, DateTimeOffset? date, DateTimeOffset now, TimeSpan offset, bool containedAm)
         {
             if (time is null || date is null)
             {
                 return null;
             }
 
+            var dateTime = Combine(time.Value, date.Value, offset);
+
+            // If before current time
+            if (dateTime <= now)
+            {
+                // If the time "words" didn't contain AM but less than 12
+                if (!containedAm && time.Value.Hour <= 12)
+                {
+                    // Perhaps they meant pm
+                    dateTime = Combine(time.Value.AddHours(12), date.Value, offset);
+                    if (dateTime <= now)
+                    {
+                        // Nope, just add a day.
+                        dateTime = Combine(time.Value, date.Value.AddDays(1), offset);
+                    }
+                }
+                else
+                {
+                    // It was absolutely defined.
+                    dateTime = Combine(time.Value, date.Value.AddDays(1), offset);
+                }
+            }
+
+            return dateTime;
+        }
+
+        private DateTimeOffset Combine(DateTimeOffset time, DateTimeOffset date, TimeSpan offset)
+        {
             return new DateTimeOffset(
-                year: date.Value.Year,
-                month: date.Value.Month,
-                day: date.Value.Day,
-                hour: time.Value.Hour,
-                minute: time.Value.Minute,
-                second: time.Value.Second,
+                year: date.Year,
+                month: date.Month,
+                day: date.Day,
+                hour: time.Hour,
+                minute: time.Minute,
+                second: time.Second,
                 offset: offset
             );
         }

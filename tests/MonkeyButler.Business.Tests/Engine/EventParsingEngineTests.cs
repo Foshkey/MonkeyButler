@@ -10,22 +10,59 @@ namespace MonkeyButler.Business.Tests.Engine
     {
         // Now = Saturday, June 20, Noon EDT
         private static readonly TimeSpan _tzOffsetInput = TimeSpan.FromHours(-4);
-        private static DateTimeOffset _nowInput = new DateTimeOffset(2020, 6, 20, 16, 0, 0, TimeSpan.Zero);
+        private static readonly DateTimeOffset _nowInput = new DateTimeOffset(2020, 6, 20, 16, 0, 0, TimeSpan.Zero);
 
-        private Event Parse(string query, TimeSpan tzOffset) => new SUT().Parse(query, tzOffset, _nowInput);
+        private Event Parse(string query) => new SUT().Parse(query, _tzOffsetInput, _nowInput);
 
         [Fact]
         public void NextYearWorks()
         {
-            _nowInput = new DateTimeOffset(2020, 12, 31, 16, 0, 0, TimeSpan.Zero);
+            var now = new DateTimeOffset(2020, 12, 31, 16, 0, 0, TimeSpan.Zero);
             var query = "Next year test at 7am.";
             var expectedEvent = new Event()
             {
                 Title = "Next year test",
-                EventDateTime = _nowInput.AddHours(24 - 5).ToOffset(_tzOffsetInput)
+                EventDateTime = now.AddHours(24 - 5).ToOffset(_tzOffsetInput)
             };
 
-            var result = Parse(query, _tzOffsetInput);
+            var result = new SUT().Parse(query, _tzOffsetInput, now);
+
+            Assert.Equal(expectedEvent.Title, result.Title);
+            Assert.Equal(now, result.CreationDateTime);
+            Assert.Equal(expectedEvent.EventDateTime, result.EventDateTime);
+        }
+
+        [Fact]
+        public void EventAt1pmWhenNowIs2pmShouldSetEventDayAfter()
+        {
+            var now = new DateTimeOffset(2020, 6, 20, 18, 0, 0, TimeSpan.Zero);
+            var query = "Event at 1pm.";
+            var expectedEvent = new Event()
+            {
+                Title = "Event",
+                EventDateTime = now.AddHours(24 - 1).ToOffset(_tzOffsetInput)
+            };
+
+            var result = new SUT().Parse(query, _tzOffsetInput, now);
+
+            Assert.Equal(expectedEvent.Title, result.Title);
+            Assert.Equal(now, result.CreationDateTime);
+            Assert.Equal(expectedEvent.EventDateTime, result.EventDateTime);
+        }
+
+        [Fact]
+        public void UnusualTimeZoneShouldStillWork()
+        {
+            // now = June 21 1am local
+            var offset = TimeSpan.FromHours(9);
+            var query = "Crazy offset at 8am tomorrow";
+            var expectedEvent = new Event()
+            {
+                Title = "Crazy offset",
+                EventDateTime = _nowInput.AddHours(24 + 7).ToOffset(offset)
+            };
+
+            var result = new SUT().Parse(query, offset, _nowInput);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(_nowInput, result.CreationDateTime);
@@ -34,9 +71,9 @@ namespace MonkeyButler.Business.Tests.Engine
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void StringShouldParse(string query, TimeSpan tzOffset, Event expectedEvent)
+        public void StringShouldParse(string query, Event expectedEvent)
         {
-            var result = Parse(query, tzOffset);
+            var result = Parse(query);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(_nowInput, result.CreationDateTime);
@@ -48,7 +85,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Hello World at 8pm.",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Hello World",
@@ -59,7 +95,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Bunch of periods at 9pm......",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Bunch of periods",
@@ -69,8 +104,37 @@ namespace MonkeyButler.Business.Tests.Engine
 
             yield return new object[]
             {
+                "Early morning jams at 9am",
+                new Event()
+                {
+                    Title = "Early morning jams",
+                    EventDateTime = _nowInput.AddHours(24 - 3).ToOffset(_tzOffsetInput)
+                }
+            };
+
+            yield return new object[]
+            {
+                "Some stuff today at 3",
+                new Event()
+                {
+                    Title = "Some stuff",
+                    EventDateTime = _nowInput.AddHours(3).ToOffset(_tzOffsetInput)
+                }
+            };
+
+            yield return new object[]
+            {
+                "Half-hour stuff at 3:30",
+                new Event()
+                {
+                    Title = "Half-hour stuff",
+                    EventDateTime = _nowInput.AddHours(3.5).ToOffset(_tzOffsetInput)
+                }
+            };
+
+            yield return new object[]
+            {
                 "Today's dumb stuff at 7:30 am tomorrow.",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Today's dumb stuff",
@@ -80,8 +144,17 @@ namespace MonkeyButler.Business.Tests.Engine
 
             yield return new object[]
             {
+                "Other dumb stuff at 6:30 tomorrow.",
+                new Event()
+                {
+                    Title = "Other dumb stuff",
+                    EventDateTime = _nowInput.AddHours(24 - 5.5).ToOffset(_tzOffsetInput)
+                }
+            };
+
+            yield return new object[]
+            {
                 "Tomorrow's homework at 3pm tomorrow",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Tomorrow's homework",
@@ -92,7 +165,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Tomorrow is another day at 5pm Monday.",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Tomorrow is another day",
@@ -103,7 +175,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Monday fun times on Monday at 14:30",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Monday fun times",
@@ -114,7 +185,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Saturday morning beats on Saturday at 9am",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Saturday morning beats",
@@ -125,7 +195,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Weird date parsing on Thursday 2pm",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Weird date parsing",
@@ -136,7 +205,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Specific date parsing on June 22 at 4pm",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Specific date parsing",
@@ -147,7 +215,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Maybe I can get this to work tomorrow at 8pm",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Maybe I can get this to work",
@@ -158,7 +225,6 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Super special case thu 1 pm",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Super special case",
@@ -169,22 +235,10 @@ namespace MonkeyButler.Business.Tests.Engine
             yield return new object[]
             {
                 "Rebelling against Tuesday on Monday at 6:15pm",
-                _tzOffsetInput,
                 new Event()
                 {
                     Title = "Rebelling against Tuesday",
                     EventDateTime = _nowInput.AddHours(24 * 2 + 6.25).ToOffset(_tzOffsetInput)
-                }
-            };
-
-            yield return new object[]
-            {
-                "Crazy offset at 8am tomorrow",
-                TimeSpan.FromHours(7), // now = June 21 1am local
-                new Event()
-                {
-                    Title = "Crazy offset",
-                    EventDateTime = _nowInput.AddHours(24 + 7).ToOffset(TimeSpan.FromHours(7))
                 }
             };
         }
