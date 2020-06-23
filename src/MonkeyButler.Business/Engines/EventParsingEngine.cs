@@ -33,6 +33,12 @@ namespace MonkeyButler.Business.Engines
             ["sun"] = DayOfWeek.Sunday
         };
 
+        private readonly Dictionary<string, DateTimeOffset> _specialNamesMap = new Dictionary<string, DateTimeOffset>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["noon"] = new DateTimeOffset(1, 1, 1, 12, 0, 0, TimeSpan.Zero),
+            ["midnight"] = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero)
+        };
+
         public Event Parse(string query, TimeSpan tzOffset)
         {
             var now = DateTimeOffset.UtcNow;
@@ -42,11 +48,6 @@ namespace MonkeyButler.Business.Engines
         // Needed to break out "now" for unit testing.
         public Event Parse(string query, TimeSpan tzOffset, DateTimeOffset now)
         {
-            var newEvent = new Event()
-            {
-                CreationDateTime = now
-            };
-
             query = query.Trim(' ', '.', '!', '?');
             var words = query.Split(' ');
             var wordsList = words.ToList();
@@ -113,6 +114,16 @@ namespace MonkeyButler.Business.Engines
 
             for (var i = words.Length - 1; i >= 0; i--)
             {
+                if (_specialNamesMap.ContainsKey(words[i]))
+                {
+                    if (titleEndIndex > i)
+                    {
+                        titleEndIndex = i;
+                    }
+
+                    return _specialNamesMap[words[i]];
+                }
+
                 if (DateTimeOffset.TryParse(words[i], out var time))
                 {
                     if (titleEndIndex > i)

@@ -241,6 +241,26 @@ namespace MonkeyButler.Business.Tests.Engine
                     EventDateTime = _nowInput.AddHours(24 * 2 + 6.25).ToOffset(_tzOffsetInput)
                 }
             };
+
+            yield return new object[]
+            {
+                "Lunch 12pm",
+                new Event()
+                {
+                    Title = "Lunch",
+                    EventDateTime = _nowInput.AddHours(24).ToOffset(_tzOffsetInput)
+                }
+            };
+
+            yield return new object[]
+            {
+                "Lunch at noon",
+                new Event()
+                {
+                    Title = "Lunch",
+                    EventDateTime = _nowInput.AddHours(24).ToOffset(_tzOffsetInput)
+                }
+            };
         }
     }
 }
