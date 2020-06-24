@@ -7,7 +7,8 @@ namespace MonkeyButler.Business.Validators.Events
     {
         public EventValidator()
         {
-            RuleFor(x => x.Id).GreaterThan(0);
+            RuleFor(x => x.Id)
+                .GreaterThan((ulong)0);
         }
     }
 }

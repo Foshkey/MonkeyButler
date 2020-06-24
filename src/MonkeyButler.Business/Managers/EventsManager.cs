@@ -45,6 +45,16 @@ namespace MonkeyButler.Business.Managers
             });
         }
 
+        public async Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria)
+        {
+            new SaveEventValidator().ValidateAndThrow(criteria);
+
+            return new SaveEventResult()
+            {
+                IsSuccessful = true
+            };
+        }
+
         public async Task<UpdateEventResult> UpdateEvent(UpdateEventCriteria criteria)
         {
             new UpdateEventValidator().ValidateAndThrow(criteria);
@@ -71,6 +81,13 @@ namespace MonkeyButler.Business.Managers
         /// <param name="criteria"></param>
         /// <returns></returns>
         Task<CreateEventResult> CreateEvent(CreateEventCriteria criteria);
+
+        /// <summary>
+        /// Creates a brand new event.
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria);
 
         /// <summary>
         /// Updates an existing event.

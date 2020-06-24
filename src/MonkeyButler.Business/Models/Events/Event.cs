@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MonkeyButler.Business.Models.Events
 {
@@ -25,12 +26,12 @@ namespace MonkeyButler.Business.Models.Events
         /// <summary>
         /// The Id of the event.
         /// </summary>
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         /// <summary>
         /// The roster of the event.
         /// </summary>
-        public Roster Roster { get; set; } = new Roster();
+        public List<RosterEntry> Roster { get; set; } = new List<RosterEntry>();
 
         /// <summary>
         /// The title of the event.

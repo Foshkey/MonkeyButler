@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MonkeyButler.Options
 {
@@ -11,6 +12,11 @@ namespace MonkeyButler.Options
         /// The prefix to be used for commands.
         /// </summary>
         public char? Prefix { get; set; }
+
+        /// <summary>
+        /// The roles for event signups.
+        /// </summary>
+        public List<string> SignupRoles { get; set; }
 
         /// <summary>
         /// The delay before scope is cleaned up on commands.

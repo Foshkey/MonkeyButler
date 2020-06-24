@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Extensions;
 using MonkeyButler.Options;
-using TimeZoneNames;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -37,6 +39,7 @@ namespace MonkeyButler.Modules.Commands
         public async Task Create([Remainder] string query)
         {
             using var setTyping = Context.Channel.EnterTypingState();
+            var discordOptions = _appOptions.CurrentValue.Discord;
 
             var criteria = new CreateEventCriteria()
             {
@@ -47,28 +50,38 @@ namespace MonkeyButler.Modules.Commands
 
             var result = await _eventsManager.CreateEvent(criteria);
 
-            if (!result.IsSuccessful || result.Event is null)
+            if (result?.Event is null || !result.IsSuccessful)
             {
-                await ReplyAsync($"I'm sorry, I could not create an event for you. Try `{_appOptions.CurrentValue.Discord?.Prefix}createEvent <Title> on <Day> at <Time>.`.");
+                await ReplyAsync($"I'm sorry, I could not create an event for you. Try `{discordOptions?.Prefix}createEvent <Title> on <Day> at <Time>.`.");
                 return;
             }
 
             var ev = result.Event;
+            var eventMsg = await ReplyAsync(message: null, isTTS: false, embed: ev.ToEmbed());
 
-            var culture = Context.Guild.PreferredCulture;
-            var timeZones = TZNames.GetFixedTimeZoneAbbreviations(culture.Name);
-            var dateFormat = "dddd, MMM d ⋅ h:mm UTCzzz";
+            var emotes = discordOptions?.SignupRoles?.Select<string, IEmote>(x => Emote.Parse(x)).ToList();
 
-            var embed = new EmbedBuilder()
-                .WithTitle(ev.Title)
-                .WithFields(new EmbedFieldBuilder()
+            if (emotes is null || emotes.Count == 0)
+            {
+                emotes = new List<IEmote>()
                 {
-                    Name = "Time",
-                    Value = ev.EventDateTime.ToString(dateFormat)
-                })
-                .Build();
+                    new Emoji("✅")
+                };
+            }
 
-            await ReplyAsync(message: null, isTTS: false, embed: embed);
+            emotes.Add(new Emoji("❌"));
+
+            _ = eventMsg.AddReactionsAsync(emotes.ToArray());
+
+            ev.CreationDateTime = eventMsg.Timestamp;
+            ev.Id = eventMsg.Id;
+
+            var saveCriteria = new SaveEventCriteria()
+            {
+                Event = ev
+            };
+
+            _ = _eventsManager.SaveEvent(saveCriteria);
         }
     }
 }

@@ -19,6 +19,11 @@ namespace MonkeyButler.Business.Models.Events
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// The Id of the entry's owner.
+        /// </summary>
+        public ulong OwnerId { get; set; }
+
+        /// <summary>
         /// The date/time of the entry signup.
         /// </summary>
         public DateTimeOffset SignupDateTime { get; set; } = DateTimeOffset.UtcNow;
