@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Net;
+using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.VerifyCharacter;
+using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -16,13 +18,15 @@ namespace MonkeyButler.Modules.Commands
     public class VerifyCharacter : CommandModule
     {
         private readonly IVerifyCharacterManager _verifyCharacterManager;
+        private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager)
+        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsMonitor<AppOptions> appOptions)
         {
             _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
+            _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
         /// <summary>
@@ -66,7 +70,7 @@ namespace MonkeyButler.Modules.Commands
                 default:
                     await Task.WhenAll(
                         ReplyAsync("It appears that this server is not set up to do character verification."),
-                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `!set verify VerifiedRoleName Free Company Name` in your server.")
+                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName Free Company Name` in your server.")
                     );
                     return;
             }
@@ -84,7 +88,7 @@ namespace MonkeyButler.Modules.Commands
             if (role is null)
             {
                 await ReplyAsync($"However, I could not find the server's verified role ({result.VerifiedRole}). I will notify the server's administrator.");
-                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `!set verify VerifiedRoleName Free Company Name` in your server.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName Free Company Name` in your server.");
             }
 
             try

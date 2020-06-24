@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Options;
 using MonkeyButler.Data.Models.XivApi.FreeCompany;
@@ -14,7 +13,6 @@ namespace MonkeyButler.Business.Tests.Managers
     {
         private readonly Mock<Data.Cache.IAccessor> _cacheAccessorMock = new Mock<Data.Cache.IAccessor>();
         private readonly Mock<Data.XivApi.FreeCompany.IAccessor> _freeCompanyAccessorMock = new Mock<Data.XivApi.FreeCompany.IAccessor>();
-        private readonly Mock<ILogger<SUT>> _loggerMock = new Mock<ILogger<SUT>>();
         private readonly Mock<IOptionsMonitor<GuildOptionsDictionary>> _optionsMock = new Mock<IOptionsMonitor<GuildOptionsDictionary>>();
         private readonly GuildOptionsDictionary _guildOptions = new GuildOptionsDictionary();
 
@@ -23,12 +21,11 @@ namespace MonkeyButler.Business.Tests.Managers
             _optionsMock.Setup(x => x.CurrentValue).Returns(_guildOptions);
         }
 
-        private SUT BuildTarget() => new SUT(
-            _cacheAccessorMock.Object,
-            _freeCompanyAccessorMock.Object,
-            _loggerMock.Object,
-            _optionsMock.Object
-        );
+        private SUT BuildTarget() => Resolver
+            .Add(_cacheAccessorMock.Object)
+            .Add(_freeCompanyAccessorMock.Object)
+            .Add(_optionsMock.Object)
+            .Resolve<SUT>();
 
         [Fact]
         public async Task GuildOptionsShouldBeCached()

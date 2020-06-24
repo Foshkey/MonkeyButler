@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.VerifyCharacter;
 using MonkeyButler.Business.Options;
 using MonkeyButler.Data.Models.XivApi.Character;
@@ -15,15 +13,11 @@ namespace MonkeyButler.Business.Tests.Managers
     {
         private readonly Mock<Data.Cache.IAccessor> _cacheAccessorMock = new Mock<Data.Cache.IAccessor>();
         private readonly Mock<Data.XivApi.Character.IAccessor> _characterAccessorMock = new Mock<Data.XivApi.Character.IAccessor>();
-        private readonly INameServerEngine _nameServerEngine = new NameServerEngine();
-        private readonly Mock<ILogger<SUT>> _loggerMock = new Mock<ILogger<SUT>>();
 
-        private SUT BuildTarget() => new SUT(
-            _cacheAccessorMock.Object,
-            _characterAccessorMock.Object,
-            _nameServerEngine,
-            _loggerMock.Object
-        );
+        private SUT BuildTarget() => Resolver
+            .Add(_cacheAccessorMock.Object)
+            .Add(_characterAccessorMock.Object)
+            .Resolve<SUT>();
 
         [Fact]
         public async Task NullFcIdShouldFail()

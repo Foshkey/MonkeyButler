@@ -39,19 +39,19 @@ namespace MonkeyButler.Business.Engines
             ["midnight"] = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero)
         };
 
-        public Event Parse(string query, TimeSpan tzOffset)
+        public Event Parse(string query, TimeSpan baseOffset)
         {
             var now = DateTimeOffset.UtcNow;
-            return Parse(query, tzOffset, now);
+            return Parse(query, baseOffset, now);
         }
 
         // Needed to break out "now" for unit testing.
-        public Event Parse(string query, TimeSpan tzOffset, DateTimeOffset now)
+        public Event Parse(string query, TimeSpan baseOffset, DateTimeOffset now)
         {
             query = query.Trim(' ', '.', '!', '?');
             var words = query.Split(' ');
             var wordsList = words.ToList();
-            now = now.ToOffset(tzOffset);
+            now = now.ToOffset(baseOffset);
 
             var timeKeyIndex = wordsList.FindIndex(x => x.Equals(_timeKeyWord, StringComparison.OrdinalIgnoreCase));
             var dateKeyIndex = wordsList.FindIndex(x => x.Equals(_dateKeyWord, StringComparison.OrdinalIgnoreCase));
@@ -86,7 +86,7 @@ namespace MonkeyButler.Business.Engines
             return new Event()
             {
                 CreationDateTime = now,
-                EventDateTime = Combine(time, date, now, tzOffset, containedAm)
+                EventDateTime = Combine(time, date, now, baseOffset, containedAm)
                     ?? throw new InvalidOperationException($"Could not determine event date/time with query '{query}'."),
                 Title = CreateTitle(words, titleEndIndex)
             };
@@ -241,6 +241,13 @@ namespace MonkeyButler.Business.Engines
 
             var dateTime = Combine(time.Value, date.Value, offset);
 
+            // Since the offset we've been working is the base offset, check for daylight saving
+            if (IsDaylightSaving(dateTime))
+            {
+                offset += TimeSpan.FromHours(1);
+                dateTime = new DateTimeOffset(dateTime.DateTime, offset);
+            }
+
             // If before current time
             if (dateTime <= now)
             {
@@ -277,10 +284,24 @@ namespace MonkeyButler.Business.Engines
                 offset: offset
             );
         }
+
+        private bool IsDaylightSaving(DateTimeOffset dateTime)
+        {
+            // Going to base this off of US Eastern time zone for now.
+            var estTz = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            return estTz.IsDaylightSavingTime(dateTime);
+        }
     }
 
     internal interface IEventParsingEngine
     {
-        Event Parse(string query, TimeSpan tzOffset);
+        /// <summary>
+        /// Parses the query into an event, using the base offset.
+        /// </summary>
+        /// <param name="query">The string query to parse, standard format is '[Title] on [Date] at [Time]'</param>
+        /// <param name="baseOffset">The base offset of the time zone without daylight saving applied. E.g. US Eastern is -5:00 regardless of current time.</param>
+        /// <returns>The parsed event.</returns>
+        /// <exception cref="InvalidOperationException">Query is malformed and cannot be parsed.</exception>
+        Event Parse(string query, TimeSpan baseOffset);
     }
 }

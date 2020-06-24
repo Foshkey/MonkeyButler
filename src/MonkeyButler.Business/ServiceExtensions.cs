@@ -25,10 +25,12 @@ namespace MonkeyButler.Business
             services.Configure<GuildOptionsDictionary>(configuration.GetSection("Discord:Guilds"));
 
             services
-                .AddSingleton<INameServerEngine, NameServerEngine>()
                 .AddSingleton<ICharacterResultEngine, CharacterResultEngine>()
+                .AddSingleton<IEventParsingEngine, EventParsingEngine>()
+                .AddSingleton<INameServerEngine, NameServerEngine>()
                 .AddSingleton<ICacheManager, CacheManager>()
                 .AddSingleton<ICharacterSearchManager, CharacterSearchManager>()
+                .AddSingleton<IEventsManager, EventsManager>()
                 .AddSingleton<IFreeCompanySearchManager, FreeCompanySearchManager>()
                 .AddSingleton<IVerifyCharacterManager, VerifyCharacterManager>();
 

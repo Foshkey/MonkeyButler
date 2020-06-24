@@ -7,13 +7,14 @@ namespace MonkeyButler.Business.Validators.Events
     {
         public CreateEventValidator()
         {
-            RuleFor(x => x.Query)
-                .NotEmpty()
-                .When(x => x.Event is null);
+            RuleFor(x => x.GuildId)
+                .GreaterThan((ulong)0);
 
-            RuleFor(x => x.Event)
-                .NotEmpty()
-                .When(x => string.IsNullOrEmpty(x.Query));
+            RuleFor(x => x.Query)
+                .NotEmpty();
+
+            RuleFor(x => x.VoiceRegionId)
+                .NotEmpty();
         }
     }
 }

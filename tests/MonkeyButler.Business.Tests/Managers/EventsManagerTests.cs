@@ -9,7 +9,8 @@ namespace MonkeyButler.Business.Tests.Managers
 {
     public class EventsManagerTests
     {
-        private SUT BuildTarget() => new SUT();
+        private SUT BuildTarget() => Resolver
+            .Resolve<SUT>();
 
         [Fact]
         public async Task NullCreateCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => BuildTarget().CreateEvent(null!));

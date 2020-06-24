@@ -9,7 +9,7 @@ namespace MonkeyButler.Business.Tests.Engine
     public class EventParsingEngineTests
     {
         // Now = Saturday, June 20, Noon EDT
-        private static readonly TimeSpan _tzOffsetInput = TimeSpan.FromHours(-4);
+        private static readonly TimeSpan _tzOffsetInput = TimeSpan.FromHours(-5);
         private static readonly DateTimeOffset _nowInput = new DateTimeOffset(2020, 6, 20, 16, 0, 0, TimeSpan.Zero);
 
         private Event Parse(string query) => new SUT().Parse(query, _tzOffsetInput, _nowInput);
@@ -17,7 +17,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [Fact]
         public void NextYearWorks()
         {
-            var now = new DateTimeOffset(2020, 12, 31, 16, 0, 0, TimeSpan.Zero);
+            var now = new DateTimeOffset(2020, 12, 31, 17, 0, 0, TimeSpan.Zero);
             var query = "Next year test at 7am.";
             var expectedEvent = new Event()
             {
@@ -59,7 +59,7 @@ namespace MonkeyButler.Business.Tests.Engine
             var expectedEvent = new Event()
             {
                 Title = "Crazy offset",
-                EventDateTime = _nowInput.AddHours(24 + 7).ToOffset(offset)
+                EventDateTime = _nowInput.AddHours(24 + 6).ToOffset(offset)
             };
 
             var result = new SUT().Parse(query, offset, _nowInput);

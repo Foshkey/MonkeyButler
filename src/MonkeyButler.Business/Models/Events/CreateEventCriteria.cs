@@ -6,13 +6,18 @@
     public class CreateEventCriteria
     {
         /// <summary>
-        /// The user query for creating the event.
+        /// The guild Id for settings.
         /// </summary>
-        public string? Query { get; set; }
+        public ulong GuildId { get; set; }
 
         /// <summary>
-        /// The event to be created, if wanting to go that route.
+        /// The user query for creating the event.
         /// </summary>
-        public Event? Event { get; set; }
+        public string Query { get; set; } = null!;
+
+        /// <summary>
+        /// The guild voice region Id for defaulting time zone.
+        /// </summary>
+        public string VoiceRegionId { get; set; } = null!;
     }
 }
