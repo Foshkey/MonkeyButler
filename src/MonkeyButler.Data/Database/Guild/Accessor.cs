@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 using MonkeyButler.Data.Models.Database.Guild;
 
 namespace MonkeyButler.Data.Database.Guild
@@ -17,15 +19,15 @@ namespace MonkeyButler.Data.Database.Guild
 
         public async Task SaveOptions(SaveOptionsQuery query)
         {
-            var existingOptions = await _context.GuildOptions.FindAsync(query.Options.Id);
+            var id = query.Options.Id;
 
-            if (existingOptions is null)
+            if (_context.GuildOptions.Any(x => x.Id == id))
             {
-                _context.Add(query.Options);
+                _context.GuildOptions.Update(query.Options);
             }
             else
             {
-                _context.Entry(existingOptions).CurrentValues.SetValues(query.Options);
+                _context.GuildOptions.Add(query.Options);
             }
 
             await _context.SaveChangesAsync();

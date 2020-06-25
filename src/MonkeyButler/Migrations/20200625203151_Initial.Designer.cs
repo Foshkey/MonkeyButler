@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MonkeyButler.Migrations
 {
     [DbContext(typeof(MonkeyButlerContext))]
-    [Migration("20200625200346_ChangedGuildOptions")]
-    partial class ChangedGuildOptions
+    [Migration("20200625203151_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,6 @@ namespace MonkeyButler.Migrations
             modelBuilder.Entity("MonkeyButler.Data.Models.Database.Guild.GuildOptions", b =>
                 {
                     b.Property<decimal>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("FreeCompanyId")
