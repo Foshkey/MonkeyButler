@@ -35,7 +35,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [Fact]
         public void EventAt1pmWhenNowIs2pmShouldSetEventDayAfter()
         {
-            var now = new DateTimeOffset(2020, 6, 20, 18, 0, 0, TimeSpan.Zero);
+            var now = new DateTimeOffset(2020, 6, 20, 18, 0, 0, TimeSpan.Zero); // 2pm EDT
             var query = "Event at 1pm.";
             var expectedEvent = new Event()
             {
@@ -66,6 +66,42 @@ namespace MonkeyButler.Business.Tests.Engine
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(_nowInput, result.CreationDateTime);
+            Assert.Equal(expectedEvent.EventDateTime, result.EventDateTime);
+        }
+
+        [Fact]
+        public void CreatingEventInsideDaylightSavingShouldWork()
+        {
+            var now = new DateTimeOffset(2020, 3, 6, 17, 0, 0, TimeSpan.Zero); // 12pm EST (not DST)
+            var query = "Daylight Saving Celebration on Sunday 10am";
+            var expectedEvent = new Event()
+            {
+                Title = "Daylight Saving Celebration",
+                EventDateTime = now.AddHours(24 * 2 - 3).ToOffset(_tzOffsetInput) // 10am EDT (not DST)
+            };
+
+            var result = new SUT().Parse(query, _tzOffsetInput, now);
+
+            Assert.Equal(expectedEvent.Title, result.Title);
+            Assert.Equal(now, result.CreationDateTime);
+            Assert.Equal(expectedEvent.EventDateTime, result.EventDateTime);
+        }
+
+        [Fact]
+        public void CreatingEventOutsideDaylightSavingShouldWork()
+        {
+            var now = new DateTimeOffset(2020, 10, 30, 16, 0, 0, TimeSpan.Zero); // 12pm EDT
+            var query = "Daylight Saving End Celebration on Sunday 10am";
+            var expectedEvent = new Event()
+            {
+                Title = "Daylight Saving End Celebration",
+                EventDateTime = now.AddHours(24 * 2 - 1).ToOffset(_tzOffsetInput) // 10am EST (not DST)
+            };
+
+            var result = new SUT().Parse(query, _tzOffsetInput, now);
+
+            Assert.Equal(expectedEvent.Title, result.Title);
+            Assert.Equal(now, result.CreationDateTime);
             Assert.Equal(expectedEvent.EventDateTime, result.EventDateTime);
         }
 
