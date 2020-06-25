@@ -77,7 +77,7 @@ namespace MonkeyButler.Business.Tests.Engine
             var expectedEvent = new Event()
             {
                 Title = "Daylight Saving Celebration",
-                EventDateTime = now.AddHours(24 * 2 - 3).ToOffset(_tzOffsetInput) // 10am EDT (not DST)
+                EventDateTime = now.AddHours(24 * 2 - 3).ToOffset(_tzOffsetInput) // 10am EDT
             };
 
             var result = new SUT().Parse(query, _tzOffsetInput, now);
