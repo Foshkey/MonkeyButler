@@ -45,6 +45,7 @@ namespace MonkeyButler.Data
 
             services
                 .AddSingleton<Cache.IAccessor, Cache.Accessor>()
+                .AddTransient<Database.Guild.IAccessor, Database.Guild.Accessor>()
                 .AddSingleton<XivApi.Character.IAccessor, XivApi.Character.Accessor>()
                 .AddSingleton<XivApi.FreeCompany.IAccessor, XivApi.FreeCompany.Accessor>();
 

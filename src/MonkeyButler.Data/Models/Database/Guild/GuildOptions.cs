@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MonkeyButler.Data.Models.Database
+namespace MonkeyButler.Data.Models.Database.Guild
 {
     /// <summary>
     /// Options for a guild.
@@ -13,9 +13,9 @@ namespace MonkeyButler.Data.Models.Database
         public ulong Id { get; set; }
 
         /// <summary>
-        /// The free company associated with the guild.
+        /// The free company Lodestone Id associated with the guild.
         /// </summary>
-        public FreeCompanyOptions? FreeCompany { get; set; }
+        public string? FreeCompanyId { get; set; }
 
         /// <summary>
         /// The prefix to be used with the bot in this guild.

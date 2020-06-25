@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MonkeyButler.Data.Models.Database;
+using MonkeyButler.Data.Models.Database.Guild;
 
 namespace MonkeyButler.Data.Database
 {
@@ -19,6 +19,6 @@ namespace MonkeyButler.Data.Database
         /// <summary>
         /// Options for individual guilds in Discord.
         /// </summary>
-        public DbSet<GuildOptions>? GuildOptions { get; set; }
+        public DbSet<GuildOptions> GuildOptions { get; set; } = null!;
     }
 }

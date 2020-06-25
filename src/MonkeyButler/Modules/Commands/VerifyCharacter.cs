@@ -70,7 +70,7 @@ namespace MonkeyButler.Modules.Commands
                 default:
                     await Task.WhenAll(
                         ReplyAsync("It appears that this server is not set up to do character verification."),
-                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName Free Company Name` in your server.")
+                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName` in your server.")
                     );
                     return;
             }
