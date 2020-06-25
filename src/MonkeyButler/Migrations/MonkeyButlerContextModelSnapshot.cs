@@ -22,6 +22,7 @@ namespace MonkeyButler.Migrations
             modelBuilder.Entity("MonkeyButler.Data.Models.Database.Guild.GuildOptions", b =>
                 {
                     b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("FreeCompanyId")

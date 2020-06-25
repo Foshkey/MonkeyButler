@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
-using MonkeyButler.Business.Managers;
 using MonkeyButler.Data.Database;
+using MonkeyButler.Extensions;
 using MonkeyButler.Handlers;
 using MonkeyButler.Options;
 using MonkeyButler.Services;
@@ -98,10 +98,10 @@ namespace MonkeyButler
         /// <param name="env">The environment information.</param>
         /// <param name="bot">The discord bot.</param>
         /// <param name="cacheManager">The cache manager.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot, ICacheManager cacheManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot)
         {
+            app.UpdateDatabase();
             bot.Start();
-            cacheManager.InitializeGuildOptions();
 
             if (env.IsDevelopment())
             {
