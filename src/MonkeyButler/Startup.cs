@@ -6,11 +6,13 @@ using Discord.WebSocket;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
 using MonkeyButler.Business.Managers;
+using MonkeyButler.Data.Database;
 using MonkeyButler.Handlers;
 using MonkeyButler.Options;
 using MonkeyButler.Services;
@@ -69,6 +71,16 @@ namespace MonkeyButler
                     DefaultRunMode = RunMode.Async,
                     CaseSensitiveCommands = false
                 }));
+
+            // Postgres
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<MonkeyButlerContext>(options =>
+                {
+                    options.UseNpgsql(_configuration.GetConnectionString("Npgsql"), npgsqlOptions =>
+                    {
+                        npgsqlOptions.MigrationsAssembly("MonkeyButler");
+                    });
+                });
 
             services
                 .AddSingleton<ILogHandler, LogHandler>()

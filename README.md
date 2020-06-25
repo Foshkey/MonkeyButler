@@ -26,10 +26,13 @@ This is a Discord bot working with Final Fantasy XIV data. Built for the Twiligh
 
 To compile and run this code yourself, you can either load `MonkeyButler.sln` in Visual Studio or use the [dotnet CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/).
 
-This code is expecting two secret configuration values that is not included in this repository. It is highly encouraged to use user secrets (or environment variables in production) or add these values to `appsettings.json` in /src/MonkeyButler.
+This code is expecting three secret configuration values that is not included in this repository. It is highly encouraged to use user secrets (or environment variables in production) or add these values to `appsettings.json` in /src/MonkeyButler.
 
 ```json
 {
+  "ConnectionStrings": {
+    "Npgsql": "postgresql-connection-string"
+  },
   "Discord": {
     "Token": "discord-bot-token"
   },
@@ -43,10 +46,30 @@ The discord bot token can be obtained by creating your own bot application in th
 
 The xivapi.com key can be obtained from the [xivapi.com account page](https://xivapi.com/account).
 
-With these configuration values loaded, either run `MonkeyButler` in Visual Studio or execute the following dotnet command:
+As indicated by the `Npgsql` connection string, Monkey Butler utilizes Entity Framework Core and a PostgreSQL database connection. Install [PostgreSQL](https://www.postgresql.org/download/), configure with a super user, and add a connection string. As an example:
+
+```
+User ID = monkey_butler_app; Password = password; Server = localhost; Port = 5432; Database = MonkeyButler.Dev; Integrated Security = true; Pooling = true
+```
+
+As of .NET 3.0, the `dotnet-ef` tool does not come prepackaged with the `dotnet` CLI. Execute the following command to install the `dotnet-ef` tool for database migrations & updates.
 
 ```cmd
-dotnet run --project src/MonkeyButler/MonkeyButler.csproj
+> dotnet tool install --global dotnet-ef
+```
+
+With the `dotnet-ef` tool installed, navigate to the `MonkeyButler` project directory and execute the following to perform a migration and update:
+
+```cmd
+...src\MonkeyButler> dotnet ef migrations add InitialMigration
+...src\MonkeyButler> dotnet ef database update
+```
+
+
+With these configuration values loaded and database configured, either run `MonkeyButler` in Visual Studio or execute the following dotnet command:
+
+```cmd
+...src\MonkeyButler> dotnet run
 ```
 
 ## Sample app execution
