@@ -16,7 +16,7 @@ namespace MonkeyButler.Options
         /// <summary>
         /// The roles for event signups.
         /// </summary>
-        public List<string> SignupRoles { get; set; }
+        public List<string>? SignupRoles { get; set; }
 
         /// <summary>
         /// The delay before scope is cleaned up on commands.
