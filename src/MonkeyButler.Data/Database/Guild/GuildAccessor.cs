@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Logging;
 using MonkeyButler.Data.Models.Database.Guild;
 
 namespace MonkeyButler.Data.Database.Guild
@@ -9,24 +10,37 @@ namespace MonkeyButler.Data.Database.Guild
     internal class GuildAccessor : IGuildAccessor
     {
         private readonly MonkeyButlerContext _context;
+        private readonly ILogger<GuildAccessor> _logger;
 
-        public GuildAccessor(MonkeyButlerContext context)
+        public GuildAccessor(MonkeyButlerContext context, ILogger<GuildAccessor> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<GuildOptions?> GetOptions(GetOptionsQuery query) => await _context.GuildOptions.FindAsync(query.GuildId);
+        public async Task<GuildOptions?> GetOptions(GetOptionsQuery query)
+        {
+            _logger.LogDebug("Retrieving options for guild '{GuildId}'.", query.GuildId);
+
+            return await _context.GuildOptions.FindAsync(query.GuildId);
+        }
 
         public async Task SaveOptions(SaveOptionsQuery query)
         {
+            _logger.LogDebug("Saving options for guild '{GuildId}'.", query.Options.Id);
+
             var id = query.Options.Id;
 
             if (_context.GuildOptions.Any(x => x.Id == id))
             {
+                _logger.LogDebug("Guild options already exist. Updating '{GuildId}'.", query.Options.Id);
+
                 _context.GuildOptions.Update(query.Options);
             }
             else
             {
+                _logger.LogDebug("Guild options does not exist. Inserting '{GuildId}'.", query.Options.Id);
+
                 _context.GuildOptions.Add(query.Options);
             }
 

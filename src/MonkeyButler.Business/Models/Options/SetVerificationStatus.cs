@@ -6,11 +6,6 @@
     public enum SetVerificationStatus
     {
         /// <summary>
-        /// General error.
-        /// </summary>
-        Error,
-
-        /// <summary>
         /// The request was successful.
         /// </summary>
         Success,
