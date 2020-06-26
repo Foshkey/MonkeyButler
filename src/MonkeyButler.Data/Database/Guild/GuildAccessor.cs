@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Data.Models.Database.Guild;
 
@@ -27,19 +26,19 @@ namespace MonkeyButler.Data.Database.Guild
 
         public async Task SaveOptions(SaveOptionsQuery query)
         {
-            _logger.LogDebug("Saving options for guild '{GuildId}'.", query.Options.Id);
-
             var id = query.Options.Id;
+
+            _logger.LogDebug("Saving options for guild '{GuildId}'.", id);
 
             if (_context.GuildOptions.Any(x => x.Id == id))
             {
-                _logger.LogDebug("Guild options already exist. Updating '{GuildId}'.", query.Options.Id);
+                _logger.LogDebug("Guild options already exist. Updating '{GuildId}'.", id);
 
                 _context.GuildOptions.Update(query.Options);
             }
             else
             {
-                _logger.LogDebug("Guild options does not exist. Inserting '{GuildId}'.", query.Options.Id);
+                _logger.LogDebug("Guild options does not exist. Inserting '{GuildId}'.", id);
 
                 _context.GuildOptions.Add(query.Options);
             }

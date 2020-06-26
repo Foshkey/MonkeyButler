@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.Options;
 using MonkeyButler.Data.Cache;
 using MonkeyButler.Data.Database.Guild;
+using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.XivApi.FreeCompany;
 using MonkeyButler.Data.XivApi.FreeCompany;
 
@@ -62,9 +64,48 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Searching for free company '{FreeCompanyName}' on server '{ServerName}'", name, server);
 
-            var fcSearchResult = await _freeCompanyAccessor.Search(fcSearchQuery);
+            var fcSearchData = await _freeCompanyAccessor.Search(fcSearchQuery);
 
-            throw new NotImplementedException();
+            // Find single, exact match.
+            var fc = fcSearchData.Results?.SingleOrDefault(x =>
+                (x.Name?.Equals(name, StringComparison.OrdinalIgnoreCase) ?? false) &&
+                (x.Server?.Equals(server, StringComparison.OrdinalIgnoreCase) ?? false));
+
+            if (fc is null)
+            {
+                _logger.LogDebug("Could not find single exact match of '{FreeCompanyName}' on server '{ServerName}'", name, server);
+
+                return new SetVerificationResult()
+                {
+                    Status = SetVerificationStatus.FreeCompanyNotFound
+                };
+            }
+
+            _logger.LogDebug("Found free company '{FreeCompanyName}' with Id '{FreeCompanyId}'. Saving verification options to database.", fc.Name, fc.Id);
+
+            var getOptionsQuery = new GetOptionsQuery()
+            {
+                GuildId = criteria.GuildId
+            };
+
+            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
+
+            options.Id = criteria.GuildId;
+            options.FreeCompanyId = fc.Id;
+            options.Server = server;
+            options.VerifiedRoleId = criteria.RoleId;
+
+            var saveOptionsQuery = new SaveOptionsQuery()
+            {
+                Options = options
+            };
+
+            await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+            return new SetVerificationResult()
+            {
+                Status = SetVerificationStatus.Success
+            };
         }
     }
 

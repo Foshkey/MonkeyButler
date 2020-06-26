@@ -33,8 +33,8 @@ namespace MonkeyButler.Data.Models.Database.Guild
         public List<string>? SignupEmotes { get; set; }
 
         /// <summary>
-        /// The role name given to verified members.
+        /// The role Id given to verified members.
         /// </summary>
-        public string? VerifiedRole { get; set; }
+        public ulong VerifiedRoleId { get; set; }
     }
 }

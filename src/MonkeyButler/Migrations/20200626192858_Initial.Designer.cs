@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MonkeyButler.Migrations
 {
     [DbContext(typeof(MonkeyButlerContext))]
-    [Migration("20200625211134_Initial")]
+    [Migration("20200626192858_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,8 @@ namespace MonkeyButler.Migrations
                     b.Property<List<string>>("SignupEmotes")
                         .HasColumnType("text[]");
 
-                    b.Property<string>("VerifiedRole")
-                        .HasColumnType("text");
+                    b.Property<decimal>("VerifiedRoleId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("Id");
 

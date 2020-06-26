@@ -16,7 +16,7 @@ namespace MonkeyButler.Migrations
                     Prefix = table.Column<string>(nullable: true),
                     Server = table.Column<string>(nullable: true),
                     SignupEmotes = table.Column<List<string>>(nullable: true),
-                    VerifiedRole = table.Column<string>(nullable: true)
+                    VerifiedRoleId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {

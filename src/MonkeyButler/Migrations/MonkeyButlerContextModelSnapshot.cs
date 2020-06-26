@@ -37,8 +37,8 @@ namespace MonkeyButler.Migrations
                     b.Property<List<string>>("SignupEmotes")
                         .HasColumnType("text[]");
 
-                    b.Property<string>("VerifiedRole")
-                        .HasColumnType("text");
+                    b.Property<decimal>("VerifiedRoleId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("Id");
 
