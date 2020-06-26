@@ -4,7 +4,6 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.Events;
-using MonkeyButler.Business.Validators.Events;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -12,16 +11,30 @@ namespace MonkeyButler.Business.Managers
     {
         private readonly IEventParsingEngine _eventParsingEngine;
         private readonly ILogger<EventsManager> _logger;
+        private readonly IValidator<CreateEventCriteria> _createValidator;
+        private readonly IValidator<SaveEventCriteria> _saveValidator;
+        private readonly IValidator<UpdateEventCriteria> _updateValidator;
+        private readonly IValidator<DeleteEventCriteria> _deleteValidator;
 
-        public EventsManager(IEventParsingEngine eventParsingEngine, ILogger<EventsManager> logger)
+        public EventsManager(
+            IEventParsingEngine eventParsingEngine,
+            ILogger<EventsManager> logger,
+            IValidator<CreateEventCriteria> createValidator,
+            IValidator<SaveEventCriteria> saveValidator,
+            IValidator<UpdateEventCriteria> updateValidator,
+            IValidator<DeleteEventCriteria> deleteValidator)
         {
             _eventParsingEngine = eventParsingEngine ?? throw new ArgumentNullException(nameof(eventParsingEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
+            _saveValidator = saveValidator ?? throw new ArgumentNullException(nameof(saveValidator));
+            _updateValidator = updateValidator ?? throw new ArgumentNullException(nameof(updateValidator));
+            _deleteValidator = deleteValidator ?? throw new ArgumentNullException(nameof(deleteValidator));
         }
 
         public Task<CreateEventResult> CreateEvent(CreateEventCriteria criteria)
         {
-            new CreateEventValidator().ValidateAndThrow(criteria);
+            _createValidator.ValidateAndThrow(criteria);
 
             Event newEvent;
 
@@ -47,7 +60,7 @@ namespace MonkeyButler.Business.Managers
 
         public async Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria)
         {
-            new SaveEventValidator().ValidateAndThrow(criteria);
+            _saveValidator.ValidateAndThrow(criteria);
 
             return new SaveEventResult()
             {
@@ -57,14 +70,14 @@ namespace MonkeyButler.Business.Managers
 
         public async Task<UpdateEventResult> UpdateEvent(UpdateEventCriteria criteria)
         {
-            new UpdateEventValidator().ValidateAndThrow(criteria);
+            _updateValidator.ValidateAndThrow(criteria);
 
             return new UpdateEventResult();
         }
 
         public async Task<DeleteEventResult> DeleteEvent(DeleteEventCriteria criteria)
         {
-            new DeleteEventValidator().ValidateAndThrow(criteria);
+            _deleteValidator.ValidateAndThrow(criteria);
 
             return new DeleteEventResult();
         }

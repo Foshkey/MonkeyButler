@@ -43,11 +43,11 @@ namespace MonkeyButler.Data
 
             services.AddDistributedMemoryCache();
 
-            services
-                .AddSingleton<Cache.IAccessor, Cache.Accessor>()
-                .AddTransient<Database.Guild.IAccessor, Database.Guild.Accessor>()
-                .AddSingleton<XivApi.Character.IAccessor, XivApi.Character.Accessor>()
-                .AddSingleton<XivApi.FreeCompany.IAccessor, XivApi.FreeCompany.Accessor>();
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithTransientLifetime());
 
             return services;
         }

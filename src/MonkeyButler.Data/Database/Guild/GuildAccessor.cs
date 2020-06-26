@@ -6,11 +6,11 @@ using MonkeyButler.Data.Models.Database.Guild;
 
 namespace MonkeyButler.Data.Database.Guild
 {
-    internal class Accessor : IAccessor
+    internal class GuildAccessor : IGuildAccessor
     {
         private readonly MonkeyButlerContext _context;
 
-        public Accessor(MonkeyButlerContext context)
+        public GuildAccessor(MonkeyButlerContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -37,7 +37,7 @@ namespace MonkeyButler.Data.Database.Guild
     /// <summary>
     /// Database guild options accessor
     /// </summary>
-    public interface IAccessor
+    public interface IGuildAccessor
     {
         /// <summary>
         /// Gets the options for a guild. Null if not found.

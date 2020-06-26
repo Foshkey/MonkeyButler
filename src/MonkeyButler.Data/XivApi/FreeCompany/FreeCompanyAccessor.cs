@@ -7,12 +7,12 @@ using MonkeyButler.Data.Models.XivApi.FreeCompany;
 
 namespace MonkeyButler.Data.XivApi.FreeCompany
 {
-    internal class Accessor : IAccessor
+    internal class FreeCompanyAccessor : IFreeCompanyAccessor
     {
         private readonly IXivApiClient _xivApiClient;
         private readonly IOptionsMonitor<JsonSerializerOptions> _jsonOptions;
 
-        public Accessor(IXivApiClient xivApiClient, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
+        public FreeCompanyAccessor(IXivApiClient xivApiClient, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
         {
             _xivApiClient = xivApiClient ?? throw new ArgumentNullException(nameof(xivApiClient));
             _jsonOptions = jsonOptions ?? throw new ArgumentNullException(nameof(jsonOptions));
@@ -44,7 +44,7 @@ namespace MonkeyButler.Data.XivApi.FreeCompany
     /// <summary>
     /// Accessor for data for Free Companies
     /// </summary>
-    public interface IAccessor
+    public interface IFreeCompanyAccessor
     {
         /// <summary>
         /// Searches for the Free Company and returns a list of brief representations.

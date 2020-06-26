@@ -11,14 +11,14 @@ namespace MonkeyButler.Business.Managers
 {
     internal class CacheManager : ICacheManager
     {
-        private readonly Data.Cache.IAccessor _cacheAccessor;
-        private readonly Data.XivApi.FreeCompany.IAccessor _freeCompanyAccessor;
+        private readonly Data.Cache.ICacheAccessor _cacheAccessor;
+        private readonly Data.XivApi.FreeCompany.IFreeCompanyAccessor _freeCompanyAccessor;
         private readonly ILogger<CacheManager> _logger;
         private readonly IOptionsMonitor<GuildOptionsDictionary> _guildOptions;
 
         public CacheManager(
-            Data.Cache.IAccessor cacheAccessor,
-            Data.XivApi.FreeCompany.IAccessor freeCompanyAccessor,
+            Data.Cache.ICacheAccessor cacheAccessor,
+            Data.XivApi.FreeCompany.IFreeCompanyAccessor freeCompanyAccessor,
             ILogger<CacheManager> logger,
             IOptionsMonitor<GuildOptionsDictionary> guildOptions
         )

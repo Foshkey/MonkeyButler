@@ -7,12 +7,12 @@ using MonkeyButler.Data.Models.XivApi.Character;
 
 namespace MonkeyButler.Data.XivApi.Character
 {
-    internal class Accessor : IAccessor
+    internal class CharacterAccessor : ICharacterAccessor
     {
         private readonly IXivApiClient _xivApiClient;
         private readonly IOptionsMonitor<JsonSerializerOptions> _jsonOptions;
 
-        public Accessor(IXivApiClient xivApiClient, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
+        public CharacterAccessor(IXivApiClient xivApiClient, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
         {
             _xivApiClient = xivApiClient ?? throw new ArgumentNullException(nameof(xivApiClient));
             _jsonOptions = jsonOptions ?? throw new ArgumentNullException(nameof(jsonOptions));
@@ -66,7 +66,7 @@ namespace MonkeyButler.Data.XivApi.Character
     /// <summary>
     /// The accessor for characters in xivapi
     /// </summary>
-    public interface IAccessor
+    public interface ICharacterAccessor
     {
         /// <summary>
         /// Gets detailed character information.

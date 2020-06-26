@@ -88,7 +88,7 @@ namespace MonkeyButler.Modules.Commands
             if (role is null)
             {
                 await ReplyAsync($"However, I could not find the server's verified role ({result.VerifiedRole}). I will notify the server's administrator.");
-                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName Free Company Name` in your server.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
             }
 
             try

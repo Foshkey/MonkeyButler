@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Data.Models.XivApi.Character;
 using Xunit;
-using SUT = MonkeyButler.Data.XivApi.Character.IAccessor;
+using SUT = MonkeyButler.Data.XivApi.Character.ICharacterAccessor;
 
 namespace MonkeyButler.Data.Tests.XivApi.Character
 {

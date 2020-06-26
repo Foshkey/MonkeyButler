@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using MonkeyButler.Data.Database.Guild;
-using MonkeyButler.Data.Models.Database.Guild;
+using MonkeyButler.Business.Managers;
+using MonkeyButler.Business.Models.Options;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -12,32 +13,42 @@ namespace MonkeyButler.Modules.Commands
     [Group("Set")]
     public class Set : CommandModule
     {
-        private readonly IAccessor _accessor;
+        private readonly IOptionsManager _optionsManager;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="accessor"></param>
-        public Set(IAccessor accessor)
+        /// <param name="optionsManager"></param>
+        public Set(IOptionsManager optionsManager)
         {
-            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
         }
 
+        /// <summary>
+        /// Sets options for verification.
+        /// </summary>
+        /// <param name="verifiedRoleName"></param>
+        /// <param name="freeCompanyName"></param>
+        /// <returns></returns>
         [Command("Verify")]
         [Summary("Sets options for verification.")]
-        public async Task Verify(string verifiedRoleName, [Remainder] string freeCompanyName)
+        public async Task Verify(string verifiedRoleName, [Remainder] string remainder)
         {
-            var options = new GuildOptions()
-            {
-                FreeCompanyId = freeCompanyName,
-                Id = Context.Guild.Id,
-                VerifiedRole = verifiedRoleName
-            };
+            using var setTyping = Context.Channel.EnterTypingState();
 
-            await _accessor.SaveOptions(new SaveOptionsQuery()
+            var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == verifiedRoleName);
+
+            if (role is null)
             {
-                Options = options
-            });
+                await ReplyAsync($"I couldn't find any roles by the name of '{verifiedRoleName}'.");
+                return;
+            }
+
+            var criteria = new SetVerificationCriteria()
+            {
+                RoleId = role.Id,
+                FreeCompanyAndServer = remainder
+            };
         }
     }
 }

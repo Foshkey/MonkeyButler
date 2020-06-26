@@ -10,14 +10,14 @@ namespace MonkeyButler.Business.Managers
 {
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
-        private readonly Data.Cache.IAccessor _cacheAccessor;
-        private readonly Data.XivApi.Character.IAccessor _characterAccessor;
+        private readonly Data.Cache.ICacheAccessor _cacheAccessor;
+        private readonly Data.XivApi.Character.ICharacterAccessor _characterAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
 
         public VerifyCharacterManager(
-            Data.Cache.IAccessor cacheAccessor,
-            Data.XivApi.Character.IAccessor characterAccessor,
+            Data.Cache.ICacheAccessor cacheAccessor,
+            Data.XivApi.Character.ICharacterAccessor characterAccessor,
             INameServerEngine nameServerEngine,
             ILogger<VerifyCharacterManager> logger
         )

@@ -11,8 +11,8 @@ namespace MonkeyButler.Business.Tests.Managers
 {
     public class CacheManagerTests
     {
-        private readonly Mock<Data.Cache.IAccessor> _cacheAccessorMock = new Mock<Data.Cache.IAccessor>();
-        private readonly Mock<Data.XivApi.FreeCompany.IAccessor> _freeCompanyAccessorMock = new Mock<Data.XivApi.FreeCompany.IAccessor>();
+        private readonly Mock<Data.Cache.ICacheAccessor> _cacheAccessorMock = new Mock<Data.Cache.ICacheAccessor>();
+        private readonly Mock<Data.XivApi.FreeCompany.IFreeCompanyAccessor> _freeCompanyAccessorMock = new Mock<Data.XivApi.FreeCompany.IFreeCompanyAccessor>();
         private readonly Mock<IOptionsMonitor<GuildOptionsDictionary>> _optionsMock = new Mock<IOptionsMonitor<GuildOptionsDictionary>>();
         private readonly GuildOptionsDictionary _guildOptions = new GuildOptionsDictionary();
 

@@ -11,8 +11,8 @@ namespace MonkeyButler.Business.Tests.Managers
 {
     public class VerifyCharacterManager
     {
-        private readonly Mock<Data.Cache.IAccessor> _cacheAccessorMock = new Mock<Data.Cache.IAccessor>();
-        private readonly Mock<Data.XivApi.Character.IAccessor> _characterAccessorMock = new Mock<Data.XivApi.Character.IAccessor>();
+        private readonly Mock<Data.Cache.ICacheAccessor> _cacheAccessorMock = new Mock<Data.Cache.ICacheAccessor>();
+        private readonly Mock<Data.XivApi.Character.ICharacterAccessor> _characterAccessorMock = new Mock<Data.XivApi.Character.ICharacterAccessor>();
 
         private SUT BuildTarget() => Resolver
             .Add(_cacheAccessorMock.Object)

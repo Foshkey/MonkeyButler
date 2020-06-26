@@ -7,13 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace MonkeyButler.Data.Cache
 {
-    internal class Accessor : IAccessor
+    internal class CacheAccessor : ICacheAccessor
     {
         private readonly IDistributedCache _distributedCache;
-        private readonly ILogger<Accessor> _logger;
+        private readonly ILogger<CacheAccessor> _logger;
         private readonly IOptionsMonitor<JsonSerializerOptions> _jsonOptions;
 
-        public Accessor(IDistributedCache distributedCache, ILogger<Accessor> logger, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
+        public CacheAccessor(IDistributedCache distributedCache, ILogger<CacheAccessor> logger, IOptionsMonitor<JsonSerializerOptions> jsonOptions)
         {
             _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -59,7 +59,7 @@ namespace MonkeyButler.Data.Cache
     /// <summary>
     /// Accessor for the distributed cache.
     /// </summary>
-    public interface IAccessor
+    public interface ICacheAccessor
     {
         /// <summary>
         /// Deletes the key from the cache.
