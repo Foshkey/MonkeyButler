@@ -15,6 +15,7 @@ namespace MonkeyButler.Business.Managers
 {
     internal class OptionsManager : IOptionsManager
     {
+        private readonly IEmotesEngine _emotesEngine;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ICacheAccessor _cacheAccessor;
         private readonly IFreeCompanyAccessor _freeCompanyAccessor;
@@ -24,6 +25,7 @@ namespace MonkeyButler.Business.Managers
         private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
 
         public OptionsManager(
+            IEmotesEngine emotesEngine,
             INameServerEngine nameServerEngine,
             ICacheAccessor cacheAccessor,
             IFreeCompanyAccessor freeCompanyAccessor,
@@ -32,6 +34,7 @@ namespace MonkeyButler.Business.Managers
             IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
             IValidator<SetVerificationCriteria> setVerificationValidator)
         {
+            _emotesEngine = emotesEngine ?? throw new ArgumentNullException(nameof(emotesEngine));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _freeCompanyAccessor = freeCompanyAccessor ?? throw new ArgumentNullException(nameof(freeCompanyAccessor));
@@ -41,11 +44,45 @@ namespace MonkeyButler.Business.Managers
             _setVerificationValidator = setVerificationValidator ?? throw new ArgumentNullException(nameof(setVerificationValidator));
         }
 
-        public Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
+        public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
         {
             _setSignupEmotesValidator.ValidateAndThrow(criteria);
 
-            throw new NotImplementedException();
+            _logger.LogDebug("Setting sign-up emotes options for guild '{GuildId}' with emotes '{Emotes}'.", criteria.GuildId, criteria.Emotes);
+
+            var emotes = _emotesEngine.Split(criteria.Emotes);
+
+            if (emotes.Count == 0)
+            {
+                _logger.LogDebug("Valid emotes were not found.");
+
+                return new SetSignupEmotesResult()
+                {
+                    Status = SetSignupEmotesStatus.EmotesNotFound
+                };
+            }
+
+            var getOptionsQuery = new GetOptionsQuery()
+            {
+                GuildId = criteria.GuildId
+            };
+
+            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
+
+            options.Id = criteria.GuildId;
+            options.SignupEmotes = emotes;
+
+            var saveOptionsQuery = new SaveOptionsQuery()
+            {
+                Options = options
+            };
+
+            await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+            return new SetSignupEmotesResult()
+            {
+                Status = SetSignupEmotesStatus.Success
+            };
         }
 
         public async Task<SetVerificationResult> SetVerification(SetVerificationCriteria criteria)

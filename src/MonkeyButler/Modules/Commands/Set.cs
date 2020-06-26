@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.Options;
@@ -17,19 +16,16 @@ namespace MonkeyButler.Modules.Commands
     public class Set : CommandModule
     {
         private readonly IOptionsManager _optionsManager;
-        private readonly ILogger<Set> _logger;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="optionsManager"></param>
-        /// <param name="logger"></param>
         /// <param name="appOptions"></param>
-        public Set(IOptionsManager optionsManager, ILogger<Set> logger, IOptionsMonitor<AppOptions> appOptions)
+        public Set(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
         {
             _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
@@ -92,7 +88,7 @@ namespace MonkeyButler.Modules.Commands
 
             if (result.Status == SetSignupEmotesStatus.EmotesNotFound)
             {
-                await ReplyAsync($"I could not find any valid emotes in your setting. Please provide emotes as e.g. '{_appOptions.CurrentValue.Discord?.Prefix}set signup :white_check_mark:'.");
+                await ReplyAsync($"I could not find any valid emotes in your command. Please provide emotes as e.g. '{_appOptions.CurrentValue.Discord?.Prefix}set signup :white_check_mark:'.");
                 return;
             }
 
