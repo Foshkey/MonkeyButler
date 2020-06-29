@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
@@ -16,7 +17,6 @@ namespace MonkeyButler.Modules.Commands
     public class Set : CommandModule
     {
         private readonly IOptionsManager _optionsManager;
-        private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
@@ -26,7 +26,6 @@ namespace MonkeyButler.Modules.Commands
         public Set(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
-            _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
         /// <summary>
@@ -36,6 +35,7 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         [Command("Prefix")]
         [Summary("Sets a custom prefix for this bot in this server.")]
+        [RequireUserPermission(ChannelPermission.ManageChannels)]
         public async Task Prefix(string prefix)
         {
             using var setTyping = Context.Channel.EnterTypingState();
@@ -59,6 +59,7 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         [Command("Verify")]
         [Summary("Sets options for verification.")]
+        [RequireUserPermission(ChannelPermission.ManageChannels)]
         public async Task Verify(string verifiedRoleName, [Remainder] string remainder)
         {
             using var setTyping = Context.Channel.EnterTypingState();
@@ -96,6 +97,7 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         [Command("Signup")]
         [Summary("Sets sign-up emotes for events.")]
+        [RequireUserPermission(ChannelPermission.ManageChannels)]
         public async Task Signup([Remainder] string emotes)
         {
             using var setTyping = Context.Channel.EnterTypingState();
