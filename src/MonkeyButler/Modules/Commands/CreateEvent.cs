@@ -24,7 +24,7 @@ namespace MonkeyButler.Modules.Commands
         /// <summary>
         /// Constructor.
         /// </summary>
-        public CreateEvent(IEventsManager eventsManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
+        public CreateEvent(IEventsManager eventsManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _eventsManager = eventsManager ?? throw new ArgumentNullException(nameof(eventsManager));
             _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));

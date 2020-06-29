@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.VerifyCharacter;
 using MonkeyButler.Options;
-using MonkeyButler.Services;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -19,17 +18,13 @@ namespace MonkeyButler.Modules.Commands
     public class VerifyCharacter : CommandModule
     {
         private readonly IVerifyCharacterManager _verifyCharacterManager;
-        private readonly IOptionsManager _optionsManager;
-        private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
+        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
-            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
-            _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
         /// <summary>
@@ -73,7 +68,7 @@ namespace MonkeyButler.Modules.Commands
                 default:
                     await Task.WhenAll(
                         ReplyAsync("It appears that this server is not set up to do character verification."),
-                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName` in your server.")
+                        NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{await GetPrefix()}set verify VerifiedRoleName FreeCompanyName` in your server.")
                     );
                     return;
             }
@@ -91,7 +86,7 @@ namespace MonkeyButler.Modules.Commands
             if (role is null)
             {
                 await ReplyAsync($"However, I could not find the server's verified role. I will notify the server's administrator.");
-                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the verified role. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the verified role. If you changed this role, please use the `set` command again, e.g. `{await GetPrefix()}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
             }
 
             try

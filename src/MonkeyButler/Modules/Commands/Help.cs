@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
+using MonkeyButler.Business.Managers;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
@@ -20,8 +21,9 @@ namespace MonkeyButler.Modules.Commands
         /// Constructor.
         /// </summary>
         /// <param name="commandService">The command service.</param>
+        /// <param name="optionsManager"></param>
         /// <param name="appOptions">The application options.</param>
-        public Help(CommandService commandService, IOptionsMonitor<AppOptions> appOptions)
+        public Help(CommandService commandService, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
@@ -34,7 +36,7 @@ namespace MonkeyButler.Modules.Commands
         [Command("help")]
         public async Task HelpAsync()
         {
-            var prefix = _appOptions.CurrentValue.Discord?.Prefix;
+            var prefix = await GetPrefix();
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
@@ -81,7 +83,7 @@ namespace MonkeyButler.Modules.Commands
                 return;
             }
 
-            var prefix = _appOptions.CurrentValue.Discord?.Prefix;
+            var prefix = await GetPrefix();
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),

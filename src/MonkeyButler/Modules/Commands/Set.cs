@@ -23,7 +23,7 @@ namespace MonkeyButler.Modules.Commands
         /// </summary>
         /// <param name="optionsManager"></param>
         /// <param name="appOptions"></param>
-        public Set(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
+        public Set(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
@@ -110,7 +110,7 @@ namespace MonkeyButler.Modules.Commands
 
             if (result.Status == SetSignupEmotesStatus.EmotesNotFound)
             {
-                await ReplyAsync($"I could not find any valid emotes in your command. Please provide emotes as e.g. '{_appOptions.CurrentValue.Discord?.Prefix}set signup :white_check_mark:'.");
+                await ReplyAsync($"I could not find any valid emotes in your command. Please provide emotes as e.g. '{await GetPrefix()}set signup :white_check_mark:'.");
                 return;
             }
 
