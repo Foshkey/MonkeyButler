@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MonkeyButler.Migrations
 {
     [DbContext(typeof(MonkeyButlerContext))]
-    [Migration("20200626192858_Initial")]
+    [Migration("20200629151536_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,22 @@ namespace MonkeyButler.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("MonkeyButler.Data.Models.Database.Guild.FreeCompany", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Server")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FreeCompany");
+                });
 
             modelBuilder.Entity("MonkeyButler.Data.Models.Database.Guild.GuildOptions", b =>
                 {
@@ -33,9 +49,6 @@ namespace MonkeyButler.Migrations
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
 
-                    b.Property<string>("Server")
-                        .HasColumnType("text");
-
                     b.Property<List<string>>("SignupEmotes")
                         .HasColumnType("text[]");
 
@@ -44,7 +57,16 @@ namespace MonkeyButler.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FreeCompanyId");
+
                     b.ToTable("GuildOptions");
+                });
+
+            modelBuilder.Entity("MonkeyButler.Data.Models.Database.Guild.GuildOptions", b =>
+                {
+                    b.HasOne("MonkeyButler.Data.Models.Database.Guild.FreeCompany", "FreeCompany")
+                        .WithMany()
+                        .HasForeignKey("FreeCompanyId");
                 });
 #pragma warning restore 612, 618
         }

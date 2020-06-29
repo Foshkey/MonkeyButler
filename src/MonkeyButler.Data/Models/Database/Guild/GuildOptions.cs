@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MonkeyButler.Data.Models.XivApi.FreeCompany;
 
 namespace MonkeyButler.Data.Models.Database.Guild
 {
@@ -16,7 +15,7 @@ namespace MonkeyButler.Data.Models.Database.Guild
         /// <summary>
         /// The free company associated with the guild.
         /// </summary>
-        public FreeCompanyBrief? FreeCompany { get; set; }
+        public FreeCompany? FreeCompany { get; set; }
 
         /// <summary>
         /// The prefix to be used with the bot in this guild.

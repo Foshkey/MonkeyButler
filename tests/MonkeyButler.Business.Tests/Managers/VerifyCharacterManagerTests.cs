@@ -50,7 +50,7 @@ namespace MonkeyButler.Business.Tests.Managers
             var guildId = (ulong)8923847;
             var guildOptions = new GuildOptions()
             {
-                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
+                FreeCompany = new FreeCompany()
                 {
                     Id = "9827349"
                 },
@@ -83,7 +83,7 @@ namespace MonkeyButler.Business.Tests.Managers
             var guildId = (ulong)8923847;
             var guildOptions = new GuildOptions
             {
-                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
+                FreeCompany = new FreeCompany()
                 {
                     Id = "9827349",
                     Server = "Diabolos"
@@ -120,7 +120,7 @@ namespace MonkeyButler.Business.Tests.Managers
             var guildId = (ulong)8923847;
             var guildOptions = new GuildOptions()
             {
-                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
+                FreeCompany = new FreeCompany()
                 {
                     Id = "9827349",
                     Server = "Diabolos"
@@ -168,7 +168,7 @@ namespace MonkeyButler.Business.Tests.Managers
 
             var guildOptions = new GuildOptions()
             {
-                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
+                FreeCompany = new FreeCompany()
                 {
                     Id = fcId,
                     Server = "Diabolos"

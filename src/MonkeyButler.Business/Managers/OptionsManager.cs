@@ -170,8 +170,13 @@ namespace MonkeyButler.Business.Managers
             var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
 
             options.Id = criteria.GuildId;
-            options.FreeCompany = fc;
             options.VerifiedRoleId = criteria.RoleId;
+            options.FreeCompany = new Data.Models.Database.Guild.FreeCompany()
+            {
+                Id = fc.Id,
+                Name = fc.Name,
+                Server = fc.Server
+            };
 
             var saveOptionsQuery = new SaveOptionsQuery()
             {

@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
@@ -14,22 +15,24 @@ namespace MonkeyButler.Handlers
     {
         private readonly ILogger<UserJoinedHandler> _logger;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
-        private readonly IOptionsManager _optionsManager;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UserJoinedHandler(ILogger<UserJoinedHandler> logger, IOptionsMonitor<AppOptions> appOptions, IOptionsManager optionsManager)
+        public UserJoinedHandler(ILogger<UserJoinedHandler> logger, IOptionsMonitor<AppOptions> appOptions, IServiceProvider serviceProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
-            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public async Task OnUserJoined(SocketGuildUser user)
         {
+            using var serviceScope = _serviceProvider.CreateScope();
+            var optionsManager = serviceScope.ServiceProvider.GetRequiredService<IOptionsManager>();
             var guild = user.Guild;
 
             _logger.LogTrace("{Username} has joined server {GuildName}.", user.Username, guild.Name);
 
-            var guildOptions = await _optionsManager.GetGuildOptions(new GuildOptionsCriteria()
+            var guildOptions = await optionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
                 GuildId = guild.Id
             });
