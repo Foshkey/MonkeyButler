@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MonkeyButler.Business.Models.Events;
-using MonkeyButler.Business.Options;
 using MonkeyButler.Data.Cache;
+using MonkeyButler.Data.Models.Database.Guild;
 
 namespace MonkeyButler.Business
 {
@@ -13,11 +13,11 @@ namespace MonkeyButler.Business
 
     internal static class CacheExtensions
     {
-        public static async Task<GuildOptionsDictionary?> GetGuildOptions(this ICacheAccessor accessor)
-            => await accessor.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions);
+        public static async Task<GuildOptions?> GetGuildOptions(this ICacheAccessor accessor, ulong GuildId)
+            => await accessor.Read<GuildOptions>($"{CacheKeys.GuildOptions}:{GuildId}");
 
-        public static async Task SetGuildOptions(this ICacheAccessor accessor, GuildOptionsDictionary guildOptions)
-            => await accessor.Write(CacheKeys.GuildOptions, guildOptions);
+        public static async Task SetGuildOptions(this ICacheAccessor accessor, GuildOptions guildOptions)
+            => await accessor.Write($"{CacheKeys.GuildOptions}:{guildOptions.Id}", guildOptions);
 
         public static async Task<Event?> GetEvent(this ICacheAccessor accessor, long eventId)
             => await accessor.Read<Event>($"{CacheKeys.Events}:{eventId}");

@@ -21,7 +21,19 @@ namespace MonkeyButler.Business
 
             services.Scan(select => select
                 .FromCallingAssembly()
-                .AddClasses(publicOnly: false)
+                .AddClasses(classes => classes
+                    .InNamespaces(
+                        "MonkeyButler.Business.Engines",
+                        "MonkeyButler.Business.Validators"),
+                    publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime());
+
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(classes => classes
+                    .InNamespaces("MonkeyButler.Business.Managers"),
+                    publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
 

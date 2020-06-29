@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MonkeyButler.Data.Models.XivApi.FreeCompany;
 
 namespace MonkeyButler.Data.Models.Database.Guild
 {
@@ -13,19 +14,14 @@ namespace MonkeyButler.Data.Models.Database.Guild
         public ulong Id { get; set; }
 
         /// <summary>
-        /// The free company Lodestone Id associated with the guild.
+        /// The free company associated with the guild.
         /// </summary>
-        public string? FreeCompanyId { get; set; }
+        public FreeCompanyBrief? FreeCompany { get; set; }
 
         /// <summary>
         /// The prefix to be used with the bot in this guild.
         /// </summary>
         public string? Prefix { get; set; }
-
-        /// <summary>
-        /// The FFXIV server associated with the guild.
-        /// </summary>
-        public string? Server { get; set; }
 
         /// <summary>
         /// Signup emotes to be used for event sign ups.

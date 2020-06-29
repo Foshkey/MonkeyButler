@@ -8,11 +8,11 @@
         /// <summary>
         /// The query of the verfication, containing the name.
         /// </summary>
-        public string? Query { get; set; }
+        public string Query { get; set; } = null!;
 
         /// <summary>
         /// The Id of the guild.
         /// </summary>
-        public string? GuildId { get; set; }
+        public ulong GuildId { get; set; }
     }
 }

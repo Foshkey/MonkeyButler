@@ -39,7 +39,7 @@ namespace MonkeyButler.Modules.Commands
         {
             using var setTyping = Context.Channel.EnterTypingState();
 
-            var guildId = Context.Guild?.Id.ToString();
+            var guildId = Context.Guild.Id;
             var criteria = new VerifyCharacterCriteria()
             {
                 Query = query,
@@ -83,23 +83,23 @@ namespace MonkeyButler.Modules.Commands
                 return;
             }
 
-            var role = Context.Guild?.Roles.FirstOrDefault(x => x.Name == result.VerifiedRole);
+            var role = Context.Guild?.Roles.FirstOrDefault(x => x.Id == result.VerifiedRoleId);
 
             if (role is null)
             {
-                await ReplyAsync($"However, I could not find the server's verified role ({result.VerifiedRole}). I will notify the server's administrator.");
-                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the role {result.VerifiedRole}. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
+                await ReplyAsync($"However, I could not find the server's verified role. I will notify the server's administrator.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the verified role. If you changed this role, please use the `set` command again, e.g. `{_appOptions.CurrentValue.Discord?.Prefix}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
             }
 
             try
             {
                 await user.AddRoleAsync(role);
-                await ReplyAsync($"I have given you the role '{result.VerifiedRole}'.");
+                await ReplyAsync($"I have given you verified member permissions.");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
                 await ReplyAsync("Unfortunately, I do not have the proper permissions to set your verified role. I will notify the server's administrator.");
-                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I do not have the permissions to set the role {result.VerifiedRole}. Please double check your server permissions and I am able to successfully assign the role.");
+                await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I do not have the permissions to set the verified role. Please double check your server permissions and I am able to successfully assign the role.");
             }
         }
 

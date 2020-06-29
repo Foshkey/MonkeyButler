@@ -1,38 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MonkeyButler.Business.Models.VerifyCharacter;
-using MonkeyButler.Business.Options;
+using MonkeyButler.Data.Cache;
+using MonkeyButler.Data.Database.Guild;
+using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.XivApi.Character;
+using MonkeyButler.Data.XivApi.Character;
 using Moq;
 using Xunit;
 using SUT = MonkeyButler.Business.Managers.VerifyCharacterManager;
 
 namespace MonkeyButler.Business.Tests.Managers
 {
-    public class VerifyCharacterManager
+    public class VerifyCharacterManagerTests
     {
-        private readonly Mock<Data.Cache.ICacheAccessor> _cacheAccessorMock = new Mock<Data.Cache.ICacheAccessor>();
-        private readonly Mock<Data.XivApi.Character.ICharacterAccessor> _characterAccessorMock = new Mock<Data.XivApi.Character.ICharacterAccessor>();
+        private readonly Mock<ICacheAccessor> _cacheAccessorMock = new Mock<ICacheAccessor>();
+        private readonly Mock<ICharacterAccessor> _characterAccessorMock = new Mock<ICharacterAccessor>();
+        private readonly Mock<IGuildAccessor> _guildAccessorMock = new Mock<IGuildAccessor>();
 
         private SUT BuildTarget() => Resolver
             .Add(_cacheAccessorMock.Object)
             .Add(_characterAccessorMock.Object)
+            .Add(_guildAccessorMock.Object)
             .Resolve<SUT>();
 
         [Fact]
-        public async Task NullFcIdShouldFail()
+        public async Task NullFcShouldFail()
         {
-            var guildId = "8923847";
-            var guildOptions = new GuildOptionsDictionary()
-            {
-                [guildId] = new GuildOptions()
-                {
-                    FreeCompany = new FreeCompanyOptions(),
-                    Server = "Diabolos"
-                }
-            };
+            var guildId = (ulong)8923847;
+            var guildOptions = new GuildOptions();
 
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+            _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
             var criteria = new VerifyCharacterCriteria()
@@ -49,20 +47,17 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task CharacterNotFoundShouldFail()
         {
-            var guildId = "8923847";
-            var guildOptions = new GuildOptionsDictionary()
+            var guildId = (ulong)8923847;
+            var guildOptions = new GuildOptions()
             {
-                [guildId] = new GuildOptions()
+                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
                 {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = "9827349",
-                    },
-                    Server = "Diabolos"
-                }
+                    Id = "9827349"
+                },
+                VerifiedRoleId = 394872
             };
 
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+            _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
             _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
@@ -85,20 +80,18 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task GetCharacterNullShouldFail()
         {
-            var guildId = "8923847";
-            var guildOptions = new GuildOptionsDictionary()
+            var guildId = (ulong)8923847;
+            var guildOptions = new GuildOptions
             {
-                [guildId] = new GuildOptions()
+                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
                 {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = "9827349",
-                    },
+                    Id = "9827349",
                     Server = "Diabolos"
-                }
+                },
+                VerifiedRoleId = 394872
             };
 
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+            _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
             _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
@@ -124,20 +117,18 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task WrongFcIdShouldFail()
         {
-            var guildId = "8923847";
-            var guildOptions = new GuildOptionsDictionary()
+            var guildId = (ulong)8923847;
+            var guildOptions = new GuildOptions()
             {
-                [guildId] = new GuildOptions()
+                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
                 {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = "9827349",
-                    },
+                    Id = "9827349",
                     Server = "Diabolos"
-                }
+                },
+                VerifiedRoleId = 394872
             };
 
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+            _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
             _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
@@ -172,21 +163,20 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task EqualFcIdShouldPass()
         {
-            var guildId = "8923847";
+            var guildId = (ulong)8923847;
             var fcId = "98237492";
-            var guildOptions = new GuildOptionsDictionary()
+
+            var guildOptions = new GuildOptions()
             {
-                [guildId] = new GuildOptions()
+                FreeCompany = new Data.Models.XivApi.FreeCompany.FreeCompanyBrief()
                 {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = fcId,
-                    },
+                    Id = fcId,
                     Server = "Diabolos"
-                }
+                },
+                VerifiedRoleId = 394872
             };
 
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
+            _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
             _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
@@ -216,67 +206,6 @@ namespace MonkeyButler.Business.Tests.Managers
             var result = await BuildTarget().Process(criteria);
 
             Assert.Equal(Status.Verified, result.Status);
-        }
-
-        [Fact]
-        public async Task ExistingGuildOptionsShouldReturnVerifySet()
-        {
-            var guildId = "8923847";
-            var fcId = "98237492";
-            var guildOptions = new GuildOptionsDictionary()
-            {
-                [guildId] = new GuildOptions()
-                {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = fcId,
-                    },
-                    Server = "Diabolos"
-                }
-            };
-
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
-                .ReturnsAsync(guildOptions);
-
-            var criteria = new IsVerifySetCriteria()
-            {
-                GuildId = guildId
-            };
-
-            var result = await BuildTarget().IsVerifySet(criteria);
-
-            Assert.True(result.IsSet);
-        }
-
-        [Fact]
-        public async Task MissingGuildOptionsShouldReturnVerifyNotSet()
-        {
-            var guildId = "8923847";
-            var differentGuildId = "8329721";
-            var fcId = "98237492";
-            var guildOptions = new GuildOptionsDictionary()
-            {
-                [guildId] = new GuildOptions()
-                {
-                    FreeCompany = new FreeCompanyOptions()
-                    {
-                        Id = fcId,
-                    },
-                    Server = "Diabolos"
-                }
-            };
-
-            _cacheAccessorMock.Setup(x => x.Read<GuildOptionsDictionary>(CacheKeys.GuildOptions))
-                .ReturnsAsync(guildOptions);
-
-            var criteria = new IsVerifySetCriteria()
-            {
-                GuildId = differentGuildId
-            };
-
-            var result = await BuildTarget().IsVerifySet(criteria);
-
-            Assert.False(result.IsSet);
         }
     }
 }

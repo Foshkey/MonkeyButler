@@ -13,7 +13,6 @@ using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
 using MonkeyButler.Data.Database;
 using MonkeyButler.Extensions;
-using MonkeyButler.Modules.Commands;
 using MonkeyButler.Options;
 
 namespace MonkeyButler
@@ -83,9 +82,15 @@ namespace MonkeyButler
 
             services.Scan(select => select
                 .FromCallingAssembly()
-                .AddClasses(classes => classes.NotInNamespaceOf<CommandModule>(), publicOnly: false)
+                .AddClasses(classes => classes
+                    .InNamespaces(
+                        "MonkeyButler.Services",
+                        "MonkeyButler.Handlers"),
+                    publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
+
+            services.AddSingleton<IBot, Bot>();
         }
 
         /// <summary>

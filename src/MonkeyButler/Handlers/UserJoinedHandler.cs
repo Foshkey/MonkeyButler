@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.VerifyCharacter;
+using MonkeyButler.Business.Models.Options;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Handlers
@@ -14,13 +14,13 @@ namespace MonkeyButler.Handlers
     {
         private readonly ILogger<UserJoinedHandler> _logger;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
-        private readonly IVerifyCharacterManager _verifyCharacterManager;
+        private readonly IOptionsManager _optionsManager;
 
-        public UserJoinedHandler(ILogger<UserJoinedHandler> logger, IOptionsMonitor<AppOptions> appOptions, IVerifyCharacterManager verifyCharacterManager)
+        public UserJoinedHandler(ILogger<UserJoinedHandler> logger, IOptionsMonitor<AppOptions> appOptions, IOptionsManager optionsManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
-            _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
+            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
         }
 
         public async Task OnUserJoined(SocketGuildUser user)
@@ -29,12 +29,12 @@ namespace MonkeyButler.Handlers
 
             _logger.LogTrace("{Username} has joined server {GuildName}.", user.Username, guild.Name);
 
-            var isVerifySetResult = await _verifyCharacterManager.IsVerifySet(new IsVerifySetCriteria()
+            var guildOptions = await _optionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
-                GuildId = guild.Id.ToString()
+                GuildId = guild.Id
             });
 
-            if (!isVerifySetResult.IsSet)
+            if (guildOptions is null || !guildOptions.IsVerificationSet)
             {
                 _logger.LogTrace("{GuildName} is not set up for verification. Skipping welcome message.", guild.Name);
                 return;

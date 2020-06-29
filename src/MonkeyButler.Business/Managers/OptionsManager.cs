@@ -21,6 +21,7 @@ namespace MonkeyButler.Business.Managers
         private readonly IFreeCompanyAccessor _freeCompanyAccessor;
         private readonly IGuildAccessor _guildAccessor;
         private readonly ILogger<OptionsManager> _logger;
+        private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
         private readonly IValidator<SetSignupEmotesCriteria> _setSignupEmotesValidator;
         private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
 
@@ -31,6 +32,7 @@ namespace MonkeyButler.Business.Managers
             IFreeCompanyAccessor freeCompanyAccessor,
             IGuildAccessor guildAccessor,
             ILogger<OptionsManager> logger,
+            IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
             IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
             IValidator<SetVerificationCriteria> setVerificationValidator)
         {
@@ -40,8 +42,46 @@ namespace MonkeyButler.Business.Managers
             _freeCompanyAccessor = freeCompanyAccessor ?? throw new ArgumentNullException(nameof(freeCompanyAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _getGuildOptionsValidator = getGuildOptionsValidator ?? throw new ArgumentNullException(nameof(getGuildOptionsValidator));
             _setSignupEmotesValidator = setSignupEmotesValidator ?? throw new ArgumentNullException(nameof(setSignupEmotesValidator));
             _setVerificationValidator = setVerificationValidator ?? throw new ArgumentNullException(nameof(setVerificationValidator));
+        }
+
+        public async Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria)
+        {
+            _getGuildOptionsValidator.ValidateAndThrow(criteria);
+
+            _logger.LogDebug("Getting options for guild '{GuildId}'.", criteria.GuildId);
+
+            var options = await _cacheAccessor.GetGuildOptions(criteria.GuildId);
+
+            if (options is null)
+            {
+                _logger.LogTrace("Options do not exist in cache. Retrieving from database.");
+
+                var query = new GetOptionsQuery()
+                {
+                    GuildId = criteria.GuildId
+                };
+
+                options = await _guildAccessor.GetOptions(query);
+
+                if (options is null)
+                {
+                    _logger.LogDebug("Options do not exist in database. Returning null.");
+                    return null;
+                }
+
+                _ = _cacheAccessor.SetGuildOptions(options);
+            }
+
+            return new GuildOptionsResult()
+            {
+                GuildId = options.Id,
+                IsVerificationSet = options.FreeCompany?.Id is object && options.VerifiedRoleId > 0,
+                Prefix = options.Prefix,
+                SignupEmotes = options.SignupEmotes
+            };
         }
 
         public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
@@ -78,6 +118,8 @@ namespace MonkeyButler.Business.Managers
             };
 
             await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+            await _cacheAccessor.SetGuildOptions(options);
 
             return new SetSignupEmotesResult()
             {
@@ -128,8 +170,7 @@ namespace MonkeyButler.Business.Managers
             var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
 
             options.Id = criteria.GuildId;
-            options.FreeCompanyId = fc.Id;
-            options.Server = server;
+            options.FreeCompany = fc;
             options.VerifiedRoleId = criteria.RoleId;
 
             var saveOptionsQuery = new SaveOptionsQuery()
@@ -138,6 +179,8 @@ namespace MonkeyButler.Business.Managers
             };
 
             await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+            await _cacheAccessor.SetGuildOptions(options);
 
             return new SetVerificationResult()
             {
@@ -151,6 +194,13 @@ namespace MonkeyButler.Business.Managers
     /// </summary>
     public interface IOptionsManager
     {
+        /// <summary>
+        /// Gets the guild options from data store.
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria);
+
         /// <summary>
         /// Sets sign-up emotes of the guild.
         /// </summary>

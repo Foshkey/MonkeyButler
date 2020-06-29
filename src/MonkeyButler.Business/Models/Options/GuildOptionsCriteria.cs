@@ -1,13 +1,13 @@
-﻿namespace MonkeyButler.Business.Models.VerifyCharacter
+﻿namespace MonkeyButler.Business.Models.Options
 {
     /// <summary>
     /// Criteria for checking if the verify option is available.
     /// </summary>
-    public class IsVerifySetCriteria
+    public class GuildOptionsCriteria
     {
         /// <summary>
         /// Id of the guild.
         /// </summary>
-        public string? GuildId { get; set; }
+        public ulong GuildId { get; set; }
     }
 }
