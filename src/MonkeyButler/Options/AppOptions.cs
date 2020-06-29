@@ -8,6 +8,6 @@
         /// <summary>
         /// Discord options.
         /// </summary>
-        public DiscordOptions? Discord { get; set; }
+        public DiscordOptions Discord { get; set; } = new DiscordOptions();
     }
 }

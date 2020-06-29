@@ -14,6 +14,7 @@ using MonkeyButler.Business;
 using MonkeyButler.Data.Database;
 using MonkeyButler.Extensions;
 using MonkeyButler.Options;
+using MonkeyButler.Services;
 
 namespace MonkeyButler
 {
@@ -83,13 +84,13 @@ namespace MonkeyButler
             services.Scan(select => select
                 .FromCallingAssembly()
                 .AddClasses(classes => classes
-                    .InNamespaces(
-                        "MonkeyButler.Services",
-                        "MonkeyButler.Handlers"),
+                    .InNamespaces("MonkeyButler.Handlers"),
                     publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
+            services.AddScoped<IBotStatusService, BotStatusService>();
+            services.AddScoped<IBotStatusService, BotStatusService>();
             services.AddSingleton<IBot, Bot>();
         }
 

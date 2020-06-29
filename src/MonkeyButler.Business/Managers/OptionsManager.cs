@@ -22,6 +22,7 @@ namespace MonkeyButler.Business.Managers
         private readonly IGuildAccessor _guildAccessor;
         private readonly ILogger<OptionsManager> _logger;
         private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
+        private readonly IValidator<SetPrefixCriteria> _setPrefixValidator;
         private readonly IValidator<SetSignupEmotesCriteria> _setSignupEmotesValidator;
         private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
 
@@ -33,6 +34,7 @@ namespace MonkeyButler.Business.Managers
             IGuildAccessor guildAccessor,
             ILogger<OptionsManager> logger,
             IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
+            IValidator<SetPrefixCriteria> setPrefixValidator,
             IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
             IValidator<SetVerificationCriteria> setVerificationValidator)
         {
@@ -43,6 +45,7 @@ namespace MonkeyButler.Business.Managers
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _getGuildOptionsValidator = getGuildOptionsValidator ?? throw new ArgumentNullException(nameof(getGuildOptionsValidator));
+            _setPrefixValidator = setPrefixValidator ?? throw new ArgumentNullException(nameof(setPrefixValidator));
             _setSignupEmotesValidator = setSignupEmotesValidator ?? throw new ArgumentNullException(nameof(setSignupEmotesValidator));
             _setVerificationValidator = setVerificationValidator ?? throw new ArgumentNullException(nameof(setVerificationValidator));
         }
@@ -82,6 +85,32 @@ namespace MonkeyButler.Business.Managers
                 Prefix = options.Prefix,
                 SignupEmotes = options.SignupEmotes
             };
+        }
+
+        public async Task SetPrefix(SetPrefixCriteria criteria)
+        {
+            _setPrefixValidator.ValidateAndThrow(criteria);
+
+            _logger.LogDebug("Setting prefix '{Prefix}' for guild '{GuildId}'.", criteria.Prefix, criteria.GuildId);
+
+            var getOptionsQuery = new GetOptionsQuery()
+            {
+                GuildId = criteria.GuildId
+            };
+
+            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
+
+            options.Id = criteria.GuildId;
+            options.Prefix = criteria.Prefix;
+
+            var saveOptionsQuery = new SaveOptionsQuery()
+            {
+                Options = options
+            };
+
+            await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+            await _cacheAccessor.SetGuildOptions(options);
         }
 
         public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
@@ -205,6 +234,13 @@ namespace MonkeyButler.Business.Managers
         /// <param name="criteria"></param>
         /// <returns></returns>
         Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria);
+
+        /// <summary>
+        /// Sets the prefix for the guild.
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        Task SetPrefix(SetPrefixCriteria criteria);
 
         /// <summary>
         /// Sets sign-up emotes of the guild.

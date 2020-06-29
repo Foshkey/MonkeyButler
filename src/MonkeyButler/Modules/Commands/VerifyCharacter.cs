@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.VerifyCharacter;
 using MonkeyButler.Options;
+using MonkeyButler.Services;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -18,14 +19,16 @@ namespace MonkeyButler.Modules.Commands
     public class VerifyCharacter : CommandModule
     {
         private readonly IVerifyCharacterManager _verifyCharacterManager;
+        private readonly IOptionsManager _optionsManager;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsMonitor<AppOptions> appOptions)
+        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
         {
             _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
+            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 

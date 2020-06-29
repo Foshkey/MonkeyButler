@@ -30,6 +30,28 @@ namespace MonkeyButler.Modules.Commands
         }
 
         /// <summary>
+        /// Sets options for prefix.
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        [Command("Prefix")]
+        [Summary("Sets a custom prefix for this bot in this server.")]
+        public async Task Prefix(string prefix)
+        {
+            using var setTyping = Context.Channel.EnterTypingState();
+
+            var criteria = new SetPrefixCriteria()
+            {
+                GuildId = Context.Guild.Id,
+                Prefix = prefix
+            };
+
+            await _optionsManager.SetPrefix(criteria);
+
+            await ReplyAsync("Done.");
+        }
+
+        /// <summary>
         /// Sets options for verification.
         /// </summary>
         /// <param name="verifiedRoleName"></param>

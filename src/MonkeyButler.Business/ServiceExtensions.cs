@@ -35,7 +35,7 @@ namespace MonkeyButler.Business
                     .InNamespaces("MonkeyButler.Business.Managers"),
                     publicOnly: false)
                 .AsImplementedInterfaces()
-                .WithTransientLifetime());
+                .WithScopedLifetime());
 
             return services;
         }

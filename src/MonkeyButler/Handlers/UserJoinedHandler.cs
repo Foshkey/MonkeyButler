@@ -26,18 +26,16 @@ namespace MonkeyButler.Handlers
 
         public async Task OnUserJoined(SocketGuildUser user)
         {
-            using var serviceScope = _serviceProvider.CreateScope();
-            var optionsManager = serviceScope.ServiceProvider.GetRequiredService<IOptionsManager>();
             var guild = user.Guild;
 
-            _logger.LogTrace("{Username} has joined server {GuildName}.", user.Username, guild.Name);
-
+            using var scope = _serviceProvider.CreateScope();
+            var optionsManager = scope.ServiceProvider.GetRequiredService<IOptionsManager>();
             var guildOptions = await optionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
                 GuildId = guild.Id
             });
 
-            if (guildOptions is null || !guildOptions.IsVerificationSet)
+            if (guildOptions?.IsVerificationSet != true)
             {
                 _logger.LogTrace("{GuildName} is not set up for verification. Skipping welcome message.", guild.Name);
                 return;
@@ -45,11 +43,11 @@ namespace MonkeyButler.Handlers
 
             _logger.LogTrace("{GuildName} has verification set up. Greeting user {Username}.", guild.Name, user.Username);
 
-            var prefix = _appOptions.CurrentValue?.Discord?.Prefix;
+            var prefix = guildOptions?.Prefix ?? _appOptions.CurrentValue.Discord.Prefix;
 
             var message = new StringBuilder($"Welcome {user.Mention}!");
             message.AppendLine().Append($"I am the bot of the {guild.Name} server. If you are a member of their Free Company, I can automatically give you permissions with `{prefix}verify FFXIV Name`, e.g. `{prefix}verify Jolinar Cast`.");
-            message.AppendLine().Append($"By executing this command, you are agreeing to your nickname here changing to your FFXIV character name.");
+            message.AppendLine().Append($"By executing this command, you are agreeing to your nickname within this server changing to your FFXIV character name. This will not affect your name outside of this server.");
 
             await guild.DefaultChannel.SendMessageAsync(message.ToString());
         }
