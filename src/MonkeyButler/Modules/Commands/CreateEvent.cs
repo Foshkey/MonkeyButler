@@ -69,9 +69,11 @@ namespace MonkeyButler.Modules.Commands
             var ev = result.Event;
             var eventMsg = await ReplyAsync(message: null, isTTS: false, embed: ev.ToEmbed());
 
-            var emotes = signupEmotes.Select<string, IEmote>(x => Emote.Parse(x)).ToList();
+            var emotes = signupEmotes.Select(x => Emote.TryParse(x, out var em) ? (IEmote)em : new Emoji(x)).ToList();
 
-            emotes.Add(new Emoji("❌"));
+            emotes.Add(new Emoji("🪑")); // Bench
+            emotes.Add(new Emoji("🕑")); // Late
+            emotes.Add(new Emoji("❌")); // Cancel
 
             _ = eventMsg.AddReactionsAsync(emotes.ToArray());
 
