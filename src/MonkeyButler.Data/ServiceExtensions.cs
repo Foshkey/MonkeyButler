@@ -36,8 +36,10 @@ namespace MonkeyButler.Data
                 options.Converters.Add(new DateTimeOffsetNumberJsonConverter());
             });
 
-            var xivApiConfig = configuration.GetSection("XivApi");
+            var liteDbConfig = configuration.GetSection("LiteDB");
+            services.Configure<LiteDbOptions>(liteDbConfig);
 
+            var xivApiConfig = configuration.GetSection("XivApi");
             services.Configure<XivApiOptions>(xivApiConfig);
 
             services.AddHttpClient<IXivApiClient, XivApiClient>(client =>

@@ -291,3 +291,4 @@ __pycache__/
 # Configurations
 *.cfg
 appsettings.private.json
+*.db

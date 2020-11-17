@@ -6,13 +6,10 @@ using Discord.WebSocket;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Extensions;
 using MonkeyButler.Options;
 using MonkeyButler.Services;
 
@@ -71,16 +68,6 @@ namespace MonkeyButler
                     CaseSensitiveCommands = false
                 }));
 
-            // Postgres
-            services.AddEntityFrameworkNpgsql()
-                .AddDbContext<MonkeyButlerContext>(options =>
-                {
-                    options.UseNpgsql(_configuration.GetConnectionString("Npgsql"), npgsqlOptions =>
-                    {
-                        npgsqlOptions.MigrationsAssembly("MonkeyButler");
-                    });
-                });
-
             services.Scan(select => select
                 .FromCallingAssembly()
                 .AddClasses(classes => classes
@@ -89,7 +76,6 @@ namespace MonkeyButler
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
-            services.AddScoped<IBotStatusService, BotStatusService>();
             services.AddScoped<IBotStatusService, BotStatusService>();
             services.AddSingleton<IBot, Bot>();
         }
@@ -102,7 +88,6 @@ namespace MonkeyButler
         /// <param name="bot">The discord bot.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot)
         {
-            app.UpdateDatabase();
             bot.Start();
 
             if (env.IsDevelopment())

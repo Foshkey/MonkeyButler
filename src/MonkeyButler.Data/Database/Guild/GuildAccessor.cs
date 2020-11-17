@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using LiteDB;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MonkeyButler.Data.Models.Database.Guild;
+using MonkeyButler.Data.Options;
 
 namespace MonkeyButler.Data.Database.Guild
 {
     internal class GuildAccessor : IGuildAccessor
     {
-        private readonly MonkeyButlerContext _context;
+        private readonly IOptionsMonitor<LiteDbOptions> _liteDbOptions;
         private readonly ILogger<GuildAccessor> _logger;
 
-        public GuildAccessor(MonkeyButlerContext context, ILogger<GuildAccessor> logger)
+        private readonly string _guildKey = "Guilds";
+
+        public GuildAccessor(IOptionsMonitor<LiteDbOptions> liteDbOptions, ILogger<GuildAccessor> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _liteDbOptions = liteDbOptions ?? throw new ArgumentNullException(nameof(liteDbOptions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -21,29 +25,24 @@ namespace MonkeyButler.Data.Database.Guild
         {
             _logger.LogDebug("Retrieving options for guild '{GuildId}'.", query.GuildId);
 
-            return await _context.GuildOptions.FindAsync(query.GuildId);
+            using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
+            var guilds = db.GetCollection<GuildOptions>(_guildKey);
+
+            var options = await Task.FromResult(guilds.FindOne(x => x.Id == query.GuildId));
+
+            return options;
         }
 
         public async Task SaveOptions(SaveOptionsQuery query)
         {
-            var id = query.Options.Id;
+            _logger.LogDebug("Saving options for guild '{GuildId}'.", query.Options.Id);
 
-            _logger.LogDebug("Saving options for guild '{GuildId}'.", id);
+            using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
+            var guilds = db.GetCollection<GuildOptions>(_guildKey);
 
-            if (_context.GuildOptions.Any(x => x.Id == id))
-            {
-                _logger.LogDebug("Guild options already exist. Updating '{GuildId}'.", id);
+            await Task.Run(() => guilds.Upsert(query.Options));
 
-                _context.GuildOptions.Update(query.Options);
-            }
-            else
-            {
-                _logger.LogDebug("Guild options does not exist. Inserting '{GuildId}'.", id);
-
-                _context.GuildOptions.Add(query.Options);
-            }
-
-            await _context.SaveChangesAsync();
+            guilds.EnsureIndex(x => x.Id);
         }
     }
 
