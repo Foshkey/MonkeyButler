@@ -38,6 +38,7 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         [Command("CreateEvent")]
         [Summary("Creates an event at a certain time, with users able to sign up on a roster.")]
+        [RequireOwner] // Disabled for now
         public async Task Create([Remainder] string query)
         {
             using var setTyping = Context.Channel.EnterTypingState();
