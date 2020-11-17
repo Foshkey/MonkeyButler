@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Options;
 
-namespace MonkeyButler.Data.Database.Guild
+namespace MonkeyButler.Data.Database
 {
     internal class GuildAccessor : IGuildAccessor
     {
@@ -28,7 +28,7 @@ namespace MonkeyButler.Data.Database.Guild
             using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
             var guilds = db.GetCollection<GuildOptions>(_guildKey);
 
-            var options = await Task.FromResult(guilds.FindOne(x => x.Id == query.GuildId));
+            var options = await Task.Run(() => guilds.FindOne(x => x.Id == query.GuildId));
 
             return options;
         }
@@ -39,10 +39,9 @@ namespace MonkeyButler.Data.Database.Guild
 
             using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
             var guilds = db.GetCollection<GuildOptions>(_guildKey);
-
-            await Task.Run(() => guilds.Upsert(query.Options));
-
             guilds.EnsureIndex(x => x.Id);
+
+            _ = await Task.Run(() => guilds.Upsert(query.Options));
         }
     }
 

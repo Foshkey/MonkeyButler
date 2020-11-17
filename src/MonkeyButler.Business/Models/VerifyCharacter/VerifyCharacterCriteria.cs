@@ -14,5 +14,10 @@
         /// The Id of the guild.
         /// </summary>
         public ulong GuildId { get; set; }
+
+        /// <summary>
+        /// The Id of the user that performed the query.
+        /// </summary>
+        public ulong UserId { get; set; }
     }
 }
