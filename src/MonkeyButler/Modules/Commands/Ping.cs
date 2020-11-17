@@ -6,7 +6,7 @@ namespace MonkeyButler.Modules.Commands
     /// <summary>
     /// Class for Ping commands.
     /// </summary>
-    public class Ping : CommandModule
+    public class Ping : ModuleBase<SocketCommandContext>
     {
         /// <summary>
         /// Pings the bot.

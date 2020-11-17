@@ -26,10 +26,13 @@ This is a Discord bot working with Final Fantasy XIV data. Built for the Twiligh
 
 To compile and run this code yourself, you can either load `MonkeyButler.sln` in Visual Studio or use the [dotnet CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/).
 
-This code is expecting two secret configuration values that is not included in this repository. It is highly encouraged to use user secrets (or environment variables in production) or add these values to `appsettings.json` in /src/MonkeyButler.
+This code is expecting three secret configuration values that is not included in this repository. It is highly encouraged to use user secrets (or environment variables in production) or add these values to `appsettings.json` in /src/MonkeyButler.
 
 ```json
 {
+  "ConnectionStrings": {
+    "Npgsql": "postgresql-connection-string"
+  },
   "Discord": {
     "Token": "discord-bot-token"
   },
@@ -43,10 +46,16 @@ The discord bot token can be obtained by creating your own bot application in th
 
 The xivapi.com key can be obtained from the [xivapi.com account page](https://xivapi.com/account).
 
-With these configuration values loaded, either run `MonkeyButler` in Visual Studio or execute the following dotnet command:
+As indicated by the `Npgsql` connection string, Monkey Butler utilizes Entity Framework Core and a PostgreSQL database connection. Install [PostgreSQL](https://www.postgresql.org/download/), configure with a super user, and add a connection string. As an example:
+
+```
+User ID = monkey_butler_app; Password = password; Server = localhost; Port = 5432; Database = MonkeyButler.Dev; Integrated Security = true; Pooling = true
+```
+
+With these configuration values loaded and database configured, either run `MonkeyButler` in Visual Studio or execute the following dotnet command in the `src\MonkeyButler` directory:
 
 ```cmd
-dotnet run --project src/MonkeyButler/MonkeyButler.csproj
+...src\MonkeyButler> dotnet run
 ```
 
 ## Sample app execution

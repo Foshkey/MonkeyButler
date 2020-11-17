@@ -24,6 +24,6 @@
         /// <summary>
         /// The verified role of the guild.
         /// </summary>
-        public string? VerifiedRole { get; set; }
+        public ulong VerifiedRoleId { get; set; }
     }
 }

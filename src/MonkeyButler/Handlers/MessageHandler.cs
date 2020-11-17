@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MonkeyButler.Business.Managers;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Handlers
@@ -29,22 +31,39 @@ namespace MonkeyButler.Handlers
         {
             if (!(message is SocketUserMessage userMessage) || userMessage.Author.IsBot) return;
 
-            var currentOptions = _appOptions.CurrentValue.Discord;
             var argPos = 0;
+            var scope = _scopeHandler.CreateScope(message.Id);
+            var prefix = _appOptions.CurrentValue.Discord.Prefix;
+
+            // Check if custom guild prefix
+            if (message.Author is SocketGuildUser guildUser)
+            {
+                var optionsManager = scope.ServiceProvider.GetRequiredService<IOptionsManager>();
+                var guildOptions = await optionsManager.GetGuildOptions(new Business.Models.Options.GuildOptionsCriteria()
+                {
+                    GuildId = guildUser.Guild.Id
+                });
+
+                if (!string.IsNullOrEmpty(guildOptions?.Prefix))
+                {
+                    prefix = guildOptions.Prefix;
+                }
+            }
 
             if (userMessage.HasMentionPrefix(_discordClient.CurrentUser, ref argPos) ||
-                currentOptions?.Prefix is object && userMessage.HasCharPrefix(currentOptions.Prefix.Value, ref argPos))
+                userMessage.HasStringPrefix(prefix, ref argPos))
             {
                 _logger.LogInformation("Received command from {Username}: {Message}", userMessage.Author.Username, userMessage);
 
                 var context = new SocketCommandContext(_discordClient, userMessage);
-                var scope = _scopeHandler.CreateScope(message.Id);
 
                 await _commands.ExecuteAsync(context, argPos, scope.ServiceProvider);
             }
+            else
+            {
+                scope.Dispose();
+            }
         }
-
-
     }
 
     internal interface IMessageHandler

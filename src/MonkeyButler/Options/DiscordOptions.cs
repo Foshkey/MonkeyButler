@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MonkeyButler.Options
 {
@@ -8,9 +9,14 @@ namespace MonkeyButler.Options
     public class DiscordOptions
     {
         /// <summary>
-        /// The prefix to be used for commands.
+        /// The default prefix to be used for commands.
         /// </summary>
-        public char? Prefix { get; set; }
+        public string Prefix { get; set; } = "!";
+
+        /// <summary>
+        /// The default emotes for event signups.
+        /// </summary>
+        public List<string> SignupEmotes { get; set; } = new List<string>() { "✅" };
 
         /// <summary>
         /// The delay before scope is cleaned up on commands.

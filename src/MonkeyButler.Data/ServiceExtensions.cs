@@ -21,6 +21,12 @@ namespace MonkeyButler.Data
         /// <returns></returns>
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(classes => classes.Where(x => !x.Name.EndsWith("Client")), publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithScopedLifetime());
+
             services.Configure<JsonSerializerOptions>("Cache", options => { });
             services.Configure<JsonSerializerOptions>("XivApi", options =>
             {
@@ -42,11 +48,6 @@ namespace MonkeyButler.Data
             services.AddSingleton<LoggingHandler>();
 
             services.AddDistributedMemoryCache();
-
-            services
-                .AddSingleton<Cache.IAccessor, Cache.Accessor>()
-                .AddSingleton<XivApi.Character.IAccessor, XivApi.Character.Accessor>()
-                .AddSingleton<XivApi.FreeCompany.IAccessor, XivApi.FreeCompany.Accessor>();
 
             return services;
         }

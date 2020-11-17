@@ -12,13 +12,13 @@ namespace MonkeyButler.Business.Managers
 {
     internal class CharacterSearchManager : ICharacterSearchManager
     {
-        private readonly IAccessor _accessor;
+        private readonly ICharacterAccessor _accessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ICharacterResultEngine _characterResultEngine;
         private readonly ILogger<CharacterSearchManager> _logger;
 
         public CharacterSearchManager(
-            IAccessor accessor,
+            ICharacterAccessor accessor,
             INameServerEngine nameServerEngine,
             ICharacterResultEngine characterResultEngine,
             ILogger<CharacterSearchManager> logger

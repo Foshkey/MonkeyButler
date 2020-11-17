@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MonkeyButler.Business.Managers;
 using MonkeyButler.Business.Models.CharacterSearch;
+using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
 {
@@ -22,7 +24,9 @@ namespace MonkeyButler.Modules.Commands
         /// </summary>
         /// <param name="characterSearchManager">The character service for XIVAPI.</param>
         /// <param name="logger">Logger for this class.</param>
-        public CharacterSearch(ICharacterSearchManager characterSearchManager, ILogger<CharacterSearch> logger)
+        /// <param name="optionsManager"></param>
+        /// <param name="appOptions"></param>
+        public CharacterSearch(ICharacterSearchManager characterSearchManager, ILogger<CharacterSearch> logger, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
         {
             _characterSearchManager = characterSearchManager ?? throw new ArgumentNullException(nameof(characterSearchManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

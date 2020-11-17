@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Options;
 using MonkeyButler.Data;
 
 namespace MonkeyButler.Business
@@ -22,15 +19,23 @@ namespace MonkeyButler.Business
         {
             services.AddDataServices(configuration);
 
-            services.Configure<GuildOptionsDictionary>(configuration.GetSection("Discord:Guilds"));
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(classes => classes
+                    .InNamespaces(
+                        "MonkeyButler.Business.Engines",
+                        "MonkeyButler.Business.Validators"),
+                    publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime());
 
-            services
-                .AddSingleton<INameServerEngine, NameServerEngine>()
-                .AddSingleton<ICharacterResultEngine, CharacterResultEngine>()
-                .AddSingleton<ICacheManager, CacheManager>()
-                .AddSingleton<ICharacterSearchManager, CharacterSearchManager>()
-                .AddSingleton<IFreeCompanySearchManager, FreeCompanySearchManager>()
-                .AddSingleton<IVerifyCharacterManager, VerifyCharacterManager>();
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(classes => classes
+                    .InNamespaces("MonkeyButler.Business.Managers"),
+                    publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithScopedLifetime());
 
             return services;
         }

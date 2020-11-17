@@ -1,96 +1,58 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.VerifyCharacter;
+using MonkeyButler.Data.Cache;
+using MonkeyButler.Data.Database.Guild;
+using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.XivApi.Character;
+using MonkeyButler.Data.XivApi.Character;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
-        private readonly Data.Cache.IAccessor _cacheAccessor;
-        private readonly Data.XivApi.Character.IAccessor _characterAccessor;
+        private readonly ICacheAccessor _cacheAccessor;
+        private readonly ICharacterAccessor _characterAccessor;
+        private readonly IGuildAccessor _guildAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
+        private readonly IValidator<VerifyCharacterCriteria> _verifyCharacterValidator;
 
         public VerifyCharacterManager(
-            Data.Cache.IAccessor cacheAccessor,
-            Data.XivApi.Character.IAccessor characterAccessor,
+            ICacheAccessor cacheAccessor,
+            ICharacterAccessor characterAccessor,
+            IGuildAccessor guildAccessor,
             INameServerEngine nameServerEngine,
-            ILogger<VerifyCharacterManager> logger
-        )
+            ILogger<VerifyCharacterManager> logger,
+            IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
         {
             _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _characterAccessor = characterAccessor ?? throw new ArgumentNullException(nameof(characterAccessor));
+            _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        public async Task<IsVerifySetResult> IsVerifySet(IsVerifySetCriteria criteria)
-        {
-            if (criteria is null)
-            {
-                throw new ArgumentNullException(nameof(criteria));
-            }
-
-            if (criteria.GuildId is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.GuildId)} cannot be null.", nameof(criteria));
-            }
-
-            var result = new IsVerifySetResult()
-            {
-                GuildId = criteria.GuildId
-            };
-
-            // Get the guild options for free company definition.
-            _logger.LogTrace("Getting guild options for guild {Id}.", criteria.GuildId);
-
-            var guildOptionsDictionary = await _cacheAccessor.GetGuildOptions();
-
-            if (guildOptionsDictionary is null ||
-                !guildOptionsDictionary.TryGetValue(criteria.GuildId, out var guildOptions) ||
-                guildOptions.FreeCompany?.Id is null)
-            {
-                _logger.LogDebug("Free Company options not defined for guild {Id}.", criteria.GuildId);
-
-                result.IsSet = false;
-            }
-            else
-            {
-                result.IsSet = true;
-            }
-
-            return result;
+            _verifyCharacterValidator = verifyCharacterValidator ?? throw new ArgumentNullException(nameof(verifyCharacterValidator));
         }
 
         public async Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria)
         {
-            if (criteria is null)
-            {
-                throw new ArgumentNullException(nameof(criteria));
-            }
-
-            if (criteria.Query is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.Query)} cannot be null.", nameof(criteria));
-            }
-
-            if (criteria.GuildId is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.GuildId)} cannot be null.", nameof(criteria));
-            }
+            _verifyCharacterValidator.ValidateAndThrow(criteria);
 
             // Get the guild options for free company definition.
             _logger.LogTrace("Getting guild options for guild {Id}.", criteria.GuildId);
 
-            var guildOptionsDictionary = await _cacheAccessor.GetGuildOptions();
+            var guildOptionsQuery = new GetOptionsQuery()
+            {
+                GuildId = criteria.GuildId
+            };
 
-            if (guildOptionsDictionary is null ||
-                !guildOptionsDictionary.TryGetValue(criteria.GuildId, out var guildOptions) ||
-                guildOptions.FreeCompany?.Id is null)
+            var guildOptions = await _cacheAccessor.GetGuildOptions(criteria.GuildId) ?? await _guildAccessor.GetOptions(guildOptionsQuery);
+
+            if (guildOptions?.FreeCompany is null || guildOptions.VerifiedRoleId == 0)
             {
                 _logger.LogDebug("Free Company options not defined for guild {Id}.", criteria.GuildId);
 
@@ -103,7 +65,7 @@ namespace MonkeyButler.Business.Managers
             var result = new VerifyCharacterResult()
             {
                 FreeCompanyName = guildOptions.FreeCompany.Name,
-                VerifiedRole = guildOptions.VerifiedRole
+                VerifiedRoleId = guildOptions.VerifiedRoleId
             };
 
             // Search for character.
@@ -114,7 +76,7 @@ namespace MonkeyButler.Business.Managers
             var searchQuery = new SearchQuery()
             {
                 Name = name,
-                Server = guildOptions.Server
+                Server = guildOptions.FreeCompany.Server
             };
 
             var searchData = await _characterAccessor.Search(searchQuery);
@@ -170,12 +132,5 @@ namespace MonkeyButler.Business.Managers
         /// <param name="criteria">The criteria of the verification.</param>
         /// <returns>The result of the verification.</returns>
         Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria);
-
-        /// <summary>
-        /// Checks if the guild is set up for verification.
-        /// </summary>
-        /// <param name="criteria">The criteria for the check.</param>
-        /// <returns>The result of the check.</returns>
-        Task<IsVerifySetResult> IsVerifySet(IsVerifySetCriteria criteria);
     }
 }

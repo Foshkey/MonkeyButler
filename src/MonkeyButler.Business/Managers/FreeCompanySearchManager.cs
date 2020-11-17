@@ -11,12 +11,12 @@ namespace MonkeyButler.Business.Managers
 {
     internal class FreeCompanySearchManager : IFreeCompanySearchManager
     {
-        private readonly IAccessor _accessor;
+        private readonly IFreeCompanyAccessor _accessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<FreeCompanySearchManager> _logger;
 
         public FreeCompanySearchManager(
-            IAccessor accessor,
+            IFreeCompanyAccessor accessor,
             INameServerEngine nameServerEngine,
             ILogger<FreeCompanySearchManager> logger
         )

@@ -6,12 +6,13 @@ using Discord.WebSocket;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Handlers;
+using MonkeyButler.Data.Database;
+using MonkeyButler.Extensions;
 using MonkeyButler.Options;
 using MonkeyButler.Services;
 
@@ -70,13 +71,27 @@ namespace MonkeyButler
                     CaseSensitiveCommands = false
                 }));
 
-            services
-                .AddSingleton<ILogHandler, LogHandler>()
-                .AddSingleton<IMessageHandler, MessageHandler>()
-                .AddSingleton<IScopeHandler, ScopeHandler>()
-                .AddSingleton<IUserJoinedHandler, UserJoinedHandler>()
-                .AddSingleton<IBotStatusService, BotStatusService>()
-                .AddSingleton<IBot, Bot>();
+            // Postgres
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<MonkeyButlerContext>(options =>
+                {
+                    options.UseNpgsql(_configuration.GetConnectionString("Npgsql"), npgsqlOptions =>
+                    {
+                        npgsqlOptions.MigrationsAssembly("MonkeyButler");
+                    });
+                });
+
+            services.Scan(select => select
+                .FromCallingAssembly()
+                .AddClasses(classes => classes
+                    .InNamespaces("MonkeyButler.Handlers"),
+                    publicOnly: false)
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime());
+
+            services.AddScoped<IBotStatusService, BotStatusService>();
+            services.AddScoped<IBotStatusService, BotStatusService>();
+            services.AddSingleton<IBot, Bot>();
         }
 
         /// <summary>
@@ -85,11 +100,10 @@ namespace MonkeyButler
         /// <param name="app">The application builder.</param>
         /// <param name="env">The environment information.</param>
         /// <param name="bot">The discord bot.</param>
-        /// <param name="cacheManager">The cache manager.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot, ICacheManager cacheManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBot bot)
         {
+            app.UpdateDatabase();
             bot.Start();
-            cacheManager.InitializeGuildOptions();
 
             if (env.IsDevelopment())
             {

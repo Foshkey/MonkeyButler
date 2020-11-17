@@ -12,7 +12,7 @@ namespace MonkeyButler.Tests.Handlers
 {
     public class ScopeHandlerTests
     {
-        private Mock<IAccessor> _accessorMock = new Mock<IAccessor>();
+        private Mock<ICharacterAccessor> _accessorMock = new Mock<ICharacterAccessor>();
         private Mock<IOptionsMonitor<AppOptions>> _optionsMock = new Mock<IOptionsMonitor<AppOptions>>();
 
         private IServiceProvider _serviceProvider;
