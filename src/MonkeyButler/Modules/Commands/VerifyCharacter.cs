@@ -50,11 +50,11 @@ namespace MonkeyButler.Modules.Commands
             {
                 case Status.Verified:
                     await Task.WhenAll(
-                        ReplyAsync($"According to Lodestone, you are verified as a member of the {result.FreeCompanyName} Free Company, {result.Name}."),
+                        ReplyAsync($"According to Lodestone, I have verified you as a member of the {result.FreeCompanyName} Free Company, {result.Name}."),
                         SetPermissions(result),
                         SetUserName(result)
                     );
-                    await ReplyAsync("Welcome to our Discord server. If you have any questions, please don't hesitate to ask.");
+                    await ReplyAsync("Welcome to our Discord server! If you have any questions, please don't hesitate to ask.");
                     return;
 
                 case Status.NotVerified:
@@ -72,7 +72,7 @@ namespace MonkeyButler.Modules.Commands
                     }
 
                     await Task.WhenAll(
-                        ReplyAsync($"That character has already been associated with another user. The admin of this discord has been notified."),
+                        ReplyAsync($"That character has already been associated with another user. I will notify the server's administrator."),
                         NotifyAdmin($"{Context.User.Mention} tried verification with '{query}', but I've found that this character has already been associated with user <@{result.VerifiedUserId}>.")
                     );
                     return;
@@ -80,7 +80,7 @@ namespace MonkeyButler.Modules.Commands
                 case Status.FreeCompanyUndefined:
                 default:
                     await Task.WhenAll(
-                        ReplyAsync("It appears that this server is not set up to do character verification."),
+                        ReplyAsync("It appears that this server is not set up to do character verification. I will notify the server's administrator."),
                         NotifyAdmin($"A user used the verification command in your server but I'm not set up for it. Please use the `set` command, e.g. `{await GetPrefix()}set verify VerifiedRoleName FreeCompanyName` in your server.")
                     );
                     return;
@@ -105,7 +105,7 @@ namespace MonkeyButler.Modules.Commands
             try
             {
                 await user.AddRoleAsync(role);
-                await ReplyAsync($"I have given you verified member permissions.");
+                await ReplyAsync($"I have given you verified member permissions. This includes any member-exclusive channels, take a look!");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {

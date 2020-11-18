@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MonkeyButler.Options
 {
@@ -17,11 +16,6 @@ namespace MonkeyButler.Options
         /// The default emotes for event signups.
         /// </summary>
         public List<string> SignupEmotes { get; set; } = new List<string>() { "✅" };
-
-        /// <summary>
-        /// The delay before scope is cleaned up on commands.
-        /// </summary>
-        public TimeSpan? ScopeCleanupDelay { get; set; }
 
         /// <summary>
         /// The bot token for connection.

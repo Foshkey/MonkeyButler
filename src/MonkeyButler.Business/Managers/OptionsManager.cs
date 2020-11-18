@@ -83,7 +83,8 @@ namespace MonkeyButler.Business.Managers
                 GuildId = options.Id,
                 IsVerificationSet = options.FreeCompany?.Id is object && options.VerifiedRoleId > 0,
                 Prefix = options.Prefix,
-                SignupEmotes = options.SignupEmotes
+                SignupEmotes = options.SignupEmotes,
+                FreeCompanyName = options.FreeCompany?.Name
             };
         }
 

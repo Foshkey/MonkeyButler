@@ -28,8 +28,7 @@ namespace MonkeyButler.Handlers
         {
             var guild = user.Guild;
 
-            using var scope = _serviceProvider.CreateScope();
-            var optionsManager = scope.ServiceProvider.GetRequiredService<IOptionsManager>();
+            var optionsManager = _serviceProvider.GetRequiredService<IOptionsManager>();
             var guildOptions = await optionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
                 GuildId = guild.Id
@@ -46,7 +45,7 @@ namespace MonkeyButler.Handlers
             var prefix = guildOptions?.Prefix ?? _appOptions.CurrentValue.Discord.Prefix;
 
             var message = new StringBuilder($"Welcome {user.Mention}!");
-            message.AppendLine().Append($"I am the bot of the {guild.Name} server. If you are a member of their Free Company, I can automatically give you permissions with `{prefix}verify FFXIV Name`, e.g. `{prefix}verify Jolinar Cast`.");
+            message.AppendLine().Append($"I am the bot of the {guild.Name} server. If you are a member of the {guildOptions?.FreeCompanyName} Free Company, I can automatically give you permissions with `{prefix}verify FFXIV Name`, e.g. `{prefix}verify Jolinar Cast`.");
             message.AppendLine().Append($"By executing this command, you are agreeing to your nickname within this server changing to your FFXIV character name. This will not affect your name outside of this server.");
 
             await guild.DefaultChannel.SendMessageAsync(message.ToString());
