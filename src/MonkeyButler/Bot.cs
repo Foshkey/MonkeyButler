@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Handlers;
@@ -69,10 +68,7 @@ namespace MonkeyButler
                 await _discordClient.StartAsync();
 
                 _logger.LogTrace("Adding modules.");
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), scope.ServiceProvider);
-                }
+                await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
 
                 _logger.LogInformation("Bot successfully logged in and started.");
             }
