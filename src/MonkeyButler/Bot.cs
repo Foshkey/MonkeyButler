@@ -19,7 +19,6 @@ namespace MonkeyButler
         private readonly ILogger<Bot> _logger;
         private readonly ILogHandler _logHandler;
         private readonly IMessageHandler _messageHandler;
-        private readonly IScopeHandler _scopeHandler;
         private readonly IUserJoinedHandler _userJoinedHandler;
         private readonly IServiceProvider _serviceProvider;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
@@ -30,7 +29,6 @@ namespace MonkeyButler
             ILogger<Bot> logger,
             ILogHandler logHandler,
             IMessageHandler messageHandler,
-            IScopeHandler scopeHandler,
             IUserJoinedHandler userJoinedHandler,
             IServiceProvider serviceProvider,
             IOptionsMonitor<AppOptions> appOptions
@@ -41,7 +39,6 @@ namespace MonkeyButler
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logHandler = logHandler ?? throw new ArgumentNullException(nameof(logHandler));
             _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
-            _scopeHandler = scopeHandler ?? throw new ArgumentNullException(nameof(scopeHandler));
             _userJoinedHandler = userJoinedHandler ?? throw new ArgumentNullException(nameof(userJoinedHandler));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
@@ -90,7 +87,6 @@ namespace MonkeyButler
             _discordClient.Log += _logHandler.OnClientLog;
             _commands.Log += _logHandler.OnCommandLog;
             _discordClient.MessageReceived += _messageHandler.OnMessage;
-            _commands.CommandExecuted += _scopeHandler.OnCommandExecuted;
             _discordClient.UserJoined += _userJoinedHandler.OnUserJoined;
         }
     }

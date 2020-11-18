@@ -16,29 +16,33 @@ namespace MonkeyButler.Handlers
         private readonly DiscordSocketClient _discordClient;
         private readonly ILogger<MessageHandler> _logger;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
-        private readonly IScopeHandler _scopeHandler;
+        private readonly IServiceProvider _serviceProvider;
 
-        public MessageHandler(CommandService commands, DiscordSocketClient discordClient, ILogger<MessageHandler> logger, IOptionsMonitor<AppOptions> appOptions, IScopeHandler scopeHandler)
+        public MessageHandler(
+            CommandService commands,
+            DiscordSocketClient discordClient,
+            ILogger<MessageHandler> logger,
+            IOptionsMonitor<AppOptions> appOptions,
+            IServiceProvider serviceProvider)
         {
             _commands = commands ?? throw new ArgumentNullException(nameof(commands));
             _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
-            _scopeHandler = scopeHandler ?? throw new ArgumentNullException(nameof(scopeHandler));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public async Task OnMessage(SocketMessage message)
         {
-            if (!(message is SocketUserMessage userMessage) || userMessage.Author.IsBot) return;
+            if (message is not SocketUserMessage userMessage || userMessage.Author.IsBot) return;
 
             var argPos = 0;
-            var scope = _scopeHandler.CreateScope(message.Id);
             var prefix = _appOptions.CurrentValue.Discord.Prefix;
 
             // Check if custom guild prefix
             if (message.Author is SocketGuildUser guildUser)
             {
-                var optionsManager = scope.ServiceProvider.GetRequiredService<IOptionsManager>();
+                var optionsManager = _serviceProvider.GetRequiredService<IOptionsManager>();
                 var guildOptions = await optionsManager.GetGuildOptions(new Business.Models.Options.GuildOptionsCriteria()
                 {
                     GuildId = guildUser.Guild.Id
@@ -57,11 +61,7 @@ namespace MonkeyButler.Handlers
 
                 var context = new SocketCommandContext(_discordClient, userMessage);
 
-                await _commands.ExecuteAsync(context, argPos, scope.ServiceProvider);
-            }
-            else
-            {
-                scope.Dispose();
+                await _commands.ExecuteAsync(context, argPos, _serviceProvider);
             }
         }
     }

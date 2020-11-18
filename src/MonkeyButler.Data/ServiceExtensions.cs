@@ -25,7 +25,7 @@ namespace MonkeyButler.Data
                 .FromCallingAssembly()
                 .AddClasses(classes => classes.Where(x => !x.Name.EndsWith("Client")), publicOnly: false)
                 .AsImplementedInterfaces()
-                .WithScopedLifetime());
+                .WithTransientLifetime());
 
             services.Configure<JsonSerializerOptions>("Cache", options => { });
             services.Configure<JsonSerializerOptions>("XivApi", options =>
