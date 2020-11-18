@@ -28,7 +28,7 @@ namespace MonkeyButler.Data.Database
             using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
             var guilds = db.GetCollection<GuildOptions>(_guildKey);
 
-            var options = await Task.Run(() => guilds.FindOne(x => x.Id == query.GuildId));
+            var options = await Task.Run(() => guilds.FindByUlongId(query.GuildId));
 
             return options;
         }
@@ -39,7 +39,6 @@ namespace MonkeyButler.Data.Database
 
             using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
             var guilds = db.GetCollection<GuildOptions>(_guildKey);
-            guilds.EnsureIndex(x => x.Id);
 
             _ = await Task.Run(() => guilds.Upsert(query.Options));
         }

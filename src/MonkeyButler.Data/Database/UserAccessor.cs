@@ -39,11 +39,10 @@ namespace MonkeyButler.Data.Database
 
             using var db = new LiteDatabase(_liteDbOptions.CurrentValue.File);
             var users = db.GetCollection<User>(_userKey);
-            users.EnsureIndex(x => x.Id);
             users.EnsureIndex(x => x.CharacterIds);
 
             // Find or create new
-            var user = await Task.Run(() => users.FindOne(x => x.Id == query.UserId))
+            var user = await Task.Run(() => users.FindByUlongId(query.UserId))
                 ?? new User()
                 {
                     Id = query.UserId
