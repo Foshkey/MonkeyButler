@@ -26,5 +26,10 @@ namespace MonkeyButler.Business.Models.Options
         /// Signup emotes to be used for event sign ups.
         /// </summary>
         public List<string>? SignupEmotes { get; set; }
+
+        /// <summary>
+        /// The name of the registered free company.
+        /// </summary>
+        public string? FreeCompanyName { get; internal set; }
     }
 }
