@@ -37,11 +37,11 @@ namespace MonkeyButler.Modules.Commands
         {
             using var setTyping = Context.Channel.EnterTypingState();
 
-            var guildId = Context.Guild.Id;
             var criteria = new VerifyCharacterCriteria()
             {
                 Query = query,
-                GuildId = guildId
+                GuildId = Context.Guild.Id,
+                UserId = Context.User.Id
             };
 
             var result = await _verifyCharacterManager.Process(criteria);
@@ -64,6 +64,19 @@ namespace MonkeyButler.Modules.Commands
                     );
                     return;
 
+                case Status.CharacterAlreadyVerified:
+                    if (result.VerifiedUserId == Context.User.Id)
+                    {
+                        await ReplyAsync($"You've already been verified as {result.Name}! If you need help, please contact {Context.Guild.Owner.Mention}.");
+                        return;
+                    }
+
+                    await Task.WhenAll(
+                        ReplyAsync($"That character has already been associated with another user. The admin of this discord has been notified."),
+                        NotifyAdmin($"{Context.User.Mention} tried verification with '{query}', but I've found that this character has already been associated with user <@{result.VerifiedUserId}>.")
+                    );
+                    return;
+
                 case Status.FreeCompanyUndefined:
                 default:
                     await Task.WhenAll(
@@ -76,7 +89,7 @@ namespace MonkeyButler.Modules.Commands
 
         private async Task SetPermissions(VerifyCharacterResult result)
         {
-            if (!(Context?.User is IGuildUser user))
+            if (Context?.User is not IGuildUser user)
             {
                 return;
             }
@@ -103,7 +116,7 @@ namespace MonkeyButler.Modules.Commands
 
         private async Task SetUserName(VerifyCharacterResult result)
         {
-            if (!(Context?.User is IGuildUser user))
+            if (Context?.User is not IGuildUser user)
             {
                 return;
             }

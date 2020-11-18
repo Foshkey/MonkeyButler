@@ -25,5 +25,10 @@
         /// The verified role of the guild.
         /// </summary>
         public ulong VerifiedRoleId { get; set; }
+
+        /// <summary>
+        /// The Discord User Id tied to the character queried.
+        /// </summary>
+        public ulong? VerifiedUserId { get; set; }
     }
 }

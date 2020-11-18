@@ -6,8 +6,9 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.VerifyCharacter;
 using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database.Guild;
+using MonkeyButler.Data.Database;
 using MonkeyButler.Data.Models.Database.Guild;
+using MonkeyButler.Data.Models.Database.User;
 using MonkeyButler.Data.Models.XivApi.Character;
 using MonkeyButler.Data.XivApi.Character;
 
@@ -18,6 +19,7 @@ namespace MonkeyButler.Business.Managers
         private readonly ICacheAccessor _cacheAccessor;
         private readonly ICharacterAccessor _characterAccessor;
         private readonly IGuildAccessor _guildAccessor;
+        private readonly IUserAccessor _userAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
         private readonly IValidator<VerifyCharacterCriteria> _verifyCharacterValidator;
@@ -26,6 +28,7 @@ namespace MonkeyButler.Business.Managers
             ICacheAccessor cacheAccessor,
             ICharacterAccessor characterAccessor,
             IGuildAccessor guildAccessor,
+            IUserAccessor userAccessor,
             INameServerEngine nameServerEngine,
             ILogger<VerifyCharacterManager> logger,
             IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
@@ -33,6 +36,7 @@ namespace MonkeyButler.Business.Managers
             _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _characterAccessor = characterAccessor ?? throw new ArgumentNullException(nameof(characterAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
+            _userAccessor = userAccessor ?? throw new ArgumentNullException(nameof(userAccessor));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _verifyCharacterValidator = verifyCharacterValidator ?? throw new ArgumentNullException(nameof(verifyCharacterValidator));
@@ -68,10 +72,13 @@ namespace MonkeyButler.Business.Managers
                 VerifiedRoleId = guildOptions.VerifiedRoleId
             };
 
-            // Search for character.
-            _logger.LogTrace("Searching for character. Query: {Query}.", criteria.Query);
+            // Parse the query into name/server.
+            _logger.LogTrace("Parsing query: {Query}.", criteria.Query);
 
             var (name, _) = _nameServerEngine.Parse(criteria.Query);
+
+            // Search for the character.
+            _logger.LogTrace("Searching for {CharacterName} on {ServerName}.", name, guildOptions.FreeCompany.Server);
 
             var searchQuery = new SearchQuery()
             {
@@ -91,6 +98,25 @@ namespace MonkeyButler.Business.Managers
                 return result;
             }
 
+            // Check if character is already attached to a user.
+            _logger.LogTrace("Checking database if {CharacterName} has already been tied to a user. CharacterId: {CharacterId}", name, characterId);
+
+            var checkQuery = new GetVerifiedUserQuery()
+            {
+                CharacterId = characterId.Value
+            };
+
+            var user = await _userAccessor.GetVerifiedUser(checkQuery);
+
+            if (user is object)
+            {
+                _logger.LogDebug("{CharacterName} ({CharacterId}) has already been tied to UserId {UserId}.", name, characterId, user.Id);
+                result.Status = Status.CharacterAlreadyVerified;
+                result.Name = searchData.Results?.FirstOrDefault()?.Name;
+                result.VerifiedUserId = user.Id;
+                return result;
+            }
+
             // Get the character.
             _logger.LogTrace("Getting character with Id {Id}.", characterId);
 
@@ -106,16 +132,23 @@ namespace MonkeyButler.Business.Managers
 
             result.Name = getData?.Character?.Name;
 
-            if (characterFcId == guildOptions.FreeCompany.Id)
-            {
-                result.Status = Status.Verified;
-                _logger.LogDebug("{Name} has been verified with Free Company Id {FcId}", result.Name, guildOptions.FreeCompany.Id);
-            }
-            else
+            if (characterFcId != guildOptions.FreeCompany.Id)
             {
                 result.Status = Status.NotVerified;
                 _logger.LogDebug("{Name} failed verification. Character FC: {CFcId}. Guild FC: {FcId}", result.Name, characterFcId, guildOptions.FreeCompany.Id);
+                return result;
             }
+
+            result.Status = Status.Verified;
+            _logger.LogDebug("{Name} has been verified with Free Company Id {FcId}.", result.Name, guildOptions.FreeCompany.Id);
+
+            // Save character-user map to database.
+            _logger.LogDebug("Saving {Name} to database with User Id {UserId}.", result.Name, criteria.UserId);
+            await _userAccessor.SaveCharacterToUser(new SaveCharacterToUserQuery()
+            {
+                CharacterId = characterId.Value,
+                UserId = criteria.UserId
+            });
 
             return result;
         }

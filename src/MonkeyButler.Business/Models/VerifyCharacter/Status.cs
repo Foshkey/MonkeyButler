@@ -18,6 +18,11 @@
         /// <summary>
         /// Free company is not defined and character cannot be verified.
         /// </summary>
-        FreeCompanyUndefined
+        FreeCompanyUndefined,
+
+        /// <summary>
+        /// Character has already been verified under another user.
+        /// </summary>
+        CharacterAlreadyVerified
     }
 }

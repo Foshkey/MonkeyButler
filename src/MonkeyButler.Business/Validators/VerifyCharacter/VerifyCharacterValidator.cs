@@ -10,6 +10,9 @@ namespace MonkeyButler.Business.Validators.VerifyCharacter
             RuleFor(x => x.GuildId)
                 .GreaterThan((ulong)0);
 
+            RuleFor(x => x.UserId)
+                .GreaterThan((ulong)0);
+
             RuleFor(x => x.Query)
                 .NotEmpty();
         }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.Options;
 using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database.Guild;
+using MonkeyButler.Data.Database;
 using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.XivApi.FreeCompany;
 using MonkeyButler.Data.XivApi.FreeCompany;
