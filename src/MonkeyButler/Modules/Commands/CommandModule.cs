@@ -35,7 +35,7 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         protected async Task NotifyAdmin(string? message)
         {
-            if (Context.Guild is null)
+            if (Context.Guild?.Owner is null)
             {
                 return;
             }
