@@ -7,7 +7,7 @@ namespace MonkeyButler.Business.Engines
 {
     internal class CharacterResultEngine : ICharacterResultEngine
     {
-        public Character Merge(CharacterBrief character, GetData details)
+        public Character Merge(CharacterBrief character, GetCharacterData details)
         {
             return new Character()
             {
@@ -85,6 +85,6 @@ namespace MonkeyButler.Business.Engines
 
     internal interface ICharacterResultEngine
     {
-        Character Merge(CharacterBrief character, GetData details);
+        Character Merge(CharacterBrief character, GetCharacterData details);
     }
 }

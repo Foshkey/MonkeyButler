@@ -50,8 +50,8 @@ namespace MonkeyButler.Business.Tests.Managers
             _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
-            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
-                .ReturnsAsync(new SearchData()
+            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchCharacterQuery>()))
+                .ReturnsAsync(new SearchCharacterData()
                 {
                     Results = new List<CharacterBrief>()
                     {
@@ -59,8 +59,8 @@ namespace MonkeyButler.Business.Tests.Managers
                     }
                 });
 
-            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetQuery>()))
-                .ReturnsAsync(new GetData()
+            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetCharacterQuery>()))
+                .ReturnsAsync(new GetCharacterData()
                 {
                     Character = new CharacterFull()
                     {
@@ -116,8 +116,8 @@ namespace MonkeyButler.Business.Tests.Managers
         {
             var criteria = SetupHappyPath();
 
-            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchQuery>()))
-                .ReturnsAsync(new SearchData()
+            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchCharacterQuery>()))
+                .ReturnsAsync(new SearchCharacterData()
                 {
                     Results = new List<CharacterBrief>()
                 });
@@ -132,8 +132,8 @@ namespace MonkeyButler.Business.Tests.Managers
         {
             var criteria = SetupHappyPath();
 
-            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetQuery>()))
-                .ReturnsAsync(new GetData());
+            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetCharacterQuery>()))
+                .ReturnsAsync(new GetCharacterData());
 
             var result = await BuildTarget().Process(criteria);
 

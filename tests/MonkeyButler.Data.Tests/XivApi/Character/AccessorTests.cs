@@ -16,7 +16,7 @@ namespace MonkeyButler.Data.Tests.XivApi.Character
         [Fact(Skip = "External call")]
         public async Task SearchCharacterShouldReturnCharacter()
         {
-            var query = new SearchQuery()
+            var query = new SearchCharacterQuery()
             {
                 Name = "Jolinar Cast",
                 Server = "Diabolos"
@@ -31,7 +31,7 @@ namespace MonkeyButler.Data.Tests.XivApi.Character
         [Fact(Skip = "External call")]
         public async Task GetCharacterShouldReturnCharacter()
         {
-            var query = new GetQuery()
+            var query = new GetCharacterQuery()
             {
                 Id = 13099353
             };

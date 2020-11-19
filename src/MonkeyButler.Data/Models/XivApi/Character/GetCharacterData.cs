@@ -6,7 +6,7 @@ namespace MonkeyButler.Data.Models.XivApi.Character
     /// <summary>
     /// Response model of get character.
     /// </summary>
-    public class GetData
+    public class GetCharacterData
     {
         /// <summary>
         /// The achievements of the character.

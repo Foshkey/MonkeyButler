@@ -9,7 +9,7 @@ using MonkeyButler.Data.Cache;
 using MonkeyButler.Data.Database;
 using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.XivApi.FreeCompany;
-using MonkeyButler.Data.XivApi.FreeCompany;
+using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -18,7 +18,7 @@ namespace MonkeyButler.Business.Managers
         private readonly IEmotesEngine _emotesEngine;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ICacheAccessor _cacheAccessor;
-        private readonly IFreeCompanyAccessor _freeCompanyAccessor;
+        private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildAccessor _guildAccessor;
         private readonly ILogger<OptionsManager> _logger;
         private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
@@ -30,7 +30,7 @@ namespace MonkeyButler.Business.Managers
             IEmotesEngine emotesEngine,
             INameServerEngine nameServerEngine,
             ICacheAccessor cacheAccessor,
-            IFreeCompanyAccessor freeCompanyAccessor,
+            IXivApiAccessor xivApiAccessor,
             IGuildAccessor guildAccessor,
             ILogger<OptionsManager> logger,
             IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
@@ -41,7 +41,7 @@ namespace MonkeyButler.Business.Managers
             _emotesEngine = emotesEngine ?? throw new ArgumentNullException(nameof(emotesEngine));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
-            _freeCompanyAccessor = freeCompanyAccessor ?? throw new ArgumentNullException(nameof(freeCompanyAccessor));
+            _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _getGuildOptionsValidator = getGuildOptionsValidator ?? throw new ArgumentNullException(nameof(getGuildOptionsValidator));
@@ -165,7 +165,7 @@ namespace MonkeyButler.Business.Managers
 
             var (name, server) = _nameServerEngine.Parse(criteria.FreeCompanyAndServer);
 
-            var fcSearchQuery = new SearchQuery()
+            var fcSearchQuery = new SearchFreeCompanyQuery()
             {
                 Name = name,
                 Server = server
@@ -173,7 +173,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Searching for free company '{FreeCompanyName}' on server '{ServerName}'", name, server);
 
-            var fcSearchData = await _freeCompanyAccessor.Search(fcSearchQuery);
+            var fcSearchData = await _xivApiAccessor.SearchFreeCompany(fcSearchQuery);
 
             // Find single, exact match.
             var fc = fcSearchData.Results?.SingleOrDefault(x =>

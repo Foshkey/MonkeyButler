@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using SUT = MonkeyButler.Data.XivApi.IXivApiClient;
+using SUT = MonkeyButler.Data.XivApi.IXivApiAccessor;
 
 namespace MonkeyButler.Data.Tests.XivApi
 {
