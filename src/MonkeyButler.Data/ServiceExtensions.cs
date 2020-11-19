@@ -45,9 +45,7 @@ namespace MonkeyButler.Data
             services.AddHttpClient<IXivApiClient, XivApiClient>(client =>
             {
                 client.BaseAddress = new Uri(xivApiConfig["BaseUrl"]);
-            }).AddHttpMessageHandler<LoggingHandler>();
-
-            services.AddSingleton<LoggingHandler>();
+            });
 
             services.AddDistributedMemoryCache();
 
