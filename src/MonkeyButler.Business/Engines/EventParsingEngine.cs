@@ -79,9 +79,7 @@ namespace MonkeyButler.Business.Engines
                 ? timeParsed
                 : FindTimeElsewhere(words, timeStr, ref titleEndIndex, ref containedAm);
 
-            var date = DateTimeOffset.TryParse(dateStr, out var dateParsed)
-                ? dateParsed
-                : FindDateElsewhere(words, dateStr, now, ref titleEndIndex);
+            var date = FindDate(words, dateStr, now, ref titleEndIndex);
 
             return new Event()
             {
@@ -173,7 +171,7 @@ namespace MonkeyButler.Business.Engines
             return null;
         }
 
-        private DateTimeOffset? FindDateElsewhere(string[] words, string dateStr, DateTimeOffset now, ref int titleEndIndex)
+        private DateTimeOffset? FindDate(string[] words, string dateStr, DateTimeOffset now, ref int titleEndIndex)
         {
             // Check day of week
             if (_dayOfWeekMap.ContainsKey(dateStr))
@@ -207,6 +205,12 @@ namespace MonkeyButler.Business.Engines
 
                     return now.AddDays(1);
                 }
+            }
+
+            // Finally if it's an actual date
+            if (DateTimeOffset.TryParse(dateStr, out var date))
+            {
+                return date;
             }
 
             return now;

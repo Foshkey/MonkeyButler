@@ -6,7 +6,7 @@ using MonkeyButler.Data.Database;
 using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.Database.User;
 using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi.Character;
+using MonkeyButler.Data.XivApi;
 using Moq;
 using Xunit;
 using SUT = MonkeyButler.Business.Managers.VerifyCharacterManager;
@@ -24,13 +24,13 @@ namespace MonkeyButler.Business.Tests.Managers
         private readonly string _fcId = "98237492";
 
         private readonly Mock<ICacheAccessor> _cacheAccessorMock = new Mock<ICacheAccessor>();
-        private readonly Mock<ICharacterAccessor> _characterAccessorMock = new Mock<ICharacterAccessor>();
+        private readonly Mock<IXivApiAccessor> _xivApiAccessor = new Mock<IXivApiAccessor>();
         private readonly Mock<IGuildAccessor> _guildAccessorMock = new Mock<IGuildAccessor>();
         private readonly Mock<IUserAccessor> _userAccessorMock = new Mock<IUserAccessor>();
 
         private SUT BuildTarget() => Resolver
             .Add(_cacheAccessorMock.Object)
-            .Add(_characterAccessorMock.Object)
+            .Add(_xivApiAccessor.Object)
             .Add(_guildAccessorMock.Object)
             .Add(_userAccessorMock.Object)
             .Resolve<SUT>();
@@ -50,7 +50,7 @@ namespace MonkeyButler.Business.Tests.Managers
             _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(guildOptions);
 
-            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchCharacterQuery>()))
+            _xivApiAccessor.Setup(x => x.SearchCharacter(It.IsAny<SearchCharacterQuery>()))
                 .ReturnsAsync(new SearchCharacterData()
                 {
                     Results = new List<CharacterBrief>()
@@ -59,7 +59,7 @@ namespace MonkeyButler.Business.Tests.Managers
                     }
                 });
 
-            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetCharacterQuery>()))
+            _xivApiAccessor.Setup(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()))
                 .ReturnsAsync(new GetCharacterData()
                 {
                     Character = new CharacterFull()
@@ -116,7 +116,7 @@ namespace MonkeyButler.Business.Tests.Managers
         {
             var criteria = SetupHappyPath();
 
-            _characterAccessorMock.Setup(x => x.Search(It.IsAny<SearchCharacterQuery>()))
+            _xivApiAccessor.Setup(x => x.SearchCharacter(It.IsAny<SearchCharacterQuery>()))
                 .ReturnsAsync(new SearchCharacterData()
                 {
                     Results = new List<CharacterBrief>()
@@ -132,7 +132,7 @@ namespace MonkeyButler.Business.Tests.Managers
         {
             var criteria = SetupHappyPath();
 
-            _characterAccessorMock.Setup(x => x.Get(It.IsAny<GetCharacterQuery>()))
+            _xivApiAccessor.Setup(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()))
                 .ReturnsAsync(new GetCharacterData());
 
             var result = await BuildTarget().Process(criteria);
