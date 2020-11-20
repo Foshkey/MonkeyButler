@@ -10,14 +10,14 @@ using MonkeyButler.Data.Database;
 using MonkeyButler.Data.Models.Database.Guild;
 using MonkeyButler.Data.Models.Database.User;
 using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi.Character;
+using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
         private readonly ICacheAccessor _cacheAccessor;
-        private readonly ICharacterAccessor _characterAccessor;
+        private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildAccessor _guildAccessor;
         private readonly IUserAccessor _userAccessor;
         private readonly INameServerEngine _nameServerEngine;
@@ -26,7 +26,7 @@ namespace MonkeyButler.Business.Managers
 
         public VerifyCharacterManager(
             ICacheAccessor cacheAccessor,
-            ICharacterAccessor characterAccessor,
+            IXivApiAccessor xivApiAccessor,
             IGuildAccessor guildAccessor,
             IUserAccessor userAccessor,
             INameServerEngine nameServerEngine,
@@ -34,7 +34,7 @@ namespace MonkeyButler.Business.Managers
             IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
         {
             _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
-            _characterAccessor = characterAccessor ?? throw new ArgumentNullException(nameof(characterAccessor));
+            _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _userAccessor = userAccessor ?? throw new ArgumentNullException(nameof(userAccessor));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
@@ -80,13 +80,13 @@ namespace MonkeyButler.Business.Managers
             // Search for the character.
             _logger.LogTrace("Searching for {CharacterName} on {ServerName}.", name, guildOptions.FreeCompany.Server);
 
-            var searchQuery = new SearchQuery()
+            var searchQuery = new SearchCharacterQuery()
             {
                 Name = name,
                 Server = guildOptions.FreeCompany.Server
             };
 
-            var searchData = await _characterAccessor.Search(searchQuery);
+            var searchData = await _xivApiAccessor.SearchCharacter(searchQuery);
 
             var characterId = searchData.Results?.FirstOrDefault()?.Id;
             _logger.LogDebug("Got character Id {Id}.", characterId);
@@ -120,12 +120,12 @@ namespace MonkeyButler.Business.Managers
             // Get the character.
             _logger.LogTrace("Getting character with Id {Id}.", characterId);
 
-            var getQuery = new GetQuery()
+            var getQuery = new GetCharacterQuery()
             {
                 Id = characterId.Value
             };
 
-            var getData = await _characterAccessor.Get(getQuery);
+            var getData = await _xivApiAccessor.GetCharacter(getQuery);
 
             var characterFcId = getData?.Character?.FreeCompanyId;
             _logger.LogDebug("Got character Free Company Id {FcId}.", characterFcId);

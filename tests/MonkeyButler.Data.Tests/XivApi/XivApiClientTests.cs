@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MonkeyButler.Data.Models.XivApi.Character;
 using Xunit;
-using SUT = MonkeyButler.Data.XivApi.IXivApiClient;
+using SUT = MonkeyButler.Data.XivApi.IXivApiAccessor;
 
 namespace MonkeyButler.Data.Tests.XivApi
 {
@@ -14,26 +16,30 @@ namespace MonkeyButler.Data.Tests.XivApi
         [Fact(Skip = "External call")]
         public async Task SearchCharacterShouldReturnCharacter()
         {
-            var name = "Jolinar+Cast";
-            var server = "Diabolos";
+            var query = new SearchCharacterQuery()
+            {
+                Name = "Jolinar Cast",
+                Server = "Diabolos"
+            };
 
-            var response = await Target.SearchCharacter(name, server);
+            var data = await Target.SearchCharacter(query);
 
-            response.EnsureSuccessStatusCode();
-            var str = await response.Content.ReadAsStringAsync();
-            Assert.NotEmpty(str);
+            Assert.NotNull(data);
+            Assert.NotEqual(0, data.Results.First().Id);
         }
 
         [Fact(Skip = "External call")]
         public async Task GetCharacterShouldReturnCharacter()
         {
-            var id = 13099353;
+            var query = new GetCharacterQuery()
+            {
+                Id = 13099353
+            };
 
-            var response = await Target.GetCharacter(id);
+            var data = await Target.GetCharacter(query);
 
-            response.EnsureSuccessStatusCode();
-            var str = await response.Content.ReadAsStringAsync();
-            Assert.NotEmpty(str);
+            Assert.NotNull(data?.Character);
+            Assert.NotEqual(0, data!.Character!.Id);
         }
     }
 }

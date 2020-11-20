@@ -3,7 +3,7 @@
     /// <summary>
     /// The query for the get command.
     /// </summary>
-    public class GetQuery
+    public class GetCharacterQuery
     {
         /// <summary>
         /// The id of the character.

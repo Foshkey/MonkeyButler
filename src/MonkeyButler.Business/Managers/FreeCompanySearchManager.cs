@@ -5,23 +5,23 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.FreeCompanySearch;
 using MonkeyButler.Data.Models.XivApi.FreeCompany;
-using MonkeyButler.Data.XivApi.FreeCompany;
+using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class FreeCompanySearchManager : IFreeCompanySearchManager
     {
-        private readonly IFreeCompanyAccessor _accessor;
+        private readonly IXivApiAccessor _xivApiAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<FreeCompanySearchManager> _logger;
 
         public FreeCompanySearchManager(
-            IFreeCompanyAccessor accessor,
+            IXivApiAccessor xivApiAccessor,
             INameServerEngine nameServerEngine,
             ILogger<FreeCompanySearchManager> logger
         )
         {
-            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -41,7 +41,7 @@ namespace MonkeyButler.Business.Managers
             _logger.LogTrace("Processing Free Company search. Query: '{Query}'.", criteria.Query);
 
             var (name, server) = _nameServerEngine.Parse(criteria.Query);
-            var searchQuery = new SearchQuery()
+            var searchQuery = new SearchFreeCompanyQuery()
             {
                 Name = name,
                 Server = server
@@ -49,7 +49,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Searching Free Company. Name: '{Name}'. Server: '{Server}'.", searchQuery.Name, searchQuery.Server);
 
-            var searchData = await _accessor.Search(searchQuery);
+            var searchData = await _xivApiAccessor.SearchFreeCompany(searchQuery);
 
             _logger.LogTrace("Search yielded {Count} results.", searchData.Pagination?.ResultsTotal);
 

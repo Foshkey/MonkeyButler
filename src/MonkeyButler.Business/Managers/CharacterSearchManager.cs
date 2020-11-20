@@ -6,25 +6,25 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Business.Engines;
 using MonkeyButler.Business.Models.CharacterSearch;
 using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi.Character;
+using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class CharacterSearchManager : ICharacterSearchManager
     {
-        private readonly ICharacterAccessor _accessor;
+        private readonly IXivApiAccessor _xivApiAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ICharacterResultEngine _characterResultEngine;
         private readonly ILogger<CharacterSearchManager> _logger;
 
         public CharacterSearchManager(
-            ICharacterAccessor accessor,
+            IXivApiAccessor xivApiAccessor,
             INameServerEngine nameServerEngine,
             ICharacterResultEngine characterResultEngine,
             ILogger<CharacterSearchManager> logger
         )
         {
-            _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _characterResultEngine = characterResultEngine ?? throw new ArgumentNullException(nameof(characterResultEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -45,7 +45,7 @@ namespace MonkeyButler.Business.Managers
             _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 
             var (name, server) = _nameServerEngine.Parse(criteria.Query);
-            var searchQuery = new SearchQuery()
+            var searchQuery = new SearchCharacterQuery()
             {
                 Name = name,
                 Server = server
@@ -53,7 +53,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Searching character. Name: '{Name}'. Server: '{Server}'.", searchQuery.Name, searchQuery.Server);
 
-            var searchData = await _accessor.Search(searchQuery);
+            var searchData = await _xivApiAccessor.SearchCharacter(searchQuery);
 
             _logger.LogTrace("Search yielded {Count} results. Taking top five.", searchData.Pagination?.ResultsTotal);
 
@@ -84,7 +84,7 @@ namespace MonkeyButler.Business.Managers
 
         private async Task<Character> ProcessDetails(CharacterBrief character)
         {
-            var query = new GetQuery()
+            var query = new GetCharacterQuery()
             {
                 Id = character.Id,
                 Data = "CJ,FC"
@@ -92,7 +92,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Getting details for {Name}. Id: {Id}.", character.Name, character.Id);
 
-            var details = await _accessor.Get(query);
+            var details = await _xivApiAccessor.GetCharacter(query);
 
             return _characterResultEngine.Merge(character, details);
         }

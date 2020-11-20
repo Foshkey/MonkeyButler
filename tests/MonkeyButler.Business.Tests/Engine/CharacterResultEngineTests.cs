@@ -21,7 +21,7 @@ namespace MonkeyButler.Business.Tests.Engine
         public void ShouldCapitilizeClassJobName(string? input, string? expectedName)
         {
             var characterBrief = new CharacterBrief();
-            var details = new GetData()
+            var details = new GetCharacterData()
             {
                 Character = new CharacterFull()
                 {
@@ -46,7 +46,7 @@ namespace MonkeyButler.Business.Tests.Engine
         public void ShouldRemoveDuplicates(string? input, string? expectedName)
         {
             var characterBrief = new CharacterBrief();
-            var details = new GetData()
+            var details = new GetCharacterData()
             {
                 Character = new CharacterFull()
                 {
@@ -70,7 +70,7 @@ namespace MonkeyButler.Business.Tests.Engine
         public void ShouldConvertRace(Race? race, string? expectedRace)
         {
             var characterBrief = new CharacterBrief();
-            var details = new GetData()
+            var details = new GetCharacterData()
             {
                 Character = new CharacterFull()
                 {
@@ -93,7 +93,7 @@ namespace MonkeyButler.Business.Tests.Engine
         public void ShouldConvertTribe(Tribe? tribe, string? expectedTribe)
         {
             var characterBrief = new CharacterBrief();
-            var details = new GetData()
+            var details = new GetCharacterData()
             {
                 Character = new CharacterFull()
                 {
@@ -115,7 +115,7 @@ namespace MonkeyButler.Business.Tests.Engine
             {
                 Id = id
             };
-            var details = new GetData();
+            var details = new GetCharacterData();
 
             var result = BuildTarget().Merge(characterBrief, details);
 

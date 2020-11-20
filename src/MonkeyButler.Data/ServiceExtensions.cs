@@ -23,7 +23,7 @@ namespace MonkeyButler.Data
         {
             services.Scan(select => select
                 .FromCallingAssembly()
-                .AddClasses(classes => classes.Where(x => !x.Name.EndsWith("Client")), publicOnly: false)
+                .AddClasses(classes => classes.Where(x => x.Name != "XivApiAccessor"), publicOnly: false)
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
 
@@ -42,7 +42,7 @@ namespace MonkeyButler.Data
             var xivApiConfig = configuration.GetSection("XivApi");
             services.Configure<XivApiOptions>(xivApiConfig);
 
-            services.AddHttpClient<IXivApiClient, XivApiClient>(client =>
+            services.AddHttpClient<IXivApiAccessor, XivApiAccessor>(client =>
             {
                 client.BaseAddress = new Uri(xivApiConfig["BaseUrl"]);
             });
