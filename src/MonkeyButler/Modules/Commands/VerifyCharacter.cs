@@ -50,7 +50,7 @@ namespace MonkeyButler.Modules.Commands
             {
                 case Status.Verified:
                     await Task.WhenAll(
-                        ReplyAsync($"According to Lodestone, I have verified you as a member of the {result.FreeCompanyName} Free Company, {result.Name}."),
+                        ReplyAsync($"Using Lodestone, I have verified you as a member of the **{result.FreeCompanyName}** Free Company, {result.Name}."),
                         SetPermissions(result),
                         SetUserName(result)
                     );
@@ -100,12 +100,13 @@ namespace MonkeyButler.Modules.Commands
             {
                 await ReplyAsync($"However, I could not find the server's verified role. I will notify the server's administrator.");
                 await NotifyAdmin($"I successfully verified {user.Mention} as {result.Name} but I could not find the verified role. If you changed this role, please use the `set` command again, e.g. `{await GetPrefix()}set verify VerifiedRoleName FreeCompanyName FFXIVServer` in your server.");
+                return;
             }
 
             try
             {
                 await user.AddRoleAsync(role);
-                await ReplyAsync($"I have given you verified member permissions. This includes any member-exclusive channels, take a look!");
+                await ReplyAsync($"I have given you the **{role.Name}** role. This includes any exclusive permissions, like channel access, so take a look!");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
@@ -127,7 +128,7 @@ namespace MonkeyButler.Modules.Commands
                 {
                     properties.Nickname = result.Name;
                 });
-                await ReplyAsync($"Your nickname in this server has been changed to {result.Name}.");
+                await ReplyAsync($"Your nickname in this server has been changed to **{result.Name}**.");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
