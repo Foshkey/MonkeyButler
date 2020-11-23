@@ -41,8 +41,13 @@
         AuRa = 6,
 
         /// <summary>
+        /// The race is Hrothgar.
+        /// </summary>
+        Hrothgar = 7,
+
+        /// <summary>
         /// The race is Viera.
         /// </summary>
-        Viera = 7
+        Viera = 8
     }
 }

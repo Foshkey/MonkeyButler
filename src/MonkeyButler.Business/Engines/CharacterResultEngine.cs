@@ -35,8 +35,8 @@ namespace MonkeyButler.Business.Engines
             }
 
             var capitalizedSplit = str.Split(' ')
-                .Select(x => x.Length > 0 
-                    ? char.ToUpper(x[0]) + x.Substring(1).ToLower() 
+                .Select(x => x.Length > 0
+                    ? char.ToUpper(x[0]) + x.Substring(1).ToLower()
                     : x);
 
             return string.Join(" ", capitalizedSplit);
@@ -78,6 +78,7 @@ namespace MonkeyButler.Business.Engines
                 Tribe.SeaWolf => "Sea Wolf",
                 Tribe.SeekerOfTheMoon => "Seeker of the Moon",
                 Tribe.SeekerOfTheSun => "Seeker of the Sun",
+                Tribe.TheLost => "The Lost",
                 _ => tribe?.ToString() ?? null
             };
         }

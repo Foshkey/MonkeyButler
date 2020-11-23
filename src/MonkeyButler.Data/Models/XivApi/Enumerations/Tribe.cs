@@ -68,6 +68,26 @@
         /// <summary>
         /// The tribe is Xaela.
         /// </summary>
-        Xaela = 12
+        Xaela = 12,
+
+        /// <summary>
+        /// The tribe is Helions.
+        /// </summary>
+        Helions = 13,
+
+        /// <summary>
+        /// The tribe is The Lost.
+        /// </summary>
+        TheLost = 14,
+
+        /// <summary>
+        /// The tribe is Rava.
+        /// </summary>
+        Rava = 15,
+
+        /// <summary>
+        /// The tribe is Veena.
+        /// </summary>
+        Veena = 16
     }
 }

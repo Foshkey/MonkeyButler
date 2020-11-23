@@ -14,7 +14,7 @@ namespace MonkeyButler.Data.XivApi
     {
         private static string GetLog(HttpHeaders headers) => string.Join(", ", headers.Select(x => $"{x.Key}:{string.Join(",", x.Value)}"));
 
-        public static async Task LogTrace(this ILogger logger, Stream stream)
+        public static async Task TraceBody(this ILogger logger, Stream stream)
         {
             // Check before we really have to do work.
             if (!logger.IsEnabled(LogLevel.Trace))
@@ -29,7 +29,7 @@ namespace MonkeyButler.Data.XivApi
             logger.LogTrace("Response: {Response}", body);
         }
 
-        public static async Task LogError(this ILogger logger, Exception ex, HttpResponseMessage response)
+        public static async Task ResponseError(this ILogger logger, Exception ex, HttpResponseMessage response)
         {
             var message = new StringBuilder("Response status code did not indicate success.");
             var args = new List<object>();

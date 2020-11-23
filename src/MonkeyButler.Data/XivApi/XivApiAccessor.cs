@@ -55,7 +55,7 @@ namespace MonkeyButler.Data.XivApi
             }
             catch (Exception ex)
             {
-                await _logger.LogError(ex, response);
+                await _logger.ResponseError(ex, response);
                 throw ex;
             }
 
@@ -63,9 +63,9 @@ namespace MonkeyButler.Data.XivApi
             var data = await JsonSerializer.DeserializeAsync<T>(stream, _xivApiJsonOptions);
 
             // Fire and forget log
-            _ = _logger.LogTrace(stream);
+            _ = _logger.TraceBody(stream);
 
-            return data;
+            return data ?? throw new InvalidOperationException("Response was successful but body was empty.");
         }
 
         public async Task<GetCharacterData> GetCharacter(GetCharacterQuery query)
