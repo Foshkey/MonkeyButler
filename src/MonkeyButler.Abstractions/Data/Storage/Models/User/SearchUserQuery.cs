@@ -1,9 +1,9 @@
 ﻿namespace MonkeyButler.Abstractions.Data.Storage.Models.User
 {
     /// <summary>
-    /// Query for getting a verified user of a particular character Id.
+    /// Query for searching for a user given a character Id
     /// </summary>
-    public class GetVerifiedUserQuery
+    public class SearchUserQuery
     {
         /// <summary>
         /// The character Id to search for.

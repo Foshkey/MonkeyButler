@@ -17,7 +17,7 @@ namespace MonkeyButler.Business.Managers
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
         private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly IGuildAccessor _guildAccessor;
+        private readonly IGuildOptionsAccessor _guildAccessor;
         private readonly IUserAccessor _userAccessor;
         private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
@@ -25,7 +25,7 @@ namespace MonkeyButler.Business.Managers
 
         public VerifyCharacterManager(
             IXivApiAccessor xivApiAccessor,
-            IGuildAccessor guildAccessor,
+            IGuildOptionsAccessor guildAccessor,
             IUserAccessor userAccessor,
             INameServerEngine nameServerEngine,
             ILogger<VerifyCharacterManager> logger,
@@ -98,12 +98,12 @@ namespace MonkeyButler.Business.Managers
             // Check if character is already attached to a user.
             _logger.LogTrace("Checking database if {CharacterName} has already been tied to a user. CharacterId: {CharacterId}", name, characterId);
 
-            var checkQuery = new GetVerifiedUserQuery()
+            var checkQuery = new GetUserQuery()
             {
                 CharacterId = characterId.Value
             };
 
-            var user = await _userAccessor.GetVerifiedUser(checkQuery);
+            var user = await _userAccessor.SearchUser(checkQuery);
 
             if (user is object)
             {

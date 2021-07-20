@@ -18,7 +18,7 @@ namespace MonkeyButler.Business.Managers
         private readonly IEmotesEngine _emotesEngine;
         private readonly INameServerEngine _nameServerEngine;
         private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly IGuildAccessor _guildAccessor;
+        private readonly IGuildOptionsAccessor _guildAccessor;
         private readonly ILogger<GuildOptionsManager> _logger;
         private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
         private readonly IValidator<SetPrefixCriteria> _setPrefixValidator;
@@ -29,7 +29,7 @@ namespace MonkeyButler.Business.Managers
             IEmotesEngine emotesEngine,
             INameServerEngine nameServerEngine,
             IXivApiAccessor xivApiAccessor,
-            IGuildAccessor guildAccessor,
+            IGuildOptionsAccessor guildAccessor,
             ILogger<GuildOptionsManager> logger,
             IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
             IValidator<SetPrefixCriteria> setPrefixValidator,

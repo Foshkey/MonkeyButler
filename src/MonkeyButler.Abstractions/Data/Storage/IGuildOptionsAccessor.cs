@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Data.Storage
     /// <summary>
     /// Storage guild options accessor
     /// </summary>
-    public interface IGuildAccessor
+    public interface IGuildOptionsAccessor
     {
         /// <summary>
         /// Gets the options for a guild. Null if not found.

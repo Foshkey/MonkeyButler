@@ -9,11 +9,18 @@ namespace MonkeyButler.Abstractions.Data.Storage
     public interface IUserAccessor
     {
         /// <summary>
+        /// Gets a user based on user Id
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        Task<User?> GetUser(GetUserQuery query);
+
+        /// <summary>
         /// Gets the user for a given character Id. Null if not found.
         /// </summary>
         /// <param name="query"></param>
         /// <returns>The user. Null if not found.</returns>
-        Task<User?> GetVerifiedUser(GetVerifiedUserQuery query);
+        Task<User?> SearchUser(SearchUserQuery query);
 
         /// <summary>
         /// Saves the options for a guild.
