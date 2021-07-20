@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Abstractions.Api;
-using MonkeyButler.Abstractions.Api.Models.FreeCompany;
 using MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
 using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers

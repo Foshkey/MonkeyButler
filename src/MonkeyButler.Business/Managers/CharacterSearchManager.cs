@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Abstractions.Api;
-using MonkeyButler.Abstractions.Api.Models.Character;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
 using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers

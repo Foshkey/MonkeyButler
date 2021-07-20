@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Abstractions.Api;
-using MonkeyButler.Abstractions.Api.Models.FreeCompany;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.Options;
-using MonkeyButler.Abstractions.Storage;
-using MonkeyButler.Abstractions.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers
@@ -190,7 +190,7 @@ namespace MonkeyButler.Business.Managers
 
             options.Id = criteria.GuildId;
             options.VerifiedRoleId = criteria.RoleId;
-            options.FreeCompany = new Abstractions.Storage.Models.Guild.FreeCompany()
+            options.FreeCompany = new Abstractions.Data.Storage.Models.Guild.FreeCompany()
             {
                 Id = fc.Id,
                 Name = fc.Name,

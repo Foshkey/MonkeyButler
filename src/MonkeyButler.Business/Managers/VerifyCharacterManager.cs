@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using MonkeyButler.Abstractions.Api;
-using MonkeyButler.Abstractions.Api.Models.Character;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
-using MonkeyButler.Abstractions.Storage;
-using MonkeyButler.Abstractions.Storage.Models.Guild;
-using MonkeyButler.Abstractions.Storage.Models.User;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Data.Storage.Models.User;
 using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers
