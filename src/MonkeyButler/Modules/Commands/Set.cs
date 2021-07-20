@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.Options;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Options;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
@@ -16,16 +16,16 @@ namespace MonkeyButler.Modules.Commands
     [Group("Set")]
     public class Set : CommandModule
     {
-        private readonly IOptionsManager _optionsManager;
+        private readonly IGuildOptionsManager _guildOptionsManager;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="optionsManager"></param>
+        /// <param name="guildOptionsManager"></param>
         /// <param name="appOptions"></param>
-        public Set(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
+        public Set(IGuildOptionsManager guildOptionsManager, IOptionsMonitor<AppOptions> appOptions) : base(guildOptionsManager, appOptions)
         {
-            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
+            _guildOptionsManager = guildOptionsManager ?? throw new ArgumentNullException(nameof(guildOptionsManager));
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MonkeyButler.Modules.Commands
                 Prefix = prefix
             };
 
-            await _optionsManager.SetPrefix(criteria);
+            await _guildOptionsManager.SetPrefix(criteria);
 
             await ReplyAsync("Done.");
         }
@@ -79,7 +79,7 @@ namespace MonkeyButler.Modules.Commands
                 FreeCompanyAndServer = remainder
             };
 
-            var result = await _optionsManager.SetVerification(criteria);
+            var result = await _guildOptionsManager.SetVerification(criteria);
 
             if (result.Status == SetVerificationStatus.FreeCompanyNotFound)
             {
@@ -108,7 +108,7 @@ namespace MonkeyButler.Modules.Commands
                 Emotes = emotes
             };
 
-            var result = await _optionsManager.SetSignupEmotes(criteria);
+            var result = await _guildOptionsManager.SetSignupEmotes(criteria);
 
             if (result.Status == SetSignupEmotesStatus.EmotesNotFound)
             {

@@ -6,8 +6,8 @@ using Discord;
 using Discord.Commands;
 using Discord.Net;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
@@ -22,7 +22,7 @@ namespace MonkeyButler.Modules.Commands
         /// <summary>
         /// Constructor.
         /// </summary>
-        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
+        public VerifyCharacter(IVerifyCharacterManager verifyCharacterManager, IGuildOptionsManager guildOptionsManager, IOptionsMonitor<AppOptions> appOptions) : base(guildOptionsManager, appOptions)
         {
             _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
         }

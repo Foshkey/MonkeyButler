@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -19,13 +17,8 @@ namespace MonkeyButler.Business.Tests
 
         public ResolverBuilder()
         {
-            var config = new ConfigurationBuilder()
-               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-               .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true, reloadOnChange: true)
-               .Build();
-
             _services = new ServiceCollection()
-                .AddBusinessServices(config)
+                .AddBusinessServices()
                 .AddLogging(logBuilder =>
                 {
                     logBuilder.SetMinimumLevel(LogLevel.Debug);

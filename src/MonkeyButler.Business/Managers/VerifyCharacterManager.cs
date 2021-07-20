@@ -98,7 +98,7 @@ namespace MonkeyButler.Business.Managers
             // Check if character is already attached to a user.
             _logger.LogTrace("Checking database if {CharacterName} has already been tied to a user. CharacterId: {CharacterId}", name, characterId);
 
-            var checkQuery = new GetUserQuery()
+            var checkQuery = new SearchUserQuery()
             {
                 CharacterId = characterId.Value
             };

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentValidation;
-using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Events;
 using Xunit;
 using SUT = MonkeyButler.Business.Managers.EventsManager;
 

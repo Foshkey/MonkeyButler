@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
+using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
@@ -15,18 +15,16 @@ namespace MonkeyButler.Modules.Commands
     public class Help : CommandModule
     {
         private readonly CommandService _commandService;
-        private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="optionsManager"></param>
+        /// <param name="guildOptionsManager"></param>
         /// <param name="appOptions">The application options.</param>
-        public Help(CommandService commandService, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
+        public Help(CommandService commandService, IGuildOptionsManager guildOptionsManager, IOptionsMonitor<AppOptions> appOptions) : base(guildOptionsManager, appOptions)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-            _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
         /// <summary>

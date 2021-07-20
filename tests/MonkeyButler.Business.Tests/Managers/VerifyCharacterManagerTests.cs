@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MonkeyButler.Business.Models.VerifyCharacter;
-using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Data.Models.Database.Guild;
-using MonkeyButler.Data.Models.Database.User;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Data.Storage.Models.User;
 using Moq;
 using Xunit;
 using SUT = MonkeyButler.Business.Managers.VerifyCharacterManager;
@@ -23,13 +22,11 @@ namespace MonkeyButler.Business.Tests.Managers
         private readonly string _server = "Diabolos";
         private readonly string _fcId = "98237492";
 
-        private readonly Mock<ICacheAccessor> _cacheAccessorMock = new Mock<ICacheAccessor>();
         private readonly Mock<IXivApiAccessor> _xivApiAccessor = new Mock<IXivApiAccessor>();
-        private readonly Mock<IGuildAccessor> _guildAccessorMock = new Mock<IGuildAccessor>();
+        private readonly Mock<IGuildOptionsAccessor> _guildAccessorMock = new Mock<IGuildOptionsAccessor>();
         private readonly Mock<IUserAccessor> _userAccessorMock = new Mock<IUserAccessor>();
 
         private SUT BuildTarget() => Resolver
-            .Add(_cacheAccessorMock.Object)
             .Add(_xivApiAccessor.Object)
             .Add(_guildAccessorMock.Object)
             .Add(_userAccessorMock.Object)
@@ -166,7 +163,7 @@ namespace MonkeyButler.Business.Tests.Managers
         {
             var criteria = SetupHappyPath();
 
-            _userAccessorMock.Setup(x => x.GetVerifiedUser(It.IsAny<GetVerifiedUserQuery>()))
+            _userAccessorMock.Setup(x => x.SearchUser(It.IsAny<SearchUserQuery>()))
                 .ReturnsAsync(new User());
 
             var result = await BuildTarget().Process(criteria);

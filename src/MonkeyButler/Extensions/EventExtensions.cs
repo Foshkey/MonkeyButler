@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Discord;
-using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Events;
 
 namespace MonkeyButler.Extensions
 {

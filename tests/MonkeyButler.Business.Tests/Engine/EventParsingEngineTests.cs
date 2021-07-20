@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Events;
 using Xunit;
 using SUT = MonkeyButler.Business.Engines.EventParsingEngine;
 
