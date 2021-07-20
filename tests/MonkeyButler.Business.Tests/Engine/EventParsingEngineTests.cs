@@ -244,7 +244,9 @@ namespace MonkeyButler.Business.Tests.Engine
                 new Event()
                 {
                     Title = "Specific date parsing",
-                    EventDateTime = _nowInput.AddHours(24 * 2 + 4).ToOffset(_tzOffsetInput)
+                    // Using DateTimeOffset.Parse here due to using the same in engine
+                    // Hour adjustment for DST
+                    EventDateTime = DateTimeOffset.Parse("June 22").AddHours(12 + 4 - 1).ToOffset(_tzOffsetInput + TimeSpan.FromHours(1))
                 }
             };
 
