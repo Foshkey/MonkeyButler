@@ -30,6 +30,6 @@ namespace MonkeyButler.Abstractions.Business.Models.Options
         /// <summary>
         /// The name of the registered free company.
         /// </summary>
-        public string? FreeCompanyName { get; internal set; }
+        public string? FreeCompanyName { get; set; }
     }
 }

@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Api;
+using MonkeyButler.Abstractions.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.FreeCompanySearch;
-using MonkeyButler.Data.Models.XivApi.FreeCompany;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -55,7 +55,7 @@ namespace MonkeyButler.Business.Managers
 
             var result = new FreeCompanySearchResult()
             {
-                FreeCompanies = searchData.Results?.Select(freeCompany => new Models.FreeCompanySearch.FreeCompany()
+                FreeCompanies = searchData.Results?.Select(freeCompany => new Abstractions.Business.Models.FreeCompanySearch.FreeCompany()
                 {
                     Crest = freeCompany.Crest,
                     Id = freeCompany.Id,

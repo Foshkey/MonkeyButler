@@ -37,7 +37,7 @@ namespace MonkeyButler
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBusinessServices(_configuration);
+            services.AddBusinessServices();
             services.Configure<AppOptions>(_configuration);
 
             // MVC

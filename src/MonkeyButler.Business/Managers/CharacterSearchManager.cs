@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Api;
+using MonkeyButler.Abstractions.Api.Models.Character;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.CharacterSearch;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -96,18 +97,5 @@ namespace MonkeyButler.Business.Managers
 
             return _characterResultEngine.Merge(character, details);
         }
-    }
-
-    /// <summary>
-    /// Manager for searching for Lodestone characters.
-    /// </summary>
-    public interface ICharacterSearchManager
-    {
-        /// <summary>
-        /// Processes the search.
-        /// </summary>
-        /// <param name="criteria">The criteria for the search.</param>
-        /// <returns>The search result.</returns>
-        Task<CharacterSearchResult> Process(CharacterSearchCriteria criteria);
     }
 }

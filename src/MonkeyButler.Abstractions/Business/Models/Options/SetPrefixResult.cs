@@ -8,6 +8,6 @@
         /// <summary>
         /// Indicates whether the prefix was successfully set or not.
         /// </summary>
-        public bool Success { get; set; }
+        public bool Success { get; set; } = false;
     }
 }

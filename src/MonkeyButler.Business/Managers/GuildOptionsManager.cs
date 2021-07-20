@@ -3,36 +3,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Api;
+using MonkeyButler.Abstractions.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Options;
+using MonkeyButler.Abstractions.Storage;
+using MonkeyButler.Abstractions.Storage.Models.Guild;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.Options;
-using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Data.Models.Database.Guild;
-using MonkeyButler.Data.Models.XivApi.FreeCompany;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
-    internal class OptionsManager : IOptionsManager
+    internal class GuildOptionsManager : IGuildOptionsManager
     {
         private readonly IEmotesEngine _emotesEngine;
         private readonly INameServerEngine _nameServerEngine;
-        private readonly ICacheAccessor _cacheAccessor;
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildAccessor _guildAccessor;
-        private readonly ILogger<OptionsManager> _logger;
+        private readonly ILogger<GuildOptionsManager> _logger;
         private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
         private readonly IValidator<SetPrefixCriteria> _setPrefixValidator;
         private readonly IValidator<SetSignupEmotesCriteria> _setSignupEmotesValidator;
         private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
 
-        public OptionsManager(
+        public GuildOptionsManager(
             IEmotesEngine emotesEngine,
             INameServerEngine nameServerEngine,
-            ICacheAccessor cacheAccessor,
             IXivApiAccessor xivApiAccessor,
             IGuildAccessor guildAccessor,
-            ILogger<OptionsManager> logger,
+            ILogger<GuildOptionsManager> logger,
             IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
             IValidator<SetPrefixCriteria> setPrefixValidator,
             IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
@@ -40,7 +38,6 @@ namespace MonkeyButler.Business.Managers
         {
             _emotesEngine = emotesEngine ?? throw new ArgumentNullException(nameof(emotesEngine));
             _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
-            _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -56,26 +53,17 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Getting options for guild '{GuildId}'.", criteria.GuildId);
 
-            var options = await _cacheAccessor.GetGuildOptions(criteria.GuildId);
+            var query = new GetOptionsQuery()
+            {
+                GuildId = criteria.GuildId
+            };
+
+            var options = await _guildAccessor.GetOptions(query);
 
             if (options is null)
             {
-                _logger.LogTrace("Options do not exist in cache. Retrieving from database.");
-
-                var query = new GetOptionsQuery()
-                {
-                    GuildId = criteria.GuildId
-                };
-
-                options = await _guildAccessor.GetOptions(query);
-
-                if (options is null)
-                {
-                    _logger.LogDebug("Options do not exist in database. Returning null.");
-                    return null;
-                }
-
-                _ = _cacheAccessor.SetGuildOptions(options);
+                _logger.LogDebug("Options do not exist in storage. Returning null.");
+                return null;
             }
 
             return new GuildOptionsResult()
@@ -88,7 +76,7 @@ namespace MonkeyButler.Business.Managers
             };
         }
 
-        public async Task SetPrefix(SetPrefixCriteria criteria)
+        public async Task<SetPrefixResult> SetPrefix(SetPrefixCriteria criteria)
         {
             _setPrefixValidator.ValidateAndThrow(criteria);
 
@@ -111,7 +99,10 @@ namespace MonkeyButler.Business.Managers
 
             await _guildAccessor.SaveOptions(saveOptionsQuery);
 
-            await _cacheAccessor.SetGuildOptions(options);
+            return new SetPrefixResult()
+            {
+                Success = true
+            };
         }
 
         public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
@@ -148,8 +139,6 @@ namespace MonkeyButler.Business.Managers
             };
 
             await _guildAccessor.SaveOptions(saveOptionsQuery);
-
-            await _cacheAccessor.SetGuildOptions(options);
 
             return new SetSignupEmotesResult()
             {
@@ -201,7 +190,7 @@ namespace MonkeyButler.Business.Managers
 
             options.Id = criteria.GuildId;
             options.VerifiedRoleId = criteria.RoleId;
-            options.FreeCompany = new Data.Models.Database.Guild.FreeCompany()
+            options.FreeCompany = new Abstractions.Storage.Models.Guild.FreeCompany()
             {
                 Id = fc.Id,
                 Name = fc.Name,
@@ -215,46 +204,10 @@ namespace MonkeyButler.Business.Managers
 
             await _guildAccessor.SaveOptions(saveOptionsQuery);
 
-            await _cacheAccessor.SetGuildOptions(options);
-
             return new SetVerificationResult()
             {
                 Status = SetVerificationStatus.Success
             };
         }
-    }
-
-    /// <summary>
-    /// Manager for managing options.
-    /// </summary>
-    public interface IOptionsManager
-    {
-        /// <summary>
-        /// Gets the guild options from data store.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria);
-
-        /// <summary>
-        /// Sets the prefix for the guild.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task SetPrefix(SetPrefixCriteria criteria);
-
-        /// <summary>
-        /// Sets sign-up emotes of the guild.
-        /// </summary>
-        /// <param name="criteria">The criteria.</param>
-        /// <returns></returns>
-        Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria);
-
-        /// <summary>
-        /// Sets verification options of the guild.
-        /// </summary>
-        /// <param name="criteria">The criteria for setting verification options.</param>
-        /// <returns>The result of the request.</returns>
-        Task<SetVerificationResult> SetVerification(SetVerificationCriteria criteria);
     }
 }

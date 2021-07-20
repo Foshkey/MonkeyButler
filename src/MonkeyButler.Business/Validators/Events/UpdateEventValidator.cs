@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Events;
 
 namespace MonkeyButler.Business.Validators.Events
 {

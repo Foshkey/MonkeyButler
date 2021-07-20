@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MonkeyButler.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
 
 namespace MonkeyButler.Business.Validators.VerifyCharacter
 {

@@ -3,20 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Api;
+using MonkeyButler.Abstractions.Api.Models.Character;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Storage;
+using MonkeyButler.Abstractions.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Storage.Models.User;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.VerifyCharacter;
-using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Data.Models.Database.Guild;
-using MonkeyButler.Data.Models.Database.User;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
-        private readonly ICacheAccessor _cacheAccessor;
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildAccessor _guildAccessor;
         private readonly IUserAccessor _userAccessor;
@@ -25,7 +24,6 @@ namespace MonkeyButler.Business.Managers
         private readonly IValidator<VerifyCharacterCriteria> _verifyCharacterValidator;
 
         public VerifyCharacterManager(
-            ICacheAccessor cacheAccessor,
             IXivApiAccessor xivApiAccessor,
             IGuildAccessor guildAccessor,
             IUserAccessor userAccessor,
@@ -33,7 +31,6 @@ namespace MonkeyButler.Business.Managers
             ILogger<VerifyCharacterManager> logger,
             IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
         {
-            _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _userAccessor = userAccessor ?? throw new ArgumentNullException(nameof(userAccessor));
@@ -54,7 +51,7 @@ namespace MonkeyButler.Business.Managers
                 GuildId = criteria.GuildId
             };
 
-            var guildOptions = await _cacheAccessor.GetGuildOptions(criteria.GuildId) ?? await _guildAccessor.GetOptions(guildOptionsQuery);
+            var guildOptions = await _guildAccessor.GetOptions(guildOptionsQuery);
 
             if (guildOptions?.FreeCompany is null || guildOptions.VerifiedRoleId == 0)
             {
@@ -152,18 +149,5 @@ namespace MonkeyButler.Business.Managers
 
             return result;
         }
-    }
-
-    /// <summary>
-    /// Manager for verifying a character with a free company.
-    /// </summary>
-    public interface IVerifyCharacterManager
-    {
-        /// <summary>
-        /// Processes the verification of characters with the free company.
-        /// </summary>
-        /// <param name="criteria">The criteria of the verification.</param>
-        /// <returns>The result of the verification.</returns>
-        Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria);
     }
 }

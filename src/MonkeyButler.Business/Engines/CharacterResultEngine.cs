@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using MonkeyButler.Business.Models.CharacterSearch;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.Models.XivApi.Enumerations;
+using MonkeyButler.Abstractions.Api.Models.Character;
+using MonkeyButler.Abstractions.Api.Models.Enumerations;
+using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 
 namespace MonkeyButler.Business.Engines
 {
@@ -12,7 +12,7 @@ namespace MonkeyButler.Business.Engines
             return new Character()
             {
                 AvatarUrl = character.Avatar,
-                CurrentClassJob = details.Character?.ActiveClassJob is object ? new Models.CharacterSearch.ClassJob()
+                CurrentClassJob = details.Character?.ActiveClassJob is object ? new Abstractions.Business.Models.CharacterSearch.ClassJob()
                 {
                     Level = details.Character?.ActiveClassJob?.Level ?? 0,
                     Name = RemoveDuplicates(Capitalize(details.Character?.ActiveClassJob?.Name))
