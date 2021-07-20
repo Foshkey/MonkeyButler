@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 
-namespace MonkeyButler.Data.Database
+namespace MonkeyButler.Data.Storage
 {
     internal class GuildOptionsAccessor : IGuildOptionsAccessor
     {
