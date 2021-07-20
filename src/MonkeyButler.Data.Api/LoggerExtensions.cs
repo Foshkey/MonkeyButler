@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace MonkeyButler.Data.Api.XivApi
+namespace MonkeyButler.Data.Api
 {
     internal static class LoggerExtensions
     {

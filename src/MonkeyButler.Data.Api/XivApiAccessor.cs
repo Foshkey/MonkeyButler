@@ -10,7 +10,7 @@ using MonkeyButler.Abstractions.Data.Api.Models.Character;
 using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
 using MonkeyButler.Data.Api.Options;
 
-namespace MonkeyButler.Data.Api.XivApi
+namespace MonkeyButler.Data.Api
 {
     internal class XivApiAccessor : IXivApiAccessor
     {

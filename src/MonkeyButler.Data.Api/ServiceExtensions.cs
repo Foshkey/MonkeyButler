@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Abstractions.Data.Api;
 using MonkeyButler.Data.Api.Json;
 using MonkeyButler.Data.Api.Options;
-using MonkeyButler.Data.Api.XivApi;
 
 namespace MonkeyButler.Data.Api
 {
