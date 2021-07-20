@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Business
     /// <summary>
     /// Manager for managing options.
     /// </summary>
-    public interface IOptionsManager
+    public interface IGuildOptionsManager
     {
         /// <summary>
         /// Gets the guild options from data store.
