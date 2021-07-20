@@ -12,7 +12,7 @@ namespace MonkeyButler.Business.Engines
         private const string _todayKeyWord = "today";
         private const string _tomorrowKeyWord = "tomorrow";
 
-        private readonly Dictionary<string, DayOfWeek> _dayOfWeekMap = new Dictionary<string, DayOfWeek>(StringComparer.OrdinalIgnoreCase)
+        private readonly Dictionary<string, DayOfWeek> _dayOfWeekMap = new(StringComparer.OrdinalIgnoreCase)
         {
             ["monday"] = DayOfWeek.Monday,
             ["mon"] = DayOfWeek.Monday,
@@ -33,7 +33,7 @@ namespace MonkeyButler.Business.Engines
             ["sun"] = DayOfWeek.Sunday
         };
 
-        private readonly Dictionary<string, DateTimeOffset> _specialNamesMap = new Dictionary<string, DateTimeOffset>(StringComparer.OrdinalIgnoreCase)
+        private readonly Dictionary<string, DateTimeOffset> _specialNamesMap = new(StringComparer.OrdinalIgnoreCase)
         {
             ["noon"] = new DateTimeOffset(1, 1, 1, 12, 0, 0, TimeSpan.Zero),
             ["midnight"] = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero)
