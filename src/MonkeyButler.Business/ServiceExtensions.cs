@@ -18,7 +18,6 @@ namespace MonkeyButler.Business
                 .FromCallingAssembly()
                 .AddClasses(classes => classes
                     .InNamespaces(
-                        "MonkeyButler.Business.Engines",
                         "MonkeyButler.Business.Validators"),
                     publicOnly: false)
                 .AsImplementedInterfaces()

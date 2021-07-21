@@ -1,14 +1,12 @@
 ﻿using MonkeyButler.Abstractions.Data.Api.Models.Character;
 using MonkeyButler.Abstractions.Data.Api.Models.Enumerations;
+using MonkeyButler.Business.Engines;
 using Xunit;
-using SUT = MonkeyButler.Business.Engines.CharacterResultEngine;
 
-namespace MonkeyButler.Business.Tests.Engine
+namespace MonkeyButler.Business.Tests.Engines
 {
     public class CharacterResultEngineTests
     {
-        private SUT BuildTarget() => new SUT();
-
         [Theory]
         [InlineData(null, null)]
         [InlineData("", "")]
@@ -32,7 +30,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 }
             };
 
-            var result = BuildTarget().Merge(characterBrief, details);
+            var result = CharacterResultEngine.Merge(characterBrief, details);
 
             Assert.Equal(expectedName, result.CurrentClassJob?.Name);
         }
@@ -57,7 +55,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 }
             };
 
-            var result = BuildTarget().Merge(characterBrief, details);
+            var result = CharacterResultEngine.Merge(characterBrief, details);
 
             Assert.Equal(expectedName, result.CurrentClassJob?.Name);
         }
@@ -78,7 +76,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 }
             };
 
-            var result = BuildTarget().Merge(characterBrief, details);
+            var result = CharacterResultEngine.Merge(characterBrief, details);
 
             Assert.Equal(expectedRace, result.Race);
         }
@@ -101,7 +99,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 }
             };
 
-            var result = BuildTarget().Merge(characterBrief, details);
+            var result = CharacterResultEngine.Merge(characterBrief, details);
 
             Assert.Equal(expectedTribe, result.Tribe);
         }
@@ -117,7 +115,7 @@ namespace MonkeyButler.Business.Tests.Engine
             };
             var details = new GetCharacterData();
 
-            var result = BuildTarget().Merge(characterBrief, details);
+            var result = CharacterResultEngine.Merge(characterBrief, details);
 
             Assert.Equal(expectedUrl, result.LodestoneUrl);
         }

@@ -10,7 +10,6 @@ namespace MonkeyButler.Business.Managers
 {
     internal class EventsManager : IEventsManager
     {
-        private readonly IEventParsingEngine _eventParsingEngine;
         private readonly ILogger<EventsManager> _logger;
         private readonly IValidator<CreateEventCriteria> _createValidator;
         private readonly IValidator<SaveEventCriteria> _saveValidator;
@@ -18,14 +17,12 @@ namespace MonkeyButler.Business.Managers
         private readonly IValidator<DeleteEventCriteria> _deleteValidator;
 
         public EventsManager(
-            IEventParsingEngine eventParsingEngine,
             ILogger<EventsManager> logger,
             IValidator<CreateEventCriteria> createValidator,
             IValidator<SaveEventCriteria> saveValidator,
             IValidator<UpdateEventCriteria> updateValidator,
             IValidator<DeleteEventCriteria> deleteValidator)
         {
-            _eventParsingEngine = eventParsingEngine ?? throw new ArgumentNullException(nameof(eventParsingEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
             _saveValidator = saveValidator ?? throw new ArgumentNullException(nameof(saveValidator));
@@ -41,7 +38,7 @@ namespace MonkeyButler.Business.Managers
 
             try
             {
-                newEvent = _eventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
+                newEvent = EventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
             }
             catch (Exception ex)
             {

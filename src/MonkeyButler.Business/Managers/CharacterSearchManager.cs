@@ -14,20 +14,14 @@ namespace MonkeyButler.Business.Managers
     internal class CharacterSearchManager : ICharacterSearchManager
     {
         private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly INameServerEngine _nameServerEngine;
-        private readonly ICharacterResultEngine _characterResultEngine;
         private readonly ILogger<CharacterSearchManager> _logger;
 
         public CharacterSearchManager(
             IXivApiAccessor xivApiAccessor,
-            INameServerEngine nameServerEngine,
-            ICharacterResultEngine characterResultEngine,
             ILogger<CharacterSearchManager> logger
         )
         {
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
-            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
-            _characterResultEngine = characterResultEngine ?? throw new ArgumentNullException(nameof(characterResultEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -45,7 +39,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 
-            var (name, server) = _nameServerEngine.Parse(criteria.Query);
+            var (name, server) = NameServerEngine.Parse(criteria.Query);
             var searchQuery = new SearchCharacterQuery()
             {
                 Name = name,
@@ -95,7 +89,7 @@ namespace MonkeyButler.Business.Managers
 
             var details = await _xivApiAccessor.GetCharacter(query);
 
-            return _characterResultEngine.Merge(character, details);
+            return CharacterResultEngine.Merge(character, details);
         }
     }
 }

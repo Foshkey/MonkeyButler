@@ -19,7 +19,6 @@ namespace MonkeyButler.Business.Managers
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildOptionsAccessor _guildAccessor;
         private readonly IUserAccessor _userAccessor;
-        private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
         private readonly IValidator<VerifyCharacterCriteria> _verifyCharacterValidator;
 
@@ -27,14 +26,12 @@ namespace MonkeyButler.Business.Managers
             IXivApiAccessor xivApiAccessor,
             IGuildOptionsAccessor guildAccessor,
             IUserAccessor userAccessor,
-            INameServerEngine nameServerEngine,
             ILogger<VerifyCharacterManager> logger,
             IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
         {
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _userAccessor = userAccessor ?? throw new ArgumentNullException(nameof(userAccessor));
-            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _verifyCharacterValidator = verifyCharacterValidator ?? throw new ArgumentNullException(nameof(verifyCharacterValidator));
         }
@@ -72,7 +69,7 @@ namespace MonkeyButler.Business.Managers
             // Parse the query into name/server.
             _logger.LogTrace("Parsing query: {Query}.", criteria.Query);
 
-            var (name, _) = _nameServerEngine.Parse(criteria.Query);
+            var (name, _) = NameServerEngine.Parse(criteria.Query);
 
             // Search for the character.
             _logger.LogTrace("Searching for {CharacterName} on {ServerName}.", name, guildOptions.FreeCompany.Server);

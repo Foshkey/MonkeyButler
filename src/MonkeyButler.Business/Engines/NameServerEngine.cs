@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace MonkeyButler.Business.Engines
 {
-    internal class NameServerEngine : INameServerEngine
+    internal static class NameServerEngine
     {
-        private readonly List<string> _serverNames = new List<string>()
+        private static readonly List<string> _serverNames = new List<string>()
         {
             "Aegis", "Atomos", "Carbuncle", "Garuda", "Gungnir", "Kujata", "Ramuh", "Tonberry", "Typhon", "Unicorn", "Gaia", "Alexander", "Bahamut", "Durandal", "Fenrir", "Ifrit", "Ridill", "Tiamat", "Ultima", "Valefor", "Yojimbo", "Zeromus", "Mana", "Anima", "Asura", "Belias", "Chocobo", "Hades", "Ixion", "Mandragora", "Masamune", "Pandaemonium", "Shinryu", "Titan",
             "Adamantoise", "Cactuar", "Faerie", "Gilgamesh", "Jenova", "Midgardsormr", "Sargatanas", "Siren", "Primal", "Behemoth", "Excalibur", "Exodus", "Famfrit", "Hyperion", "Lamia", "Leviathan", "Ultros", "Crystal", "Balmung", "Brynhildr", "Coeurl", "Diabolos", "Goblin", "Malboro", "Mateus", "Zalera",
             "Cerberus", "Louisoix", "Moogle", "Omega", "Ragnarok", "Spriggan", "Light", "Lich", "Odin", "Phoenix", "Shiva", "Twintania", "Zodiark"
         };
 
-        public (string name, string? server) Parse(string input)
+        public static (string name, string? server) Parse(string input)
         {
             var name = input;
             var split = input.Split(' ');
@@ -61,10 +61,5 @@ namespace MonkeyButler.Business.Engines
             server = split[^1];
             return (name, server);
         }
-    }
-
-    internal interface INameServerEngine
-    {
-        (string name, string? server) Parse(string input);
     }
 }

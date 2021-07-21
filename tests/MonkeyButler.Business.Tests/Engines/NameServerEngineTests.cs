@@ -1,12 +1,10 @@
-﻿using Xunit;
-using SUT = MonkeyButler.Business.Engines.NameServerEngine;
+﻿using MonkeyButler.Business.Engines;
+using Xunit;
 
-namespace MonkeyButler.Business.Tests.Engine
+namespace MonkeyButler.Business.Tests.Engines
 {
     public class NameServerEngineTests
     {
-        private SUT BuildTarget() => new SUT();
-
         [Theory]
         [InlineData("", "", null)]
         [InlineData("Jolinar", "Jolinar", null)]
@@ -20,7 +18,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [InlineData("more than three words", "more than three", "words")]
         public void ShouldSplit(string input, string expectedName, string expectedServer)
         {
-            var (name, server) = BuildTarget().Parse(input);
+            var (name, server) = NameServerEngine.Parse(input);
 
             Assert.Equal(expectedName, name);
             Assert.Equal(expectedServer, server);

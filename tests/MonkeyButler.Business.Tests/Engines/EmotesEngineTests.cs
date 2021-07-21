@@ -1,7 +1,7 @@
 ﻿using MonkeyButler.Business.Engines;
 using Xunit;
 
-namespace MonkeyButler.Business.Tests.Engine
+namespace MonkeyButler.Business.Tests.Engines
 {
     public class EmotesEngineTests
     {
@@ -15,7 +15,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [InlineData("<:dps:39829> ✅ <:tank:83297439872>", "<:dps:39829>", "✅", "<:tank:83297439872>")]
         public void EngineShouldSplit(string input, params string[] expectedSplit)
         {
-            var result = new EmotesEngine().Split(input);
+            var result = EmotesEngine.Split(input);
 
             Assert.Equal(expectedSplit.Length, result.Count);
 

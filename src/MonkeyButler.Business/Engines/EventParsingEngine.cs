@@ -5,14 +5,14 @@ using MonkeyButler.Abstractions.Business.Models.Events;
 
 namespace MonkeyButler.Business.Engines
 {
-    internal class EventParsingEngine : IEventParsingEngine
+    internal static class EventParsingEngine
     {
         private const string _timeKeyWord = "at";
         private const string _dateKeyWord = "on";
         private const string _todayKeyWord = "today";
         private const string _tomorrowKeyWord = "tomorrow";
 
-        private readonly Dictionary<string, DayOfWeek> _dayOfWeekMap = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, DayOfWeek> _dayOfWeekMap = new(StringComparer.OrdinalIgnoreCase)
         {
             ["monday"] = DayOfWeek.Monday,
             ["mon"] = DayOfWeek.Monday,
@@ -33,20 +33,27 @@ namespace MonkeyButler.Business.Engines
             ["sun"] = DayOfWeek.Sunday
         };
 
-        private readonly Dictionary<string, DateTimeOffset> _specialNamesMap = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, DateTimeOffset> _specialNamesMap = new(StringComparer.OrdinalIgnoreCase)
         {
             ["noon"] = new DateTimeOffset(1, 1, 1, 12, 0, 0, TimeSpan.Zero),
             ["midnight"] = new DateTimeOffset(1, 1, 1, 0, 0, 0, TimeSpan.Zero)
         };
 
-        public Event Parse(string query, TimeSpan baseOffset)
+        /// <summary>
+        /// Parses the query into an event, using the base offset.
+        /// </summary>
+        /// <param name="query">The string query to parse, standard format is '[Title] on [Date] at [Time]'</param>
+        /// <param name="baseOffset">The base offset of the time zone without daylight saving applied. E.g. US Eastern is -5:00 regardless of current time.</param>
+        /// <returns>The parsed event.</returns>
+        /// <exception cref="InvalidOperationException">Query is malformed and cannot be parsed.</exception>
+        public static Event Parse(string query, TimeSpan baseOffset)
         {
             var now = DateTimeOffset.UtcNow;
             return Parse(query, baseOffset, now);
         }
 
         // Needed to break out "now" for unit testing.
-        public Event Parse(string query, TimeSpan baseOffset, DateTimeOffset now)
+        public static Event Parse(string query, TimeSpan baseOffset, DateTimeOffset now)
         {
             query = query.Trim(' ', '.', '!', '?');
             var words = query.Split(' ');
@@ -90,7 +97,7 @@ namespace MonkeyButler.Business.Engines
             };
         }
 
-        private int GetEndIndex(int i1, int i2)
+        private static int GetEndIndex(int i1, int i2)
         {
             if (i1 < 0)
             {
@@ -105,7 +112,7 @@ namespace MonkeyButler.Business.Engines
             return i1 < i2 ? i1 : i2;
         }
 
-        private DateTimeOffset? FindTimeElsewhere(string[] words, string timeStr, ref int titleEndIndex, ref bool containedAm)
+        private static DateTimeOffset? FindTimeElsewhere(string[] words, string timeStr, ref int titleEndIndex, ref bool containedAm)
         {
             // Strategy for this is try parsing each word, and then sequential pairing of words.
             // Both from right to left, as title is last in priority of parsing.
@@ -171,7 +178,7 @@ namespace MonkeyButler.Business.Engines
             return null;
         }
 
-        private DateTimeOffset? FindDate(string[] words, string dateStr, DateTimeOffset now, ref int titleEndIndex)
+        private static DateTimeOffset? FindDate(string[] words, string dateStr, DateTimeOffset now, ref int titleEndIndex)
         {
             // Check day of week
             if (_dayOfWeekMap.ContainsKey(dateStr))
@@ -216,7 +223,7 @@ namespace MonkeyButler.Business.Engines
             return now;
         }
 
-        private DateTimeOffset GetNextDay(DayOfWeek dayOfWeek, DateTimeOffset now)
+        private static DateTimeOffset GetNextDay(DayOfWeek dayOfWeek, DateTimeOffset now)
         {
             var diff = dayOfWeek - now.DayOfWeek;
             if (diff <= 0) diff += 7;
@@ -224,7 +231,7 @@ namespace MonkeyButler.Business.Engines
             return now.AddDays(diff);
         }
 
-        private string CreateTitle(string[] words, int titleEndIndex)
+        private static string CreateTitle(string[] words, int titleEndIndex)
         {
             // Knock off last word of the title if it's "today" or "tomorrow"
             if (string.Equals(_todayKeyWord, words[titleEndIndex - 1], StringComparison.OrdinalIgnoreCase) ||
@@ -236,7 +243,7 @@ namespace MonkeyButler.Business.Engines
             return string.Join(' ', words[..titleEndIndex]);
         }
 
-        private DateTimeOffset? Combine(DateTimeOffset? time, DateTimeOffset? date, DateTimeOffset now, TimeSpan offset, bool containedAm)
+        private static DateTimeOffset? Combine(DateTimeOffset? time, DateTimeOffset? date, DateTimeOffset now, TimeSpan offset, bool containedAm)
         {
             if (time is null || date is null)
             {
@@ -276,7 +283,7 @@ namespace MonkeyButler.Business.Engines
             return dateTime;
         }
 
-        private DateTimeOffset Combine(DateTimeOffset time, DateTimeOffset date, TimeSpan offset)
+        private static DateTimeOffset Combine(DateTimeOffset time, DateTimeOffset date, TimeSpan offset)
         {
             return new DateTimeOffset(
                 year: date.Year,
@@ -289,23 +296,11 @@ namespace MonkeyButler.Business.Engines
             );
         }
 
-        private bool IsDaylightSaving(DateTimeOffset dateTime)
+        private static bool IsDaylightSaving(DateTimeOffset dateTime)
         {
             // Going to base this off of US Eastern time zone for now.
             var estTz = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
             return estTz.IsDaylightSavingTime(dateTime);
         }
-    }
-
-    internal interface IEventParsingEngine
-    {
-        /// <summary>
-        /// Parses the query into an event, using the base offset.
-        /// </summary>
-        /// <param name="query">The string query to parse, standard format is '[Title] on [Date] at [Time]'</param>
-        /// <param name="baseOffset">The base offset of the time zone without daylight saving applied. E.g. US Eastern is -5:00 regardless of current time.</param>
-        /// <returns>The parsed event.</returns>
-        /// <exception cref="InvalidOperationException">Query is malformed and cannot be parsed.</exception>
-        Event Parse(string query, TimeSpan baseOffset);
     }
 }

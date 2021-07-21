@@ -15,8 +15,6 @@ namespace MonkeyButler.Business.Managers
 {
     internal class GuildOptionsManager : IGuildOptionsManager
     {
-        private readonly IEmotesEngine _emotesEngine;
-        private readonly INameServerEngine _nameServerEngine;
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly IGuildOptionsAccessor _guildAccessor;
         private readonly ILogger<GuildOptionsManager> _logger;
@@ -26,8 +24,6 @@ namespace MonkeyButler.Business.Managers
         private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
 
         public GuildOptionsManager(
-            IEmotesEngine emotesEngine,
-            INameServerEngine nameServerEngine,
             IXivApiAccessor xivApiAccessor,
             IGuildOptionsAccessor guildAccessor,
             ILogger<GuildOptionsManager> logger,
@@ -36,8 +32,6 @@ namespace MonkeyButler.Business.Managers
             IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
             IValidator<SetVerificationCriteria> setVerificationValidator)
         {
-            _emotesEngine = emotesEngine ?? throw new ArgumentNullException(nameof(emotesEngine));
-            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -111,7 +105,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Setting sign-up emotes options for guild '{GuildId}' with emotes '{Emotes}'.", criteria.GuildId, criteria.Emotes);
 
-            var emotes = _emotesEngine.Split(criteria.Emotes);
+            var emotes = EmotesEngine.Split(criteria.Emotes);
 
             if (emotes.Count == 0)
             {
@@ -152,7 +146,7 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Setting verification options for guild '{GuildId}' with role '{RoleId}' and free company '{Query}'.", criteria.GuildId, criteria.RoleId, criteria.FreeCompanyAndServer);
 
-            var (name, server) = _nameServerEngine.Parse(criteria.FreeCompanyAndServer);
+            var (name, server) = NameServerEngine.Parse(criteria.FreeCompanyAndServer);
 
             var fcSearchQuery = new SearchFreeCompanyQuery()
             {

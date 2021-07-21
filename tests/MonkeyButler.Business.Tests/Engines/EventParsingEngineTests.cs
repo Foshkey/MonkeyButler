@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using MonkeyButler.Abstractions.Business.Models.Events;
+using MonkeyButler.Business.Engines;
 using Xunit;
-using SUT = MonkeyButler.Business.Engines.EventParsingEngine;
 
-namespace MonkeyButler.Business.Tests.Engine
+namespace MonkeyButler.Business.Tests.Engines
 {
     public class EventParsingEngineTests
     {
         // Now = Saturday, June 20, Noon EDT
         private static readonly TimeSpan _tzOffsetInput = TimeSpan.FromHours(-5);
         private static readonly DateTimeOffset _nowInput = new DateTimeOffset(2020, 6, 20, 16, 0, 0, TimeSpan.Zero);
-
-        private Event Parse(string query) => new SUT().Parse(query, _tzOffsetInput, _nowInput);
 
         [Fact]
         public void NextYearWorks()
@@ -25,7 +23,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 EventDateTime = now.AddHours(24 - 5).ToOffset(_tzOffsetInput)
             };
 
-            var result = new SUT().Parse(query, _tzOffsetInput, now);
+            var result = EventParsingEngine.Parse(query, _tzOffsetInput, now);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(now, result.CreationDateTime);
@@ -43,7 +41,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 EventDateTime = now.AddHours(24 - 1).ToOffset(_tzOffsetInput)
             };
 
-            var result = new SUT().Parse(query, _tzOffsetInput, now);
+            var result = EventParsingEngine.Parse(query, _tzOffsetInput, now);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(now, result.CreationDateTime);
@@ -62,7 +60,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 EventDateTime = _nowInput.AddHours(24 + 6).ToOffset(offset)
             };
 
-            var result = new SUT().Parse(query, offset, _nowInput);
+            var result = EventParsingEngine.Parse(query, offset, _nowInput);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(_nowInput, result.CreationDateTime);
@@ -80,7 +78,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 EventDateTime = now.AddHours(24 * 2 - 3).ToOffset(_tzOffsetInput) // 10am EDT
             };
 
-            var result = new SUT().Parse(query, _tzOffsetInput, now);
+            var result = EventParsingEngine.Parse(query, _tzOffsetInput, now);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(now, result.CreationDateTime);
@@ -98,7 +96,7 @@ namespace MonkeyButler.Business.Tests.Engine
                 EventDateTime = now.AddHours(24 * 2 - 1).ToOffset(_tzOffsetInput) // 10am EST (not DST)
             };
 
-            var result = new SUT().Parse(query, _tzOffsetInput, now);
+            var result = EventParsingEngine.Parse(query, _tzOffsetInput, now);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(now, result.CreationDateTime);
@@ -109,7 +107,7 @@ namespace MonkeyButler.Business.Tests.Engine
         [MemberData(nameof(TestData))]
         public void StringShouldParse(string query, Event expectedEvent)
         {
-            var result = Parse(query);
+            var result = EventParsingEngine.Parse(query, _tzOffsetInput, _nowInput);
 
             Assert.Equal(expectedEvent.Title, result.Title);
             Assert.Equal(_nowInput, result.CreationDateTime);
