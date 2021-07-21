@@ -2,49 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.CharacterSearch;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class CharacterSearchManager : ICharacterSearchManager
     {
         private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly INameServerEngine _nameServerEngine;
-        private readonly ICharacterResultEngine _characterResultEngine;
         private readonly ILogger<CharacterSearchManager> _logger;
+        private readonly IValidator<CharacterSearchCriteria> _validator;
 
         public CharacterSearchManager(
             IXivApiAccessor xivApiAccessor,
-            INameServerEngine nameServerEngine,
-            ICharacterResultEngine characterResultEngine,
-            ILogger<CharacterSearchManager> logger
-        )
+            ILogger<CharacterSearchManager> logger,
+            IValidator<CharacterSearchCriteria> validator)
         {
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
-            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
-            _characterResultEngine = characterResultEngine ?? throw new ArgumentNullException(nameof(characterResultEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         public async Task<CharacterSearchResult> Process(CharacterSearchCriteria criteria)
         {
-            if (criteria is null)
-            {
-                throw new ArgumentNullException(nameof(criteria));
-            }
-
-            if (criteria.Query is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.Query)} cannot be null.", nameof(criteria));
-            }
+            _validator.ValidateAndThrow(criteria);
 
             _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 
-            var (name, server) = _nameServerEngine.Parse(criteria.Query);
+            var (name, server) = NameServerEngine.Parse(criteria.Query);
             var searchQuery = new SearchCharacterQuery()
             {
                 Name = name,
@@ -94,20 +84,7 @@ namespace MonkeyButler.Business.Managers
 
             var details = await _xivApiAccessor.GetCharacter(query);
 
-            return _characterResultEngine.Merge(character, details);
+            return CharacterResultEngine.Merge(character, details);
         }
-    }
-
-    /// <summary>
-    /// Manager for searching for Lodestone characters.
-    /// </summary>
-    public interface ICharacterSearchManager
-    {
-        /// <summary>
-        /// Processes the search.
-        /// </summary>
-        /// <param name="criteria">The criteria for the search.</param>
-        /// <returns>The search result.</returns>
-        Task<CharacterSearchResult> Process(CharacterSearchCriteria criteria);
     }
 }

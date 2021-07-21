@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MonkeyButler.Business.Models.Options;
+using MonkeyButler.Abstractions.Business.Models.Options;
 
 namespace MonkeyButler.Business.Validators.Options
 {

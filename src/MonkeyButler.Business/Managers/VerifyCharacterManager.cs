@@ -3,41 +3,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Data.Storage.Models.User;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.VerifyCharacter;
-using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Data.Models.Database.Guild;
-using MonkeyButler.Data.Models.Database.User;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class VerifyCharacterManager : IVerifyCharacterManager
     {
-        private readonly ICacheAccessor _cacheAccessor;
         private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly IGuildAccessor _guildAccessor;
+        private readonly IGuildOptionsAccessor _guildAccessor;
         private readonly IUserAccessor _userAccessor;
-        private readonly INameServerEngine _nameServerEngine;
         private readonly ILogger<VerifyCharacterManager> _logger;
         private readonly IValidator<VerifyCharacterCriteria> _verifyCharacterValidator;
 
         public VerifyCharacterManager(
-            ICacheAccessor cacheAccessor,
             IXivApiAccessor xivApiAccessor,
-            IGuildAccessor guildAccessor,
+            IGuildOptionsAccessor guildAccessor,
             IUserAccessor userAccessor,
-            INameServerEngine nameServerEngine,
             ILogger<VerifyCharacterManager> logger,
             IValidator<VerifyCharacterCriteria> verifyCharacterValidator)
         {
-            _cacheAccessor = cacheAccessor ?? throw new ArgumentNullException(nameof(cacheAccessor));
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
             _userAccessor = userAccessor ?? throw new ArgumentNullException(nameof(userAccessor));
-            _nameServerEngine = nameServerEngine ?? throw new ArgumentNullException(nameof(nameServerEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _verifyCharacterValidator = verifyCharacterValidator ?? throw new ArgumentNullException(nameof(verifyCharacterValidator));
         }
@@ -54,7 +48,7 @@ namespace MonkeyButler.Business.Managers
                 GuildId = criteria.GuildId
             };
 
-            var guildOptions = await _cacheAccessor.GetGuildOptions(criteria.GuildId) ?? await _guildAccessor.GetOptions(guildOptionsQuery);
+            var guildOptions = await _guildAccessor.GetOptions(guildOptionsQuery);
 
             if (guildOptions?.FreeCompany is null || guildOptions.VerifiedRoleId == 0)
             {
@@ -75,7 +69,7 @@ namespace MonkeyButler.Business.Managers
             // Parse the query into name/server.
             _logger.LogTrace("Parsing query: {Query}.", criteria.Query);
 
-            var (name, _) = _nameServerEngine.Parse(criteria.Query);
+            var (name, _) = NameServerEngine.Parse(criteria.Query);
 
             // Search for the character.
             _logger.LogTrace("Searching for {CharacterName} on {ServerName}.", name, guildOptions.FreeCompany.Server);
@@ -101,12 +95,12 @@ namespace MonkeyButler.Business.Managers
             // Check if character is already attached to a user.
             _logger.LogTrace("Checking database if {CharacterName} has already been tied to a user. CharacterId: {CharacterId}", name, characterId);
 
-            var checkQuery = new GetVerifiedUserQuery()
+            var checkQuery = new SearchUserQuery()
             {
                 CharacterId = characterId.Value
             };
 
-            var user = await _userAccessor.GetVerifiedUser(checkQuery);
+            var user = await _userAccessor.SearchUser(checkQuery);
 
             if (user is object)
             {
@@ -152,18 +146,5 @@ namespace MonkeyButler.Business.Managers
 
             return result;
         }
-    }
-
-    /// <summary>
-    /// Manager for verifying a character with a free company.
-    /// </summary>
-    public interface IVerifyCharacterManager
-    {
-        /// <summary>
-        /// Processes the verification of characters with the free company.
-        /// </summary>
-        /// <param name="criteria">The criteria of the verification.</param>
-        /// <returns>The result of the verification.</returns>
-        Task<VerifyCharacterResult> Process(VerifyCharacterCriteria criteria);
     }
 }

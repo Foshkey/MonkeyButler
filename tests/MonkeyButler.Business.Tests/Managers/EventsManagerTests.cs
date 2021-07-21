@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentValidation;
-using MonkeyButler.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Events;
+using MonkeyButler.Business.Managers;
 using Xunit;
-using SUT = MonkeyButler.Business.Managers.EventsManager;
 
 namespace MonkeyButler.Business.Tests.Managers
 {
     public class EventsManagerTests
     {
-        private SUT BuildTarget() => Resolver
-            .Resolve<SUT>();
+        private EventsManager _manager => Resolver
+            .Resolve<EventsManager>();
 
         [Fact]
-        public async Task NullCreateCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => BuildTarget().CreateEvent(null!));
+        public async Task NullCreateCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => _manager.CreateEvent(null!));
 
         [Fact]
         public async Task InvalidCreateCriteriaShouldThrow()
@@ -23,18 +23,18 @@ namespace MonkeyButler.Business.Tests.Managers
                 Query = ""
             };
 
-            await Assert.ThrowsAsync<ValidationException>(() => BuildTarget().CreateEvent(criteria));
+            await Assert.ThrowsAsync<ValidationException>(() => _manager.CreateEvent(criteria));
         }
 
         [Fact]
-        public async Task NullUpdateCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => BuildTarget().UpdateEvent(null!));
+        public async Task NullUpdateCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => _manager.UpdateEvent(null!));
 
         [Fact]
         public async Task InvalidUpdateCriteriaShouldThrow()
         {
             var criteria = new UpdateEventCriteria();
 
-            await Assert.ThrowsAsync<ValidationException>(() => BuildTarget().UpdateEvent(criteria));
+            await Assert.ThrowsAsync<ValidationException>(() => _manager.UpdateEvent(criteria));
         }
 
         [Fact]
@@ -45,18 +45,18 @@ namespace MonkeyButler.Business.Tests.Managers
                 Event = new Event()
             };
 
-            await Assert.ThrowsAsync<ValidationException>(() => BuildTarget().UpdateEvent(criteria));
+            await Assert.ThrowsAsync<ValidationException>(() => _manager.UpdateEvent(criteria));
         }
 
         [Fact]
-        public async Task NullDeleteCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => BuildTarget().DeleteEvent(null!));
+        public async Task NullDeleteCriteriaShouldThrow() => await Assert.ThrowsAsync<ArgumentNullException>(() => _manager.DeleteEvent(null!));
 
         [Fact]
         public async Task InvalidDeleteCriteriaShouldThrow()
         {
             var criteria = new DeleteEventCriteria();
 
-            await Assert.ThrowsAsync<ValidationException>(() => BuildTarget().DeleteEvent(criteria));
+            await Assert.ThrowsAsync<ValidationException>(() => _manager.DeleteEvent(criteria));
         }
     }
 }

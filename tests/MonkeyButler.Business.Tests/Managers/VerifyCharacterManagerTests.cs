@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MonkeyButler.Business.Models.VerifyCharacter;
-using MonkeyButler.Data.Cache;
-using MonkeyButler.Data.Database;
-using MonkeyButler.Data.Models.Database.Guild;
-using MonkeyButler.Data.Models.Database.User;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.XivApi;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
+using MonkeyButler.Abstractions.Data.Api;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
+using MonkeyButler.Abstractions.Data.Storage.Models.User;
+using MonkeyButler.Business.Managers;
 using Moq;
 using Xunit;
-using SUT = MonkeyButler.Business.Managers.VerifyCharacterManager;
 
 namespace MonkeyButler.Business.Tests.Managers
 {
@@ -23,19 +22,11 @@ namespace MonkeyButler.Business.Tests.Managers
         private readonly string _server = "Diabolos";
         private readonly string _fcId = "98237492";
 
-        private readonly Mock<ICacheAccessor> _cacheAccessorMock = new Mock<ICacheAccessor>();
-        private readonly Mock<IXivApiAccessor> _xivApiAccessor = new Mock<IXivApiAccessor>();
-        private readonly Mock<IGuildAccessor> _guildAccessorMock = new Mock<IGuildAccessor>();
-        private readonly Mock<IUserAccessor> _userAccessorMock = new Mock<IUserAccessor>();
+        private readonly Mock<IXivApiAccessor> _xivApiAccessor = new();
+        private readonly Mock<IGuildOptionsAccessor> _guildAccessorMock = new();
+        private readonly Mock<IUserAccessor> _userAccessorMock = new();
 
-        private SUT BuildTarget() => Resolver
-            .Add(_cacheAccessorMock.Object)
-            .Add(_xivApiAccessor.Object)
-            .Add(_guildAccessorMock.Object)
-            .Add(_userAccessorMock.Object)
-            .Resolve<SUT>();
-
-        private VerifyCharacterCriteria SetupHappyPath()
+        public VerifyCharacterManagerTests()
         {
             var guildOptions = new GuildOptions()
             {
@@ -67,21 +58,27 @@ namespace MonkeyButler.Business.Tests.Managers
                         FreeCompanyId = _fcId
                     }
                 });
-
-            return new VerifyCharacterCriteria()
-            {
-                GuildId = _guildId,
-                UserId = _userId,
-                Query = _query
-            };
         }
+
+        private VerifyCharacterCriteria _defaultCriteria => new()
+        {
+            GuildId = _guildId,
+            UserId = _userId,
+            Query = _query
+        };
+
+        private VerifyCharacterManager _manager => Resolver
+            .Add(_xivApiAccessor.Object)
+            .Add(_guildAccessorMock.Object)
+            .Add(_userAccessorMock.Object)
+            .Resolve<VerifyCharacterManager>();
 
         [Fact]
         public async Task EqualFcIdShouldPass()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.Verified, result.Status);
         }
@@ -89,9 +86,9 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task CharacterShouldBeSavedToUser()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             _userAccessorMock.Verify(x => x.SaveCharacterToUser(
                 It.Is<SaveCharacterToUserQuery>(x => x.UserId == _userId && x.CharacterId == _characterId)
@@ -101,12 +98,12 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task NullFcShouldFail()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
             _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(new GuildOptions());
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.FreeCompanyUndefined, result.Status);
         }
@@ -114,7 +111,7 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task CharacterNotFoundShouldFail()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
             _xivApiAccessor.Setup(x => x.SearchCharacter(It.IsAny<SearchCharacterQuery>()))
                 .ReturnsAsync(new SearchCharacterData()
@@ -122,7 +119,7 @@ namespace MonkeyButler.Business.Tests.Managers
                     Results = new List<CharacterBrief>()
                 });
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.NotVerified, result.Status);
         }
@@ -130,12 +127,12 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task GetCharacterNullShouldFail()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
             _xivApiAccessor.Setup(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()))
                 .ReturnsAsync(new GetCharacterData());
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.NotVerified, result.Status);
         }
@@ -143,7 +140,7 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task WrongFcIdShouldFail()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
             _guildAccessorMock.Setup(x => x.GetOptions(It.IsAny<GetOptionsQuery>()))
                 .ReturnsAsync(new GuildOptions()
@@ -156,7 +153,7 @@ namespace MonkeyButler.Business.Tests.Managers
                     VerifiedRoleId = 394872
                 });
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.NotVerified, result.Status);
         }
@@ -164,12 +161,12 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task UserFoundShouldReturnAlreadyVerified()
         {
-            var criteria = SetupHappyPath();
+            var criteria = _defaultCriteria;
 
-            _userAccessorMock.Setup(x => x.GetVerifiedUser(It.IsAny<GetVerifiedUserQuery>()))
+            _userAccessorMock.Setup(x => x.SearchUser(It.IsAny<SearchUserQuery>()))
                 .ReturnsAsync(new User());
 
-            var result = await BuildTarget().Process(criteria);
+            var result = await _manager.Process(criteria);
 
             Assert.Equal(Status.CharacterAlreadyVerified, result.Status);
         }

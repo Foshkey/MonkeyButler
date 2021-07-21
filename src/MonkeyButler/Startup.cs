@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MonkeyButler.Business;
+using MonkeyButler.Data.Api;
+using MonkeyButler.Data.Storage;
 using MonkeyButler.Options;
 using MonkeyButler.Services;
 
@@ -37,7 +39,9 @@ namespace MonkeyButler
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBusinessServices(_configuration);
+            services.AddBusinessServices();
+            services.AddDataApiServices(_configuration);
+            services.AddDataStorageServices(_configuration);
             services.Configure<AppOptions>(_configuration);
 
             // MVC

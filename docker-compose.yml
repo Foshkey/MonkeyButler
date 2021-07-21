@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+  monkeybutler:
+    image: ${DOCKER_REGISTRY-}monkeybutler
+    build:
+      context: .
+      dockerfile: src/MonkeyButler/Dockerfile
+volumes:
+  redis_data:

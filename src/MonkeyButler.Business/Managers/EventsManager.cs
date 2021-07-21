@@ -2,14 +2,14 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Events;
 using MonkeyButler.Business.Engines;
-using MonkeyButler.Business.Models.Events;
 
 namespace MonkeyButler.Business.Managers
 {
     internal class EventsManager : IEventsManager
     {
-        private readonly IEventParsingEngine _eventParsingEngine;
         private readonly ILogger<EventsManager> _logger;
         private readonly IValidator<CreateEventCriteria> _createValidator;
         private readonly IValidator<SaveEventCriteria> _saveValidator;
@@ -17,14 +17,12 @@ namespace MonkeyButler.Business.Managers
         private readonly IValidator<DeleteEventCriteria> _deleteValidator;
 
         public EventsManager(
-            IEventParsingEngine eventParsingEngine,
             ILogger<EventsManager> logger,
             IValidator<CreateEventCriteria> createValidator,
             IValidator<SaveEventCriteria> saveValidator,
             IValidator<UpdateEventCriteria> updateValidator,
             IValidator<DeleteEventCriteria> deleteValidator)
         {
-            _eventParsingEngine = eventParsingEngine ?? throw new ArgumentNullException(nameof(eventParsingEngine));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
             _saveValidator = saveValidator ?? throw new ArgumentNullException(nameof(saveValidator));
@@ -40,7 +38,7 @@ namespace MonkeyButler.Business.Managers
 
             try
             {
-                newEvent = _eventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
+                newEvent = EventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
             }
             catch (Exception ex)
             {
@@ -81,39 +79,5 @@ namespace MonkeyButler.Business.Managers
 
             return new DeleteEventResult();
         }
-    }
-
-    /// <summary>
-    /// The manager for managing FC events.
-    /// </summary>
-    public interface IEventsManager
-    {
-        /// <summary>
-        /// Creates a brand new event.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<CreateEventResult> CreateEvent(CreateEventCriteria criteria);
-
-        /// <summary>
-        /// Creates a brand new event.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria);
-
-        /// <summary>
-        /// Updates an existing event.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<UpdateEventResult> UpdateEvent(UpdateEventCriteria criteria);
-
-        /// <summary>
-        /// Deletes an event, if it exists.
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<DeleteEventResult> DeleteEvent(DeleteEventCriteria criteria);
     }
 }

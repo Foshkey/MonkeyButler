@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace MonkeyButler.Business
 {
@@ -13,17 +11,13 @@ namespace MonkeyButler.Business
         /// Adds the required services for this component.
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddBusinessServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddBusinessServices(this IServiceCollection services)
         {
-            services.AddDataServices(configuration);
-
             services.Scan(select => select
                 .FromCallingAssembly()
                 .AddClasses(classes => classes
                     .InNamespaces(
-                        "MonkeyButler.Business.Engines",
                         "MonkeyButler.Business.Validators"),
                     publicOnly: false)
                 .AsImplementedInterfaces()

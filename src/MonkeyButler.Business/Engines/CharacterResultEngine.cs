@@ -1,18 +1,18 @@
 ﻿using System.Linq;
-using MonkeyButler.Business.Models.CharacterSearch;
-using MonkeyButler.Data.Models.XivApi.Character;
-using MonkeyButler.Data.Models.XivApi.Enumerations;
+using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
+using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.Enumerations;
 
 namespace MonkeyButler.Business.Engines
 {
-    internal class CharacterResultEngine : ICharacterResultEngine
+    internal static class CharacterResultEngine
     {
-        public Character Merge(CharacterBrief character, GetCharacterData details)
+        public static Character Merge(CharacterBrief character, GetCharacterData details)
         {
             return new Character()
             {
                 AvatarUrl = character.Avatar,
-                CurrentClassJob = details.Character?.ActiveClassJob is object ? new Models.CharacterSearch.ClassJob()
+                CurrentClassJob = details.Character?.ActiveClassJob is object ? new Abstractions.Business.Models.CharacterSearch.ClassJob()
                 {
                     Level = details.Character?.ActiveClassJob?.Level ?? 0,
                     Name = RemoveDuplicates(Capitalize(details.Character?.ActiveClassJob?.Name))
@@ -27,7 +27,7 @@ namespace MonkeyButler.Business.Engines
             };
         }
 
-        private string? Capitalize(string? str)
+        private static string? Capitalize(string? str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -43,7 +43,7 @@ namespace MonkeyButler.Business.Engines
         }
 
         // For class-less jobs, XivApi returns e.g. "dark knight / dark knight"
-        private string? RemoveDuplicates(string? str)
+        private static string? RemoveDuplicates(string? str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -62,7 +62,7 @@ namespace MonkeyButler.Business.Engines
             return str;
         }
 
-        private string? ConvertRace(Race? race)
+        private static string? ConvertRace(Race? race)
         {
             return race switch
             {
@@ -71,7 +71,7 @@ namespace MonkeyButler.Business.Engines
             };
         }
 
-        private string? ConvertTribe(Tribe? tribe)
+        private static string? ConvertTribe(Tribe? tribe)
         {
             return tribe switch
             {
@@ -82,10 +82,5 @@ namespace MonkeyButler.Business.Engines
                 _ => tribe?.ToString() ?? null
             };
         }
-    }
-
-    internal interface ICharacterResultEngine
-    {
-        Character Merge(CharacterBrief character, GetCharacterData details);
     }
 }

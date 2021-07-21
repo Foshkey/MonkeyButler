@@ -7,8 +7,8 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.Options;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Options;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Handlers
@@ -56,8 +56,8 @@ namespace MonkeyButler.Handlers
             // Check if custom guild prefix
             if (message.Author is SocketGuildUser guildUser)
             {
-                var optionsManager = _serviceProvider.GetRequiredService<IOptionsManager>();
-                var guildOptions = await optionsManager.GetGuildOptions(new Business.Models.Options.GuildOptionsCriteria()
+                var guildOptionsManager = _serviceProvider.GetRequiredService<IGuildOptionsManager>();
+                var guildOptions = await guildOptionsManager.GetGuildOptions(new GuildOptionsCriteria()
                 {
                     GuildId = guildUser.Guild.Id
                 });
@@ -88,8 +88,8 @@ namespace MonkeyButler.Handlers
 
             var guild = user.Guild;
 
-            var optionsManager = _serviceProvider.GetRequiredService<IOptionsManager>();
-            var guildOptions = await optionsManager.GetGuildOptions(new GuildOptionsCriteria()
+            var guildOptionsManager = _serviceProvider.GetRequiredService<IGuildOptionsManager>();
+            var guildOptions = await guildOptionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
                 GuildId = guild.Id
             });

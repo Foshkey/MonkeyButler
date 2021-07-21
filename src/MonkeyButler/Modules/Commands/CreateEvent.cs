@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.Events;
-using MonkeyButler.Business.Models.Options;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Events;
+using MonkeyButler.Abstractions.Business.Models.Options;
 using MonkeyButler.Extensions;
 using MonkeyButler.Options;
 
@@ -18,16 +18,16 @@ namespace MonkeyButler.Modules.Commands
     public class CreateEvent : CommandModule
     {
         private readonly IEventsManager _eventsManager;
-        private readonly IOptionsManager _optionsManager;
+        private readonly IGuildOptionsManager _guildOptionsManager;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public CreateEvent(IEventsManager eventsManager, IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions) : base(optionsManager, appOptions)
+        public CreateEvent(IEventsManager eventsManager, IGuildOptionsManager guildOptionsManager, IOptionsMonitor<AppOptions> appOptions) : base(guildOptionsManager, appOptions)
         {
             _eventsManager = eventsManager ?? throw new ArgumentNullException(nameof(eventsManager));
-            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
+            _guildOptionsManager = guildOptionsManager ?? throw new ArgumentNullException(nameof(guildOptionsManager));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
@@ -44,7 +44,7 @@ namespace MonkeyButler.Modules.Commands
             using var setTyping = Context.Channel.EnterTypingState();
 
             var discordOptions = _appOptions.CurrentValue.Discord;
-            var guildOptions = await _optionsManager.GetGuildOptions(new GuildOptionsCriteria()
+            var guildOptions = await _guildOptionsManager.GetGuildOptions(new GuildOptionsCriteria()
             {
                 GuildId = Context.Guild.Id
             });

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
-using MonkeyButler.Business.Managers;
-using MonkeyButler.Business.Models.Options;
+using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.Options;
 using MonkeyButler.Options;
 
 namespace MonkeyButler.Modules.Commands
@@ -14,17 +14,17 @@ namespace MonkeyButler.Modules.Commands
     /// </summary>
     public class CommandModule : ModuleBase<SocketCommandContext>
     {
-        private readonly IOptionsManager _optionsManager;
+        private readonly IGuildOptionsManager _guildOptionsManager;
         private readonly IOptionsMonitor<AppOptions> _appOptions;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="optionsManager"></param>
+        /// <param name="guildOptionsManager"></param>
         /// <param name="appOptions"></param>
-        public CommandModule(IOptionsManager optionsManager, IOptionsMonitor<AppOptions> appOptions)
+        public CommandModule(IGuildOptionsManager guildOptionsManager, IOptionsMonitor<AppOptions> appOptions)
         {
-            _optionsManager = optionsManager ?? throw new ArgumentNullException(nameof(optionsManager));
+            _guildOptionsManager = guildOptionsManager ?? throw new ArgumentNullException(nameof(guildOptionsManager));
             _appOptions = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
         }
 
@@ -58,7 +58,7 @@ namespace MonkeyButler.Modules.Commands
                     GuildId = Context.Guild.Id
                 };
 
-                var options = await _optionsManager.GetGuildOptions(criteria);
+                var options = await _guildOptionsManager.GetGuildOptions(criteria);
 
                 if (!string.IsNullOrEmpty(options?.Prefix))
                 {
