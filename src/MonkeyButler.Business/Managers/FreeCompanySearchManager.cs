@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
@@ -14,27 +15,21 @@ namespace MonkeyButler.Business.Managers
     {
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly ILogger<FreeCompanySearchManager> _logger;
+        private readonly IValidator<FreeCompanySearchCriteria> _validator;
 
         public FreeCompanySearchManager(
             IXivApiAccessor xivApiAccessor,
-            ILogger<FreeCompanySearchManager> logger
-        )
+            ILogger<FreeCompanySearchManager> logger,
+            IValidator<FreeCompanySearchCriteria> validator)
         {
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         public async Task<FreeCompanySearchResult> Process(FreeCompanySearchCriteria criteria)
         {
-            if (criteria is null)
-            {
-                throw new ArgumentNullException(nameof(criteria));
-            }
-
-            if (criteria.Query is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.Query)} cannot be null.", nameof(criteria));
-            }
+            _validator.ValidateAndThrow(criteria);
 
             _logger.LogTrace("Processing Free Company search. Query: '{Query}'.", criteria.Query);
 

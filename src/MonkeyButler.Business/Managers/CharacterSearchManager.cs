@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
@@ -15,27 +16,21 @@ namespace MonkeyButler.Business.Managers
     {
         private readonly IXivApiAccessor _xivApiAccessor;
         private readonly ILogger<CharacterSearchManager> _logger;
+        private readonly IValidator<CharacterSearchCriteria> _validator;
 
         public CharacterSearchManager(
             IXivApiAccessor xivApiAccessor,
-            ILogger<CharacterSearchManager> logger
-        )
+            ILogger<CharacterSearchManager> logger,
+            IValidator<CharacterSearchCriteria> validator)
         {
             _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         public async Task<CharacterSearchResult> Process(CharacterSearchCriteria criteria)
         {
-            if (criteria is null)
-            {
-                throw new ArgumentNullException(nameof(criteria));
-            }
-
-            if (criteria.Query is null)
-            {
-                throw new ArgumentException($"{nameof(criteria.Query)} cannot be null.", nameof(criteria));
-            }
+            _validator.ValidateAndThrow(criteria);
 
             _logger.LogTrace("Processing character search. Query: '{Query}'.", criteria.Query);
 

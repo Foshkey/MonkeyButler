@@ -8,6 +8,6 @@
         /// <summary>
         /// String query for name and server.
         /// </summary>
-        public string? Query { get; set; }
+        public string Query { get; set; } = "";
     }
 }
