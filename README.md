@@ -12,16 +12,18 @@ This is a Discord bot working with Final Fantasy XIV data. Built for the Twiligh
 ## Built with
 
 * [Discord.NET](https://docs.stillu.cc/index.html)
-* [ASP.NET Core 3.1](https://dotnet.microsoft.com/)
+* [.NET 5](https://dotnet.microsoft.com/)
 * [xUnit](https://xunit.net/)
 * [Juval Lowe's IDesign](http://www.idesign.net/)
 * [xivapi.com](http://xivapi.com)
+* [Redis](https://redis.io/)
 
 ## Repository structure
 
 * **MonkeyButler** - Main client app handling connection to Discord and providing ASP.NET Core endpoints.
 * **MonkeyButler.Business** - Component for handling business logic and flow for each request & command.
-* **MonkeyButler.Data** - Component for integrating with any external dependencies, such as xivapi.com.
+* **MonkeyButler.Data.Api** - Component for integrating with APIs, such as XivApi.com.
+* **MonkeyButler.Data.Storage** - Component for handling persistent storage, currently with Redis.
 
 ## How to get started
 
