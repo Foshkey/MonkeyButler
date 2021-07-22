@@ -38,9 +38,10 @@ namespace MonkeyButler.Modules.Commands
         /// <returns></returns>
         [Command("Create Event")]
         [Summary("Creates an event at a certain time, with users able to sign up on a roster.")]
-        [RequireOwner(ErrorMessage = "Events are currently being developed and is disabled for everybody except the owner. Stay tuned!")] // Disabled for now
-        public async Task Create([Remainder] string query)
+        [RequireOwner(ErrorMessage = "Events are currently being developed and is disabled for everybody except the owner. Stay tuned!")]
+        public async Task Create([Remainder] string query = null!)
         {
+
             using var setTyping = Context.Channel.EnterTypingState();
 
             var discordOptions = _appOptions.CurrentValue.Discord;
@@ -51,6 +52,12 @@ namespace MonkeyButler.Modules.Commands
 
             var prefix = guildOptions?.Prefix ?? discordOptions.Prefix;
             var signupEmotes = guildOptions?.SignupEmotes ?? discordOptions.SignupEmotes;
+
+            if (query is null)
+            {
+                await ReplyAsync($"Try `{prefix}create event <Title> on <Day> at <Time>`, (without `<>`).");
+                return;
+            }
 
             var criteria = new CreateEventCriteria()
             {
@@ -63,7 +70,7 @@ namespace MonkeyButler.Modules.Commands
 
             if (result?.Event is null || !result.IsSuccessful)
             {
-                await ReplyAsync($"I'm sorry, I could not create an event for you. Try `{prefix}createEvent <Title> on <Day> at <Time>.`.");
+                await ReplyAsync($"I'm sorry, I could not create an event for you. Try `{prefix}create event <Title> on <Day> at <Time>`.");
                 return;
             }
 
