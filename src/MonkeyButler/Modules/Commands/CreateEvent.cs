@@ -36,9 +36,9 @@ namespace MonkeyButler.Modules.Commands
         /// </summary>
         /// <param name="query">Query for the event.</param>
         /// <returns></returns>
-        [Command("CreateEvent")]
+        [Command("Create Event")]
         [Summary("Creates an event at a certain time, with users able to sign up on a roster.")]
-        [RequireOwner] // Disabled for now
+        [RequireOwner(ErrorMessage = "Events are currently being developed and is disabled for everybody except the owner. Stay tuned!")] // Disabled for now
         public async Task Create([Remainder] string query)
         {
             using var setTyping = Context.Channel.EnterTypingState();
