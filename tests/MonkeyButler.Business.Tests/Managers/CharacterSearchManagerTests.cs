@@ -4,7 +4,7 @@ using AutoFixture;
 using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 using MonkeyButler.Abstractions.Data.Api;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
 using MonkeyButler.Business.Managers;
 using Moq;
 using Xunit;

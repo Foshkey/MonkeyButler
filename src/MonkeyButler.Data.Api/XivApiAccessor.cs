@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonkeyButler.Abstractions.Data.Api;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
-using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany;
 using MonkeyButler.Data.Api.Options;
 
 namespace MonkeyButler.Data.Api

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
-using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany;
 
 namespace MonkeyButler.Abstractions.Data.Api
 {
