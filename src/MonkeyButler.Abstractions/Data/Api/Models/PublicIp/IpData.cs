@@ -10,6 +10,6 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.PublicIp
         /// <summary>
         /// The IP address of the server of the current executable
         /// </summary>
-        public IPAddress? IpAddress { get; set; }
+        public IPAddress? Ip { get; set; }
     }
 }
