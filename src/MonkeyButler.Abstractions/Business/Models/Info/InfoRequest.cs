@@ -11,7 +11,7 @@ namespace MonkeyButler.Abstractions.Business.Models.Info
         /// <summary>
         /// The minimum amount of information, performing no backend queries.
         /// </summary>
-        Minimum = 0,
+        None = 0,
 
         /// <summary>
         /// Include the public IP address of the bot.
