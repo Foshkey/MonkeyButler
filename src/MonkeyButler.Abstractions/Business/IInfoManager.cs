@@ -1,4 +1,5 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using MonkeyButler.Abstractions.Business.Models.Info;
 
 namespace MonkeyButler.Abstractions.Business
 {
@@ -10,6 +11,6 @@ namespace MonkeyButler.Abstractions.Business
         /// <summary>
         /// Gets the current information about the bot.
         /// </summary>
-        Task<InfoResult> GetInfo();
+        Task<InfoResult> GetInfo(InfoCriteria criteria);
     }
 }
