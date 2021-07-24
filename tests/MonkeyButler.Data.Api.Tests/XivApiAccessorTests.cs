@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
 using Xunit;
 using SUT = MonkeyButler.Abstractions.Data.Api.IXivApiAccessor;
 

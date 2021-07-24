@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
-using MonkeyButler.Abstractions.Data.Api.Models.Enumerations;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Enumerations;
 
 namespace MonkeyButler.Business.Engines
 {

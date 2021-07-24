@@ -2,7 +2,7 @@
 using AutoFixture;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Data.Api;
-using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany;
 using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 using Moq;

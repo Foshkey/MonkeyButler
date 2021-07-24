@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
 using MonkeyButler.Abstractions.Data.Api;
-using MonkeyButler.Abstractions.Data.Api.Models.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
 using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 using MonkeyButler.Abstractions.Data.Storage.Models.User;

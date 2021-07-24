@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
 using MonkeyButler.Abstractions.Data.Api;
-using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany;
 using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers

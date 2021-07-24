@@ -2,7 +2,7 @@
 using AutoFixture;
 using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.Options;
-using MonkeyButler.Abstractions.Data.Api.Models.FreeCompany;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany;
 using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 using Moq;
 using Xunit;

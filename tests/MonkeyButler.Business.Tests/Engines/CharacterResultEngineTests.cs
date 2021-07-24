@@ -1,5 +1,5 @@
-﻿using MonkeyButler.Abstractions.Data.Api.Models.Character;
-using MonkeyButler.Abstractions.Data.Api.Models.Enumerations;
+﻿using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character;
+using MonkeyButler.Abstractions.Data.Api.Models.XivApi.Enumerations;
 using MonkeyButler.Business.Engines;
 using Xunit;
 

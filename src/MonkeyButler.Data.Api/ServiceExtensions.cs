@@ -21,7 +21,19 @@ namespace MonkeyButler.Data.Api
         /// <returns></returns>
         public static IServiceCollection AddDataApiServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IXivApiAccessor, XivApiAccessor>();
+            #region "Public IP"
+
+            services.Configure<JsonSerializerOptions>("PublicIp", options =>
+            {
+                options.PropertyNameCaseInsensitive = true;
+                options.Converters.Add(new IpJsonConverter());
+            });
+
+            services.AddHttpClient<IPublicIpAccessor, PublicIpAccessor>();
+
+            #endregion
+
+            #region "XivApi"
 
             services.Configure<JsonSerializerOptions>("XivApi", options =>
             {
@@ -38,6 +50,8 @@ namespace MonkeyButler.Data.Api
             {
                 client.BaseAddress = new Uri(xivApiConfig["BaseUrl"]);
             });
+
+            #endregion
 
             return services;
         }
