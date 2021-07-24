@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -43,8 +43,10 @@ namespace MonkeyButler.Data.Api
             }
 
             using var stream = await response.Content.ReadAsStreamAsync();
-            var _ = _logger.TraceBody(stream);
             var ipData = await JsonSerializer.DeserializeAsync<IpData>(stream, _publicIpJsonOptions) ?? new IpData();
+
+            // Fire and forget log
+            var _ = _logger.TraceBody(stream);
 
             return ipData;
         }

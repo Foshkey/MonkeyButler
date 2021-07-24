@@ -19,7 +19,7 @@ namespace MonkeyButler.Data.Tests
                 .AddDataApiServices(config)
                 .AddLogging(logBuilder =>
                 {
-                    logBuilder.SetMinimumLevel(LogLevel.Debug);
+                    logBuilder.SetMinimumLevel(LogLevel.Trace);
                     logBuilder.AddConsole();
                 });
         }
