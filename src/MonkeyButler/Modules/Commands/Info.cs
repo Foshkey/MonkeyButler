@@ -30,6 +30,8 @@ namespace MonkeyButler.Modules.Commands
         [RequireOwner] // Only for owners, as this is sensitive information meant for debugging.
         public async Task GetIpAddress()
         {
+            using var setTyping = Context.Channel.EnterTypingState();
+
             var criteria = new InfoCriteria()
             {
                 InfoRequest = InfoRequest.IpAddress
