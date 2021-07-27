@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Abstractions.Data.Storage;
+using StackExchange.Redis;
 
 namespace MonkeyButler.Data.Storage
 {
@@ -17,8 +18,11 @@ namespace MonkeyButler.Data.Storage
         /// <returns></returns>
         public static IServiceCollection AddDataStorageServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IGuildOptionsAccessor, GuildOptionsAccessor>();
-            services.AddTransient<IUserAccessor, UserAccessor>();
+            services.AddSingleton<IGuildOptionsAccessor, GuildOptionsAccessor>();
+            services.AddSingleton<IUserAccessor, UserAccessor>();
+
+            services.AddTransient<IImportExportAccessor, ImportExportAccessor>();
+            services.AddTransient<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration["Redis:ConnectionString"]));
 
             services.AddStackExchangeRedisCache(options =>
             {
