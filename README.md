@@ -56,6 +56,7 @@ With these configuration values loaded and database configured, either run `Monk
 
 This bot currently requires the following permissions for full functionality:
 * Send Messages
+* Embed Links
 * Add Reactions
 * Manage Roles (For automatically adding roles to verified members)
 * Manage Nicknames (For automatically changing nicknames to in-game names)
@@ -63,7 +64,7 @@ This bot currently requires the following permissions for full functionality:
 These permissions are compiled into this URL for your use, just replace the `CLIENT_ID` with the client id of your bot.
 
 ```
-https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=402655296&scope=bot
+https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=402671680&scope=bot
 ```
 
 ## Sample app execution
