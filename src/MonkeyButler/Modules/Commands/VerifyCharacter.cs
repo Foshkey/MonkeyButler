@@ -59,7 +59,7 @@ namespace MonkeyButler.Modules.Commands
 
                 case Status.NotVerified:
                     await Task.WhenAll(
-                        ReplyAsync($"I'm sorry. It appears that you are not a part of the {result.FreeCompanyName}."),
+                        ReplyAsync($"According to Lodestone, it appears that you are not a part of the {result.FreeCompanyName}. If you just joined the free company, it usually takes a day to update on Lodestone."),
                         NotifyAdmin($"{Context.User.Mention} failed verification with '{query}'.")
                     );
                     return;
