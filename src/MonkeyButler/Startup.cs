@@ -5,6 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,10 +44,15 @@ namespace MonkeyButler
             services.AddDataStorageServices(_configuration);
             services.Configure<AppOptions>(_configuration);
 
-            // Controllers
-            services
-                .AddApiVersioning()
-                .AddControllers();
+            // Controllers & versioning
+            services.AddControllers();
+
+            services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.ReportApiVersions = true;
+            });
+
 
             // Swagger
             services.AddSwaggerGen(c =>
