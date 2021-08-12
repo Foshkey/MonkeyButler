@@ -140,5 +140,16 @@ namespace MonkeyButler.Data.Storage.Tests
             Assert.Null(_cache.GetString("key1"));
             Assert.Equal("value2", _cache.GetString("key2"));
         }
+
+        [Fact]
+        public async Task ShouldHandleMassiveImport()
+        {
+            var data = new ImportQuery()
+            {
+                Import = Enumerable.Range(0, 100000).ToDictionary(i => $"key{i}", i => $"value{i}")
+            };
+
+            await Build().ImportAll(data);
+        }
     }
 }
