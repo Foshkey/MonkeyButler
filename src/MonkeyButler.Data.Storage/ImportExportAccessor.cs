@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
@@ -28,24 +28,23 @@ namespace MonkeyButler.Data.Storage
             _logger.LogDebug("Exporting all data from Redis.");
 
             var server = _connectionMultiplexer.GetServer(_connectionMultiplexer.GetEndPoints().First());
-            var keys = await Task.Run(() => server.Keys());
-            var tasks = new List<Task>();
-            var data = new ExportData();
+            var keys = await Task.Run(() => server.Keys().ToList());
+            var data = new ConcurrentDictionary<string, string>();
 
-            foreach (var key in keys)
+            await Task.WhenAll(keys.Select(key =>
+                _distributedCache
+                .GetStringAsync(key)
+                .ContinueWith(task => data.AddOrUpdate(key, task.Result, (_, _) => task.Result))));
+
+            return new ExportData()
             {
-                tasks.Add(
-                    _distributedCache.GetStringAsync(key).ContinueWith(
-                        task => data.Export.Add(key, task.Result)
-                    )
-                );
-            }
-
-            await Task.WhenAll(tasks);
-
-            return data;
+                Export = data.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+            };
         }
 
-        public Task ImportAll(ImportQuery query) => throw new NotImplementedException();
+        public Task ImportAll(ImportQuery query)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
