@@ -49,8 +49,9 @@ namespace MonkeyButler.Data.Storage
             _logger.LogDebug("Importing data into Redis.");
             _logger.LogTrace("Keys: {Keys}", $"[{string.Join(", ", query.Import.Keys)}]");
 
-            await Task.WhenAll(query.Import.Select(entry =>
-                _distributedCache.SetStringAsync(entry.Key, entry.Value)));
+            await Task.WhenAll(query.Import.Select(entry => entry.Value is object
+                ? _distributedCache.SetStringAsync(entry.Key, entry.Value)
+                : Task.CompletedTask));
 
             _logger.LogDebug("Data successfully imported.");
         }
