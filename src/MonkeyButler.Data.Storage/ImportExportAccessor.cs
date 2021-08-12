@@ -33,18 +33,26 @@ namespace MonkeyButler.Data.Storage
 
             await Task.WhenAll(keys.Select(key =>
                 _distributedCache
-                .GetStringAsync(key)
-                .ContinueWith(task => data.AddOrUpdate(key, task.Result, (_, _) => task.Result))));
+                    .GetStringAsync(key)
+                    .ContinueWith(task => data.AddOrUpdate(key, task.Result, (_, _) => task.Result))));
+
+            _logger.LogDebug("Data successfully exported.");
 
             return new ExportData()
             {
-                Export = data.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                Export = data
             };
         }
 
-        public Task ImportAll(ImportQuery query)
+        public async Task ImportAll(ImportQuery query)
         {
-            throw new NotImplementedException();
+            _logger.LogDebug("Importing data into Redis.");
+            _logger.LogTrace("Keys: {Keys}", $"[{string.Join(", ", query.Import.Keys)}]");
+
+            await Task.WhenAll(query.Import.Select(entry =>
+                _distributedCache.SetStringAsync(entry.Key, entry.Value)));
+
+            _logger.LogDebug("Data successfully imported.");
         }
     }
 }

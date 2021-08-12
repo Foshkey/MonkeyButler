@@ -10,6 +10,6 @@ namespace MonkeyButler.Abstractions.Data.Storage.Models.ImportExport
         /// <summary>
         /// The full export in key/value pairs. The values are json serialized.
         /// </summary>
-        public Dictionary<string, string> Export { get; set; } = new();
+        public IDictionary<string, string> Export { get; set; } = new Dictionary<string, string>();
     }
 }

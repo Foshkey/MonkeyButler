@@ -10,6 +10,6 @@ namespace MonkeyButler.Abstractions.Business.Models.ImportExport
         /// <summary>
         /// The full export of the data, values being json serialized.
         /// </summary>
-        public Dictionary<string, string> Export { get; set; } = new();
+        public IDictionary<string, string> Export { get; set; } = new Dictionary<string, string>();
     }
 }
