@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.ImportExport;
 using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Abstractions.Data.Storage.Models.ImportExport;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -32,6 +33,19 @@ namespace MonkeyButler.Business.Managers
             };
         }
 
-        public Task ImportAll(ImportCriteria criteria) => throw new NotImplementedException();
+        public async Task ImportAll(ImportCriteria criteria)
+        {
+            _logger.LogDebug("Importing all information into data storage.");
+            _logger.LogTrace("Keys: {Keys}", $"[{string.Join(", ", criteria.Import.Keys)}]");
+
+            var query = new ImportQuery()
+            {
+                Import = criteria.Import
+            };
+
+            await _importExportAccessor.ImportAll(query);
+
+            _logger.LogDebug("Successfully imported all information into data storage.");
+        }
     }
 }

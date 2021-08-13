@@ -25,8 +25,6 @@ namespace MonkeyButler.Data.Storage
 
         public async Task<ExportData> ExportAll()
         {
-            _logger.LogDebug("Exporting all data from Redis.");
-
             var server = _connectionMultiplexer.GetServer(_connectionMultiplexer.GetEndPoints().First());
             var keys = await Task.Run(() => server.Keys().ToList());
             var data = new ConcurrentDictionary<string, string>();
@@ -36,8 +34,6 @@ namespace MonkeyButler.Data.Storage
                     .GetStringAsync(key)
                     .ContinueWith(task => data.AddOrUpdate(key, task.Result, (_, _) => task.Result))));
 
-            _logger.LogDebug("Data successfully exported.");
-
             return new ExportData()
             {
                 Export = data
@@ -46,14 +42,9 @@ namespace MonkeyButler.Data.Storage
 
         public async Task ImportAll(ImportQuery query)
         {
-            _logger.LogDebug("Importing data into Redis.");
-            _logger.LogTrace("Keys: {Keys}", $"[{string.Join(", ", query.Import.Keys)}]");
-
             await Task.WhenAll(query.Import.Select(entry => entry.Value is object
                 ? _distributedCache.SetStringAsync(entry.Key, entry.Value)
                 : Task.CompletedTask));
-
-            _logger.LogDebug("Data successfully imported.");
         }
     }
 }
