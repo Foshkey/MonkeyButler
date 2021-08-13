@@ -40,7 +40,6 @@ namespace MonkeyButler.Controllers
         /// Executes the import of the data storage.
         /// </summary>
         /// <param name="import">The import data, key value pairs.</param>
-        /// <param name="importExportManager"></param>
         /// <returns>Key value pairs, json serialized</returns>
         [HttpPut]
         public async Task Put([FromBody] IDictionary<string, string> import)
