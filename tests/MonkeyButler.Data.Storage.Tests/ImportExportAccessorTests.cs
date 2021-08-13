@@ -150,6 +150,19 @@ namespace MonkeyButler.Data.Storage.Tests
         }
 
         [Fact]
+        public async Task ShouldDelete()
+        {
+            _cache.SetString("key1", "value1");
+            _cache.SetString("key2", "value2");
+            AddKeys("key1", "key2");
+
+            await Build().DeleteAll();
+
+            Assert.Null(_cache.GetString("key1"));
+            Assert.Null(_cache.GetString("key2"));
+        }
+
+        [Fact]
         public async Task DeleteShouldHandleMissingKeys()
         {
             AddKeys("key1", "key2");
