@@ -20,5 +20,11 @@ namespace MonkeyButler.Abstractions.Data.Storage
         /// <param name="query"></param>
         /// <returns></returns>
         Task ImportAll(ImportQuery query);
+
+        /// <summary>
+        /// Deletes all data in the data storage.
+        /// </summary>
+        /// <returns></returns>
+        Task DeleteAll();
     }
 }

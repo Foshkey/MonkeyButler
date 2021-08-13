@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Data.Storage.Models.ImportExport;
 using Moq;
 using StackExchange.Redis;
@@ -16,7 +15,6 @@ namespace MonkeyButler.Data.Storage.Tests
     {
         private readonly Mock<IConnectionMultiplexer> _connectionMultiplexer = new();
         private readonly Mock<IServer> _server = new();
-        private readonly Mock<ILogger<ImportExportAccessor>> _logger = new();
         private readonly IDistributedCache _cache = TestUtility.CreateCache();
 
         public ImportExportAccessorTests()
@@ -29,8 +27,7 @@ namespace MonkeyButler.Data.Storage.Tests
 
         private ImportExportAccessor Build() => new(
             _connectionMultiplexer.Object,
-            _cache,
-            _logger.Object);
+            _cache);
 
         private void AddKeys(params RedisKey[] keys)
         {
@@ -150,6 +147,13 @@ namespace MonkeyButler.Data.Storage.Tests
             };
 
             await Build().ImportAll(data);
+        }
+
+        [Fact]
+        public async Task DeleteShouldHandleMissingKeys()
+        {
+            AddKeys("key1", "key2");
+            await Build().DeleteAll();
         }
     }
 }

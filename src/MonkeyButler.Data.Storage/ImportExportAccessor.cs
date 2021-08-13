@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Abstractions.Data.Storage.Models.ImportExport;
 using StackExchange.Redis;
@@ -14,20 +14,23 @@ namespace MonkeyButler.Data.Storage
     {
         private readonly IConnectionMultiplexer _connectionMultiplexer;
         private readonly IDistributedCache _distributedCache;
-        private readonly ILogger<ImportExportAccessor> _logger;
 
-        public ImportExportAccessor(IConnectionMultiplexer connectionMultiplexer, IDistributedCache distributedCache, ILogger<ImportExportAccessor> logger)
+        public ImportExportAccessor(IConnectionMultiplexer connectionMultiplexer, IDistributedCache distributedCache)
         {
             _connectionMultiplexer = connectionMultiplexer ?? throw new ArgumentNullException(nameof(connectionMultiplexer));
             _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        private async Task<List<RedisKey>> GetAllKeys()
+        {
+            var server = _connectionMultiplexer.GetServer(_connectionMultiplexer.GetEndPoints().First());
+            return await Task.Run(() => server.Keys().ToList());
         }
 
         public async Task<ExportData> ExportAll()
         {
-            var server = _connectionMultiplexer.GetServer(_connectionMultiplexer.GetEndPoints().First());
-            var keys = await Task.Run(() => server.Keys().ToList());
             var data = new ConcurrentDictionary<string, string>();
+            var keys = await GetAllKeys();
 
             await Task.WhenAll(keys.Select(key =>
                 _distributedCache
@@ -45,6 +48,12 @@ namespace MonkeyButler.Data.Storage
             await Task.WhenAll(query.Import.Select(entry => entry.Value is object
                 ? _distributedCache.SetStringAsync(entry.Key, entry.Value)
                 : Task.CompletedTask));
+        }
+
+        public async Task DeleteAll()
+        {
+            var keys = await GetAllKeys();
+            await Task.WhenAll(keys.Select(key => _distributedCache.RemoveAsync(key)));
         }
     }
 }

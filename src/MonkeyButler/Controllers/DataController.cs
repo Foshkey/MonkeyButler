@@ -37,10 +37,24 @@ namespace MonkeyButler.Controllers
         }
 
         /// <summary>
-        /// Executes the import of the data storage.
+        /// Clears the data storage and imports key-value-pairs into the data storage
         /// </summary>
         /// <param name="import">The import data, key value pairs.</param>
-        /// <returns>Key value pairs, json serialized</returns>
+        [HttpPost]
+        public async Task Post([FromBody] IDictionary<string, string> import)
+        {
+            var criteria = new ImportCriteria()
+            {
+                Import = import
+            };
+
+            await _importExportManager.ClearAndImportAll(criteria);
+        }
+
+        /// <summary>
+        /// Imports key-value-pairs into the data storage, without clearing the storage.
+        /// </summary>
+        /// <param name="import">The import data, key value pairs.</param>
         [HttpPut]
         public async Task Put([FromBody] IDictionary<string, string> import)
         {

@@ -20,5 +20,12 @@ namespace MonkeyButler.Abstractions.Business
         /// <param name="criteria"></param>
         /// <returns></returns>
         Task ImportAll(ImportCriteria criteria);
+
+        /// <summary>
+        /// Clears the data storage and imports new data.
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        Task ClearAndImportAll(ImportCriteria criteria);
     }
 }

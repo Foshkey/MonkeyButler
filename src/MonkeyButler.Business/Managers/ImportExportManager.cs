@@ -47,5 +47,25 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Successfully imported all information into data storage.");
         }
+
+        public async Task ClearAndImportAll(ImportCriteria criteria)
+        {
+            _logger.LogDebug("Clearing the data storage.");
+
+            await _importExportAccessor.DeleteAll();
+
+            _logger.LogDebug("Successfully cleared the data storage.");
+            _logger.LogDebug("Importing all information into data storage.");
+            _logger.LogTrace("Keys: {Keys}", $"[{string.Join(", ", criteria.Import.Keys)}]");
+
+            var query = new ImportQuery()
+            {
+                Import = criteria.Import
+            };
+
+            await _importExportAccessor.ImportAll(query);
+
+            _logger.LogDebug("Successfully imported all information into data storage.");
+        }
     }
 }
