@@ -64,13 +64,19 @@ namespace MonkeyButler.Data.Storage
         {
             _logger.LogDebug("Saving character '{CharacterId}' to User '{UserId}'.", query.CharacterId, query.UserId);
 
-
             // Find or create new
             var user = await GetUser(new GetUserQuery() { UserId = query.UserId })
                 ?? new User()
                 {
                     Id = query.UserId
                 };
+
+            // If user already contains character Id just return the user.
+            if (user.CharacterIds.Contains(query.CharacterId))
+            {
+                _logger.LogTrace("User already has characterId added. Returning without saving.");
+                return user;
+            }
 
             // Add to list
             user.CharacterIds.Add(query.CharacterId);
