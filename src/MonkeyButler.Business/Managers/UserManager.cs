@@ -40,10 +40,10 @@ namespace MonkeyButler.Business.Managers
 
                 _logger.SavingCharacter(userId, characterId);
 
-                return _userAccessor.SaveCharacterToUser(new()
+                return _userAccessor.SaveUser(new()
                 {
-                    UserId = userId,
-                    CharacterId = characterId
+                    Id = userId,
+                    CharacterIds = new() { characterId }
                 });
             }));
         }
@@ -52,37 +52,28 @@ namespace MonkeyButler.Business.Managers
         {
             _validator.ValidateAndThrow(user);
 
-            var userId = user.Id;
+            _logger.LogDebug("Saving user '{UserId}'.", user.Id);
 
-            await Task.WhenAll(user.CharacterIds.Select(characterId =>
+            var updatedUser = await _userAccessor.SaveUser(new()
             {
-                _logger.SavingCharacter(userId, characterId);
-
-                return _userAccessor.SaveCharacterToUser(new()
-                {
-                    UserId = userId,
-                    CharacterId = characterId
-                });
-            }));
-
-            var updatedUser = await _userAccessor.GetUser(new()
-            {
-                UserId = userId
+                Id = user.Id,
+                CharacterIds = user.CharacterIds
+                    .Distinct()
+                    .ToHashSet()
             });
 
             return new()
             {
-                Id = userId,
-                CharacterIds = updatedUser?.CharacterIds ?? new()
+                Id = updatedUser.Id,
+                CharacterIds = updatedUser.CharacterIds
             };
         }
 
         public async Task<User?> GetUser(ulong id)
         {
-            var user = await _userAccessor.GetUser(new()
-            {
-                UserId = id
-            });
+            _logger.LogDebug("Getting user '{UserId}'.", id);
+
+            var user = await _userAccessor.GetUser(id);
 
             return user is null ? null : new()
             {

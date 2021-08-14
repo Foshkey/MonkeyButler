@@ -138,10 +138,10 @@ namespace MonkeyButler.Business.Managers
 
             // Save character-user map to database.
             _logger.LogDebug("Saving {Name} to database with User Id {UserId}.", result.Name, criteria.UserId);
-            await _userAccessor.SaveCharacterToUser(new SaveCharacterToUserQuery()
+            await _userAccessor.SaveUser(new()
             {
-                CharacterId = characterId.Value,
-                UserId = criteria.UserId
+                Id = criteria.UserId,
+                CharacterIds = new() { characterId.Value }
             });
 
             return result;

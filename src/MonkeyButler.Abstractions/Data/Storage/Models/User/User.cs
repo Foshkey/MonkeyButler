@@ -15,6 +15,6 @@ namespace MonkeyButler.Abstractions.Data.Storage.Models.User
         /// <summary>
         /// List of Character Ids associated with this user.
         /// </summary>
-        public List<long> CharacterIds { get; set; } = new List<long>();
+        public HashSet<long> CharacterIds { get; set; } = new HashSet<long>();
     }
 }

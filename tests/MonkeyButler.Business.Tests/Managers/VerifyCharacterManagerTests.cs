@@ -90,8 +90,8 @@ namespace MonkeyButler.Business.Tests.Managers
 
             var result = await _manager.Process(criteria);
 
-            _userAccessorMock.Verify(x => x.SaveCharacterToUser(
-                It.Is<SaveCharacterToUserQuery>(x => x.UserId == _userId && x.CharacterId == _characterId)
+            _userAccessorMock.Verify(x => x.SaveUser(
+                It.Is<User>(x => x.Id == _userId && x.CharacterIds.Contains(_characterId))
             ));
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace MonkeyButler.Controllers
         /// </summary>
         public UserController(IUserManager userManager)
         {
-            _userManager = userManager ?? throw new System.ArgumentNullException(nameof(userManager));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         /// <summary>
@@ -32,11 +33,7 @@ namespace MonkeyButler.Controllers
         [HttpGet("{id}")]
         [ProducesDefaultResponseType(typeof(User))]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<User>> Get(ulong id)
-        {
-            var user = await _userManager.GetUser(id);
-            return user is object ? Ok(user) : NotFound();
-        }
+        public Task<User?> Get(ulong id) => _userManager.GetUser(id);
 
         /// <summary>
         /// Adds or updates the given user.
@@ -49,7 +46,7 @@ namespace MonkeyButler.Controllers
         /// <summary>
         /// Adds a collection of users with character Ids.
         /// </summary>
-        [HttpPut("collection")]
+        [HttpPut("Collection")]
         [ProducesDefaultResponseType()]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public Task PutCollection([FromBody] IDictionary<ulong, long> collection) => _userManager.AddCharacterIds(collection);
