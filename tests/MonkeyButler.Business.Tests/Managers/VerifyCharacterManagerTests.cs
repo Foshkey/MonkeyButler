@@ -96,6 +96,30 @@ namespace MonkeyButler.Business.Tests.Managers
         }
 
         [Fact]
+        public async Task UsersShouldMerge()
+        {
+            var char1 = 982734;
+            var char2 = 2983743;
+            _userAccessorMock.Setup(x => x.GetUser(It.IsAny<ulong>()))
+                .ReturnsAsync(new User()
+                {
+                    Id = _userId,
+                    CharacterIds = new() { char1, char2 }
+                });
+
+            var criteria = _defaultCriteria;
+
+            var result = await _manager.Process(criteria);
+
+            _userAccessorMock.Verify(x => x.SaveUser(
+                It.Is<User>(x => x.Id == _userId &&
+                    x.CharacterIds.Contains(_characterId) &&
+                    x.CharacterIds.Contains(char1) &&
+                    x.CharacterIds.Contains(char2))
+            ));
+        }
+
+        [Fact]
         public async Task NullFcShouldFail()
         {
             var criteria = _defaultCriteria;
