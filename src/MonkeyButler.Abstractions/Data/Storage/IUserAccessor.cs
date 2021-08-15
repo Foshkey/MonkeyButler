@@ -11,22 +11,17 @@ namespace MonkeyButler.Abstractions.Data.Storage
         /// <summary>
         /// Gets a user based on user Id
         /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        Task<User?> GetUser(GetUserQuery query);
+        Task<User?> GetUser(ulong id);
 
         /// <summary>
         /// Gets the user for a given character Id. Null if not found.
         /// </summary>
-        /// <param name="query"></param>
         /// <returns>The user. Null if not found.</returns>
         Task<User?> SearchUser(SearchUserQuery query);
 
         /// <summary>
-        /// Saves the options for a guild.
+        /// Saves the user to the data store.
         /// </summary>
-        /// <param name="query"></param>
-        /// <returns>The updated user.</returns>
-        Task<User> SaveCharacterToUser(SaveCharacterToUserQuery query);
+        Task<User> SaveUser(User user);
     }
 }

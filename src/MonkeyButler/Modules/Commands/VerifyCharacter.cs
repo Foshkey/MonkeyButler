@@ -41,7 +41,8 @@ namespace MonkeyButler.Modules.Commands
             {
                 Query = query,
                 GuildId = Context.Guild.Id,
-                UserId = Context.User.Id
+                UserId = Context.User.Id,
+                Name = Context.User.Username
             };
 
             var result = await _verifyCharacterManager.Process(criteria);

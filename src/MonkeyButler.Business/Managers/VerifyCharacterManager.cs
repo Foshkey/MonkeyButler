@@ -138,11 +138,13 @@ namespace MonkeyButler.Business.Managers
 
             // Save character-user map to database.
             _logger.LogDebug("Saving {Name} to database with User Id {UserId}.", result.Name, criteria.UserId);
-            await _userAccessor.SaveCharacterToUser(new SaveCharacterToUserQuery()
-            {
-                CharacterId = characterId.Value,
-                UserId = criteria.UserId
-            });
+
+            var dataUser = await _userAccessor.GetUser(criteria.UserId) ?? new() { Id = criteria.UserId };
+            var mergedUser = dataUser.Merge(characterId.Value);
+            mergedUser.Name = criteria.Name;
+            mergedUser.Nicknames[criteria.GuildId] = result.Name ?? "";
+
+            await _userAccessor.SaveUser(mergedUser);
 
             return result;
         }

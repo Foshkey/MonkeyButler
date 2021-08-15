@@ -1,19 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using MonkeyButler.Business;
 using MonkeyButler.Data.Api;
 using MonkeyButler.Data.Storage;
 using MonkeyButler.Options;
-using MonkeyButler.Services;
 
 namespace MonkeyButler
 {
@@ -44,18 +46,26 @@ namespace MonkeyButler
             services.AddDataStorageServices(_configuration);
             services.Configure<AppOptions>(_configuration);
 
-            // MVC
-            services
-                .AddApiVersioning()
-                .AddMvcCore()
-                .AddFluentValidation(options =>
-                {
-                    options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-                });
+            // Controllers & versioning
+            services.AddControllers();
 
-            // Blazor
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.ReportApiVersions = true;
+            });
+
+
+            // Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Monkey Butler", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+            });
 
             // Discord
             services
@@ -80,7 +90,6 @@ namespace MonkeyButler
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
-            services.AddScoped<IBotStatusService, BotStatusService>();
             services.AddSingleton<IBot, Bot>();
         }
 
@@ -108,13 +117,23 @@ namespace MonkeyButler
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "Monkey Butler V1");
+            });
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
+
+                endpoints.MapFallback(context =>
+                {
+                    context.Response.Redirect("/swagger/index.html");
+                    return Task.CompletedTask;
+                });
             });
         }
     }
