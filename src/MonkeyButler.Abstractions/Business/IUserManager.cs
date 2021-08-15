@@ -29,10 +29,5 @@ namespace MonkeyButler.Abstractions.Business
         /// </summary>
         /// <param name="usersWithCharacters">Key-value-pairs with the user Id as the key, and character Id as the value.</param>
         Task AddCharacterIds(IDictionary<ulong, IEnumerable<long>> usersWithCharacters);
-
-        /// <summary>
-        /// For the given list of users, attempts to map to characters based on user names.
-        /// </summary>
-        Task<GetUserMapsResult> GetUserMaps(GetUserMapsCriteria criteria);
     }
 }

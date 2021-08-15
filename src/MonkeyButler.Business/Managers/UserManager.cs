@@ -71,7 +71,5 @@ namespace MonkeyButler.Business.Managers
 
             return user.ToBusiness();
         }
-
-        public Task<GetUserMapsResult> GetUserMaps(GetUserMapsCriteria criteria) => throw new NotImplementedException();
     }
 }
