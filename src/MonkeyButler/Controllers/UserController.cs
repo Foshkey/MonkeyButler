@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyButler.Abstractions.Business;
-using MonkeyButler.Abstractions.Business.Models;
+using MonkeyButler.Abstractions.Business.Models.User;
 
 namespace MonkeyButler.Controllers
 {

@@ -141,6 +141,8 @@ namespace MonkeyButler.Business.Managers
 
             var dataUser = await _userAccessor.GetUser(criteria.UserId) ?? new() { Id = criteria.UserId };
             var mergedUser = dataUser.Merge(characterId.Value);
+            mergedUser.Name = criteria.Name;
+            mergedUser.Nicknames[criteria.GuildId] = result.Name ?? "";
 
             await _userAccessor.SaveUser(mergedUser);
 

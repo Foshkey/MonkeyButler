@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using FluentValidation;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Data.Storage;
-using MonkeyButler.Abstractions.Data.Storage.Models.User;
 using Moq;
 using Xunit;
+using BusinessUser = MonkeyButler.Abstractions.Business.Models.User.User;
+using DataUser = MonkeyButler.Abstractions.Data.Storage.Models.User.User;
 
 namespace MonkeyButler.Business.Tests.Managers
 {
@@ -15,8 +16,8 @@ namespace MonkeyButler.Business.Tests.Managers
 
         public UserManagerTests()
         {
-            _userAccessorMock.Setup(x => x.SaveUser(It.IsAny<User>()))
-                .ReturnsAsync((User user) => user);
+            _userAccessorMock.Setup(x => x.SaveUser(It.IsAny<DataUser>()))
+                .ReturnsAsync((DataUser user) => user);
         }
 
         private IUserManager _manager => Resolver
@@ -34,10 +35,10 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddCharacterIds(users);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 9283743 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 83923, 23892 }))));
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 45678 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 456, 9876 }))));
         }
@@ -53,7 +54,7 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddCharacterIds(users);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 45678 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 456, 9876 }))));
         }
@@ -69,7 +70,7 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddCharacterIds(users);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 45678 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 456, 9876 }))));
         }
@@ -83,7 +84,7 @@ namespace MonkeyButler.Business.Tests.Managers
                 [45678] = new List<long>() { 456, 9876 }
             };
             _userAccessorMock.Setup(x => x.GetUser(9283743))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new DataUser()
                 {
                     Id = 9283743,
                     CharacterIds = new() { 839283, 92003, 23892 }
@@ -91,10 +92,10 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddCharacterIds(users);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 9283743 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 83923, 23892, 839283, 92003 }))));
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 45678 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 456, 9876 }))));
         }
@@ -102,7 +103,7 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task AddOrUpdateUserShouldSaveUser()
         {
-            var user = new Abstractions.Business.Models.User()
+            var user = new BusinessUser()
             {
                 Id = 839823,
                 CharacterIds = new List<long>() { 283982, 982398, 89292 }
@@ -110,7 +111,7 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddOrUpdateUser(user);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 839823 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 283982, 982398, 89292 }))));
         }
@@ -118,7 +119,7 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task AddOrUpdateInvalidUserShouldThrow()
         {
-            var user = new Abstractions.Business.Models.User()
+            var user = new BusinessUser()
             {
                 Id = 0
             };
@@ -129,13 +130,13 @@ namespace MonkeyButler.Business.Tests.Managers
         [Fact]
         public async Task AddOrUpdateUserShouldMergeUser()
         {
-            var user = new Abstractions.Business.Models.User()
+            var user = new BusinessUser()
             {
                 Id = 839823,
                 CharacterIds = new List<long>() { 283982, 982398, 89292 }
             };
             _userAccessorMock.Setup(x => x.GetUser(839823))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new DataUser()
                 {
                     Id = 839823,
                     CharacterIds = new() { 839283, 89292, 23892 }
@@ -143,7 +144,7 @@ namespace MonkeyButler.Business.Tests.Managers
 
             await _manager.AddOrUpdateUser(user);
 
-            _userAccessorMock.Verify(x => x.SaveUser(It.Is<User>(user =>
+            _userAccessorMock.Verify(x => x.SaveUser(It.Is<DataUser>(user =>
                 user.Id == 839823 &&
                 user.CharacterIds.SetEquals(new HashSet<long>() { 283982, 982398, 89292, 839283, 23892 }))));
         }
@@ -152,7 +153,7 @@ namespace MonkeyButler.Business.Tests.Managers
         public async Task GetUserShouldReturnUser()
         {
             _userAccessorMock.Setup(x => x.GetUser(839823))
-                .ReturnsAsync(new User()
+                .ReturnsAsync(new DataUser()
                 {
                     Id = 839823,
                     CharacterIds = new() { 839283, 89292, 23892 }

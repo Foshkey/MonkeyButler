@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
-using MonkeyButler.Abstractions.Business.Models;
+using MonkeyButler.Abstractions.Business.Models.User;
 using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Business.Engines;
+using MonkeyButler.Business.Mappers;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -55,15 +56,11 @@ namespace MonkeyButler.Business.Managers
             _logger.LogDebug("Saving user '{UserId}'.", user.Id);
 
             var storedUser = await _userAccessor.GetUser(user.Id) ?? new() { Id = user.Id };
-            var mergedUser = storedUser.Merge(user.CharacterIds);
+            var mergedUser = storedUser.Merge(user.ToData());
 
             var updatedUser = await _userAccessor.SaveUser(mergedUser);
 
-            return new()
-            {
-                Id = updatedUser.Id,
-                CharacterIds = updatedUser.CharacterIds
-            };
+            return updatedUser.ToBusiness()!;
         }
 
         public async Task<User?> GetUser(ulong id)
@@ -72,11 +69,9 @@ namespace MonkeyButler.Business.Managers
 
             var user = await _userAccessor.GetUser(id);
 
-            return user is null ? null : new()
-            {
-                Id = user.Id,
-                CharacterIds = user.CharacterIds
-            };
+            return user.ToBusiness();
         }
+
+        public Task<GetUserMapsResult> GetUserMaps(GetUserMapsCriteria criteria) => throw new NotImplementedException();
     }
 }

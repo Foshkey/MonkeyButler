@@ -19,5 +19,10 @@
         /// The Id of the user that performed the query.
         /// </summary>
         public ulong UserId { get; set; }
+
+        /// <summary>
+        /// The name of the user.
+        /// </summary>
+        public string Name { get; set; } = "";
     }
 }

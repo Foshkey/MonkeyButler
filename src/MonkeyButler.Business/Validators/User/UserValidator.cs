@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using BusinessUser = MonkeyButler.Abstractions.Business.Models.User.User;
 
 namespace MonkeyButler.Business.Validators.User
 {
-    internal class UserValidator : AbstractValidator<Abstractions.Business.Models.User>
+    internal class UserValidator : AbstractValidator<BusinessUser>
     {
         public UserValidator()
         {
