@@ -28,6 +28,6 @@ namespace MonkeyButler.Abstractions.Business
         /// Bulk adds or updates users with character Ids.
         /// </summary>
         /// <param name="usersWithCharacters">Key-value-pairs with the user Id as the key, and character Id as the value.</param>
-        Task AddCharacterIds(IDictionary<ulong, long> usersWithCharacters);
+        Task AddCharacterIds(IDictionary<ulong, IEnumerable<long>> usersWithCharacters);
     }
 }

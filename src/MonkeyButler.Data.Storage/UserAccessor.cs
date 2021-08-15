@@ -50,16 +50,6 @@ namespace MonkeyButler.Data.Storage
 
         public async Task<User> SaveUser(User user)
         {
-            var storedUser = await GetUser(user.Id);
-
-            if (storedUser is object)
-            {
-                user.CharacterIds = user.CharacterIds
-                    .Concat(storedUser.CharacterIds)
-                    .Distinct()
-                    .ToHashSet();
-            }
-
             // Update
             var key = $"{_usersKey}:{user.Id}";
             await _distributedCache.SetStringAsync(key, JsonSerializer.Serialize(user));

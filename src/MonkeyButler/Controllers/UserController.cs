@@ -49,6 +49,6 @@ namespace MonkeyButler.Controllers
         [HttpPut("Collection")]
         [ProducesDefaultResponseType()]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public Task PutCollection([FromBody] IDictionary<ulong, long> collection) => _userManager.AddCharacterIds(collection);
+        public Task PutCollection([FromBody] IDictionary<ulong, IEnumerable<long>> collection) => _userManager.AddCharacterIds(collection);
     }
 }

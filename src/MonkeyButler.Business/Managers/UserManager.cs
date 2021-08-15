@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models;
 using MonkeyButler.Abstractions.Data.Storage;
+using MonkeyButler.Business.Engines;
 
 namespace MonkeyButler.Business.Managers
 {
@@ -26,25 +27,24 @@ namespace MonkeyButler.Business.Managers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        public async Task AddCharacterIds(IDictionary<ulong, long> usersWithCharacters)
+        public async Task AddCharacterIds(IDictionary<ulong, IEnumerable<long>> usersWithCharacters)
         {
-            await Task.WhenAll(usersWithCharacters.Select(kvp =>
+            await Task.WhenAll(usersWithCharacters.Select(async kvp =>
             {
                 var userId = kvp.Key;
-                var characterId = kvp.Value;
+                var characterIds = kvp.Value;
 
-                if (userId == 0 || characterId <= 0)
+                if (userId == 0 || characterIds is null || !characterIds.Any())
                 {
                     return Task.CompletedTask;
                 }
 
-                _logger.SavingCharacter(userId, characterId);
+                _logger.LogDebug("Saving user '{UserId}'.", userId);
 
-                return _userAccessor.SaveUser(new()
-                {
-                    Id = userId,
-                    CharacterIds = new() { characterId }
-                });
+                var storedUser = await _userAccessor.GetUser(userId) ?? new() { Id = userId };
+                var mergedUser = storedUser.Merge(characterIds);
+
+                return _userAccessor.SaveUser(mergedUser);
             }));
         }
 
@@ -54,13 +54,10 @@ namespace MonkeyButler.Business.Managers
 
             _logger.LogDebug("Saving user '{UserId}'.", user.Id);
 
-            var updatedUser = await _userAccessor.SaveUser(new()
-            {
-                Id = user.Id,
-                CharacterIds = user.CharacterIds
-                    .Distinct()
-                    .ToHashSet()
-            });
+            var storedUser = await _userAccessor.GetUser(user.Id) ?? new() { Id = user.Id };
+            var mergedUser = storedUser.Merge(user.CharacterIds);
+
+            var updatedUser = await _userAccessor.SaveUser(mergedUser);
 
             return new()
             {
