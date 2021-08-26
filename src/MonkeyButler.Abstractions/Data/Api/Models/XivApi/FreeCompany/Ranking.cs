@@ -3,7 +3,7 @@
     /// <summary>
     /// A model that represents a Free Company ranking.
     /// </summary>
-    public class Ranking
+    public record Ranking
     {
         /// <summary>
         /// The current monthly ranking.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for setting verification options.
     /// </summary>
-    public class SetVerificationCriteria
+    public record SetVerificationCriteria
     {
         /// <summary>
         /// Id of the guild.

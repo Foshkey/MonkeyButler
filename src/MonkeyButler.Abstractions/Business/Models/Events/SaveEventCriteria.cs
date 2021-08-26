@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for saving an event to the data store.
     /// </summary>
-    public class SaveEventCriteria
+    public record SaveEventCriteria
     {
         /// <summary>
         /// The event to be saved.

@@ -3,7 +3,7 @@
     /// <summary>
     /// A brief representation of a character on a response.
     /// </summary>
-    public class CharacterBrief
+    public record CharacterBrief
     {
         /// <summary>
         /// The image URL of the character's avatar.

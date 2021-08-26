@@ -3,7 +3,7 @@
     /// <summary>
     /// The result of creating an event.
     /// </summary>
-    public class CreateEventResult
+    public record CreateEventResult
     {
         /// <summary>
         /// The successfully created event. Null if not successful.

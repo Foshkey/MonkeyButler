@@ -3,7 +3,7 @@
     /// <summary>
     /// Query for saving options.
     /// </summary>
-    public class SaveOptionsQuery
+    public record SaveOptionsQuery
     {
         /// <summary>
         /// The options to be saved.

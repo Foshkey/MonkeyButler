@@ -3,7 +3,7 @@
     /// <summary>
     /// Result of setting verification.
     /// </summary>
-    public class SetVerificationResult
+    public record SetVerificationResult
     {
         /// <summary>
         /// The status of setting verification.

@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Business.Models.Events
     /// <summary>
     /// A model representing an FC event.
     /// </summary>
-    public class Event
+    public record Event
     {
         /// <summary>
         /// The date/time of the creation.

@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Achievements
     /// <summary>
     /// Information representing achievements.
     /// </summary>
-    public class AchievementInfo : XivApiModel
+    public record AchievementInfo : XivApiModel
     {
         /// <summary>
         /// The full list of achievements.

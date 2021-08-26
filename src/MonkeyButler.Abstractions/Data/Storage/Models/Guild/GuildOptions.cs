@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Storage.Models.Guild
     /// <summary>
     /// Options for a guild.
     /// </summary>
-    public class GuildOptions
+    public record GuildOptions
     {
         /// <summary>
         /// The Id of the guild.

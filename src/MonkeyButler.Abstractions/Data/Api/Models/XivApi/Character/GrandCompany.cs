@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character
     /// <summary>
     /// Model representing a grand company.
     /// </summary>
-    public class GrandCompany
+    public record GrandCompany
     {
         /// <summary>
         /// Id of the Grand Company.

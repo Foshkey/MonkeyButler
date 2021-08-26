@@ -3,7 +3,7 @@
     /// <summary>
     /// The result of updating an event.
     /// </summary>
-    public class UpdateEventResult
+    public record UpdateEventResult
     {
         /// <summary>
         /// The updated event.

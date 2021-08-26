@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany
     /// <summary>
     /// A model representing a FFXIV Free Company.
     /// </summary>
-    public class FreeCompany : XivApiModel
+    public record FreeCompany : XivApiModel
     {
         /// <summary>
         /// The current active status of the free company.

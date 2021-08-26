@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.Options
     /// <summary>
     /// Result of retrieving the guild options.
     /// </summary>
-    public class GuildOptionsResult
+    public record GuildOptionsResult
     {
         /// <summary>
         /// Id of the guild.

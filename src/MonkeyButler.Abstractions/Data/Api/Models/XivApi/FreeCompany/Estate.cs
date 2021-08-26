@@ -3,7 +3,7 @@
     /// <summary>
     /// Model representing a Free Company Estate.
     /// </summary>
-    public class Estate
+    public record Estate
     {
         /// <summary>
         /// The greeting of the estate.

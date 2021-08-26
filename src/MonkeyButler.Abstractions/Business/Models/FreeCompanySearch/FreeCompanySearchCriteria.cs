@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for searching for free companies.
     /// </summary>
-    public class FreeCompanySearchCriteria
+    public record FreeCompanySearchCriteria
     {
         /// <summary>
         /// String query for name and server.

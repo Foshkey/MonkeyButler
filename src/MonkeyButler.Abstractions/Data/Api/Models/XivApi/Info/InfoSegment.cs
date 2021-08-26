@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Info
     /// <summary>
     /// A model representing a segment of info.
     /// </summary>
-    public class InfoSegment
+    public record InfoSegment
     {
         /// <summary>
         /// The state of the segment.

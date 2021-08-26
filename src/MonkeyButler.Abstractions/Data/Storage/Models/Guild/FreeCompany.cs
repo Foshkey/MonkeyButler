@@ -3,7 +3,7 @@
     /// <summary>
     /// Model representing a free company in the database.
     /// </summary>
-    public class FreeCompany
+    public record FreeCompany
     {
         /// <summary>
         /// The Id of the Free Company.

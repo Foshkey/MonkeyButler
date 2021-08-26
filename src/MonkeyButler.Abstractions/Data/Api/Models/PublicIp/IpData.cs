@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.PublicIp
     /// <summary>
     /// The data with the current IP Address
     /// </summary>
-    public class IpData
+    public record IpData
     {
         /// <summary>
         /// The IP address of the server of the current executable

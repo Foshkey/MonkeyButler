@@ -3,7 +3,7 @@
     /// <summary>
     /// Result of character verification.
     /// </summary>
-    public class VerifyCharacterResult
+    public record VerifyCharacterResult
     {
         /// <summary>
         /// The name of the free company.

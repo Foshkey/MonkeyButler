@@ -3,7 +3,7 @@
     /// <summary>
     /// The criteria for verifying a character.
     /// </summary>
-    public class VerifyCharacterCriteria
+    public record VerifyCharacterCriteria
     {
         /// <summary>
         /// The query of the verfication, containing the name.

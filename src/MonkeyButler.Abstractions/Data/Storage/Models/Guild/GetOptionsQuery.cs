@@ -3,7 +3,7 @@
     /// <summary>
     /// Query for getting options for a guild.
     /// </summary>
-    public class GetOptionsQuery
+    public record GetOptionsQuery
     {
         /// <summary>
         /// The Id of the guild.

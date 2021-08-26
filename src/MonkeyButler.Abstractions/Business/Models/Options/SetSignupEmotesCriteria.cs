@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for setting sign-up emotes for events.
     /// </summary>
-    public class SetSignupEmotesCriteria
+    public record SetSignupEmotesCriteria
     {
         /// <summary>
         /// Id of the guild.

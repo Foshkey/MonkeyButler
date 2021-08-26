@@ -3,7 +3,7 @@
     /// <summary>
     /// Model representing a character.
     /// </summary>
-    public class Character
+    public record Character
     {
         /// <summary>
         /// The character's avatar url.

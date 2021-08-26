@@ -3,7 +3,7 @@
     /// <summary>
     /// The result of setting sign-up emotes.
     /// </summary>
-    public class SetSignupEmotesResult
+    public record SetSignupEmotesResult
     {
         /// <summary>
         /// The status of setting sign-up emotes.

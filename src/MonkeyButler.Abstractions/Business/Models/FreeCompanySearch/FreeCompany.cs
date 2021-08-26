@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.FreeCompanySearch
     /// <summary>
     /// A model representing Free Company data.
     /// </summary>
-    public class FreeCompany
+    public record FreeCompany
     {
         /// <summary>
         /// A list of image URLs that make up the crest.

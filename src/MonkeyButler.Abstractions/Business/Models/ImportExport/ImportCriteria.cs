@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.ImportExport
     /// <summary>
     /// Criteria for importing data
     /// </summary>
-    public class ImportCriteria
+    public record ImportCriteria
     {
         /// <summary>
         /// The data for the import.

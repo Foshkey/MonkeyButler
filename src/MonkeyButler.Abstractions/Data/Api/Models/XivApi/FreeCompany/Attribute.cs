@@ -3,7 +3,7 @@
     /// <summary>
     /// A model representing Free Company attributes.
     /// </summary>
-    public class Attribute
+    public record Attribute
     {
         /// <summary>
         /// Image URL of the icon of the attribute.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for getting information about the bot.
     /// </summary>
-    public class InfoCriteria
+    public record InfoCriteria
     {
         /// <summary>
         /// The amount of information to request.

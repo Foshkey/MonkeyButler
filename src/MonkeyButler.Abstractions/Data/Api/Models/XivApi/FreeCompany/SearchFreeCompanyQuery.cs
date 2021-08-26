@@ -3,7 +3,7 @@
     /// <summary>
     /// Query for the search command.
     /// </summary>
-    public class SearchFreeCompanyQuery
+    public record SearchFreeCompanyQuery
     {
         /// <summary>
         /// The name of the character.

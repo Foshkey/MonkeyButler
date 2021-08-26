@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Storage.Models.ImportExport
     /// <summary>
     /// Query model for importing
     /// </summary>
-    public class ImportQuery
+    public record ImportQuery
     {
         /// <summary>
         /// The data to be imported into Redis.

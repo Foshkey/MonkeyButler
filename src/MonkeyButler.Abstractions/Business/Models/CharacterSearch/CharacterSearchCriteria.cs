@@ -3,7 +3,7 @@
     /// <summary>
     /// The criteria for searching for characters.
     /// </summary>
-    public class CharacterSearchCriteria
+    public record CharacterSearchCriteria
     {
         /// <summary>
         /// String query for name and server.

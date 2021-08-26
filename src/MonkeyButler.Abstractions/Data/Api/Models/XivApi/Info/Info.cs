@@ -3,7 +3,7 @@
     /// <summary>
     /// Info of the response.
     /// </summary>
-    public class Info
+    public record Info
     {
         /// <summary>
         /// The info on achievements.

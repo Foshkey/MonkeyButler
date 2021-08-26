@@ -3,7 +3,7 @@
     /// <summary>
     /// The criteria for creating an event.
     /// </summary>
-    public class CreateEventCriteria
+    public record CreateEventCriteria
     {
         /// <summary>
         /// The guild Id for settings.

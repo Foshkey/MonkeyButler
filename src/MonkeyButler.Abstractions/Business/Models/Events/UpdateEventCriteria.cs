@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for updating an event.
     /// </summary>
-    public class UpdateEventCriteria
+    public record UpdateEventCriteria
     {
         /// <summary>
         /// Current event to be updated.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for checking if the verify option is available.
     /// </summary>
-    public class GuildOptionsCriteria
+    public record GuildOptionsCriteria
     {
         /// <summary>
         /// Id of the guild.
