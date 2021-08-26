@@ -29,7 +29,19 @@ namespace MonkeyButler.Data.Api
             logger.LogTrace("Response: {Response}", body);
         }
 
+        public static async Task ResponseWarning(this ILogger logger, Exception ex, HttpResponseMessage response)
+        {
+            var (message, args) = await BuildMessage(ex, response);
+            logger.LogWarning(ex, message, args);
+        }
+
         public static async Task ResponseError(this ILogger logger, Exception ex, HttpResponseMessage response)
+        {
+            var (message, args) = await BuildMessage(ex, response);
+            logger.LogError(ex, message, args);
+        }
+
+        private static async Task<(string message, object[] args)> BuildMessage(Exception ex, HttpResponseMessage response)
         {
             var message = new StringBuilder("Response status code did not indicate success.");
             var args = new List<object>();
@@ -60,7 +72,7 @@ namespace MonkeyButler.Data.Api
                 args.Add(await response.Content.ReadAsStringAsync());
             }
 
-            logger.LogError(ex, message.ToString(), args.ToArray());
+            return (message.ToString(), args.ToArray());
         }
     }
 }

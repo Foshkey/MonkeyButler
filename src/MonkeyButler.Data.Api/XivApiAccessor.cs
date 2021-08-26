@@ -14,6 +14,8 @@ namespace MonkeyButler.Data.Api
 {
     internal class XivApiAccessor : IXivApiAccessor
     {
+        private static readonly int _triesBeforeThrowing = 5;
+
         private readonly HttpClient _httpClient;
         private readonly ILogger<XivApiAccessor> _logger;
         private readonly IOptionsMonitor<JsonSerializerOptions> _jsonOptions;
@@ -46,7 +48,7 @@ namespace MonkeyButler.Data.Api
             }
         }
 
-        private async Task<T> Send<T>(string uri)
+        private async Task<T> Send<T>(string uri, int tries = 0)
         {
             var response = await _httpClient.GetAsync(uri);
 
@@ -56,8 +58,14 @@ namespace MonkeyButler.Data.Api
             }
             catch (Exception ex)
             {
-                await _logger.ResponseError(ex, response);
-                throw ex;
+                if (tries > _triesBeforeThrowing)
+                {
+                    _ = _logger.ResponseError(ex, response);
+                    throw ex;
+                }
+
+                _ = _logger.ResponseWarning(ex, response);
+                await Send<T>(uri, tries + 1);
             }
 
             using var stream = await response.Content.ReadAsStreamAsync();
