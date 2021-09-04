@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ namespace MonkeyButler.Data.Tests.XivApi
         }
 
         [Fact]
-        public async Task ShouldRetry()
+        public async Task ShouldHandleConstant500s()
         {
             _httpMessageHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -105,9 +106,51 @@ namespace MonkeyButler.Data.Tests.XivApi
             await Assert.ThrowsAsync<HttpRequestException>(() => GetAccessor().GetCharacter(query));
 
             _httpMessageHandlerMock.Protected().Verify("SendAsync",
+                Times.AtLeast(5),
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task ShouldRetry()
+        {
+            var content = JsonSerializer.Serialize(new GetCharacterData
+            {
+                Character = new CharacterFull()
+            });
+
+            _httpMessageHandlerMock.Protected()
+                .SetupSequence<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                })
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                })
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(content, Encoding.UTF8, "application/json")
+                });
+
+            var query = new GetCharacterQuery()
+            {
+                Id = 13099353
+            };
+
+            var response = await GetAccessor().GetCharacter(query);
+
+            _httpMessageHandlerMock.Protected().Verify("SendAsync",
                 Times.AtLeast(2),
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>());
+            Assert.NotNull(response);
         }
     }
 }

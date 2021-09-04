@@ -64,7 +64,7 @@ namespace MonkeyButler.Data.Api
                     throw ex;
                 }
 
-                _ = _logger.ResponseWarning(ex, response);
+                _logger.LogWarning(ex, "Unsuccessful status code. Retrying...");
                 await Send<T>(uri, tries + 1);
             }
 
