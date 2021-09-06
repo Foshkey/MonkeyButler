@@ -3,7 +3,7 @@
     /// <summary>
     /// The criteria for deleting an event.
     /// </summary>
-    public class DeleteEventCriteria
+    public record DeleteEventCriteria
     {
         /// <summary>
         /// The Id of the event to delete.

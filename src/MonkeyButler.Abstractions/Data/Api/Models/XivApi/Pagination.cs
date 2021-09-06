@@ -3,7 +3,7 @@
     /// <summary>
     /// Pagination model.
     /// </summary>
-    public class Pagination
+    public record Pagination
     {
         /// <summary>
         /// The current page.

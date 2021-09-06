@@ -3,7 +3,7 @@
     /// <summary>
     /// Result of the set prefix action
     /// </summary>
-    public class SetPrefixResult
+    public record SetPrefixResult
     {
         /// <summary>
         /// Indicates whether the prefix was successfully set or not.

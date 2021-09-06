@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.ImportExport
     /// <summary>
     /// Result of exporting data
     /// </summary>
-    public class ExportResult
+    public record ExportResult
     {
         /// <summary>
         /// The full export of the data, values being json serialized.

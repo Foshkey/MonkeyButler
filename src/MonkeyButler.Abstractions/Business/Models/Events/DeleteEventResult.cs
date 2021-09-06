@@ -3,7 +3,7 @@
     /// <summary>
     /// Result of deleting an event.
     /// </summary>
-    public class DeleteEventResult
+    public record DeleteEventResult
     {
         /// <summary>
         /// Indication of whether deleting was successful.

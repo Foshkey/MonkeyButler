@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Pvp
     /// <summary>
     /// A model representing a PvP Team.
     /// </summary>
-    public class PvpTeam
+    public record PvpTeam
     {
         /// <summary>
         /// The pagination of the response.

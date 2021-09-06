@@ -3,7 +3,7 @@
     /// <summary>
     /// The result of saving an event.
     /// </summary>
-    public class SaveEventResult
+    public record SaveEventResult
     {
         /// <summary>
         /// Indication of whether the save was successful.

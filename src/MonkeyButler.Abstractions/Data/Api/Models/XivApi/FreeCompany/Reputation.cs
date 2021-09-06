@@ -3,7 +3,7 @@
     /// <summary>
     /// A model representing a Free Company reputation with a Grand Company.
     /// </summary>
-    public class Reputation
+    public record Reputation
     {
         /// <summary>
         /// The name of the Grand Company associated with this reputation.

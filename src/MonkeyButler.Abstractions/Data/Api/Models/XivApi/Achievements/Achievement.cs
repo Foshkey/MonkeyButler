@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Achievements
     /// <summary>
     /// A model representing an achievement.
     /// </summary>
-    public class Achievement
+    public record Achievement
     {
         /// <summary>
         /// The DateTime that the achievement as achieved.

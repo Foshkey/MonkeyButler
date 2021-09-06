@@ -3,7 +3,7 @@
     /// <summary>
     /// A model representing a character's class/job.
     /// </summary>
-    public class ClassJob
+    public record ClassJob
     {
         /// <summary>
         /// The class Id.

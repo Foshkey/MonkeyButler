@@ -3,7 +3,7 @@
     /// <summary>
     /// A model representing a set of gear on a character.
     /// </summary>
-    public class Gear
+    public record Gear
     {
         /// <summary>
         /// The body gear piece.

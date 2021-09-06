@@ -3,7 +3,7 @@
     /// <summary>
     /// The character class or job.
     /// </summary>
-    public class ClassJob
+    public record ClassJob
     {
         /// <summary>
         /// The level of the class or job.

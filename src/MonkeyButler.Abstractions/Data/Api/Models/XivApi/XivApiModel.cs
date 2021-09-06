@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi
     /// <summary>
     /// A parent model for XIV API models.
     /// </summary>
-    public class XivApiModel
+    public record XivApiModel
     {
         /// <summary>
         /// The datetime that the model was last parsed.

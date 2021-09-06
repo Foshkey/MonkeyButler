@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character
     /// <summary>
     /// A model representing a gear piece.
     /// </summary>
-    public class GearPiece
+    public record GearPiece
     {
         /// <summary>
         /// The creator of the gear piece. Null if not crafted.

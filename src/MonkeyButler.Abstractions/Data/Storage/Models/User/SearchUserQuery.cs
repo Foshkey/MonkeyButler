@@ -3,7 +3,7 @@
     /// <summary>
     /// Query for searching for a user given a character Id
     /// </summary>
-    public class SearchUserQuery
+    public record SearchUserQuery
     {
         /// <summary>
         /// The character Id to search for.

@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.Info
     /// <summary>
     /// The result for information about the bot.
     /// </summary>
-    public class InfoResult
+    public record InfoResult
     {
         /// <summary>
         /// The current public IP address of the bot.

@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character
     /// <summary>
     /// Model representing a FFXIV Character fully.
     /// </summary>
-    public class CharacterFull : XivApiModel
+    public record CharacterFull : XivApiModel
     {
         /// <summary>
         /// The active class/job of the character.

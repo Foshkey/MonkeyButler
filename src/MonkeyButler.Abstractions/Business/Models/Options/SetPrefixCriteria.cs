@@ -3,7 +3,7 @@
     /// <summary>
     /// Criteria for setting the prefix.
     /// </summary>
-    public class SetPrefixCriteria
+    public record SetPrefixCriteria
     {
         /// <summary>
         /// Id of the guild.

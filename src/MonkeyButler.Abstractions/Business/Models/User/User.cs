@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Business.Models.User
     /// <summary>
     /// The model for a discord user.
     /// </summary>
-    public class User
+    public record User
     {
         /// <summary>
         /// The Id of the user

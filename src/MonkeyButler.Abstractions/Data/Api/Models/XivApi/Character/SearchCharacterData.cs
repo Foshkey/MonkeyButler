@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character
     /// <summary>
     /// Data result of character search.
     /// </summary>
-    public class SearchCharacterData
+    public record SearchCharacterData
     {
         /// <summary>
         /// The pagination of the response.

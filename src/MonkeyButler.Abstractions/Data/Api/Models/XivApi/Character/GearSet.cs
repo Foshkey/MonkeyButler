@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Character
     /// <summary>
     /// A model representing a characer's gearset.
     /// </summary>
-    public class GearSet
+    public record GearSet
     {
         /// <summary>
         /// The attributes of the gearset.

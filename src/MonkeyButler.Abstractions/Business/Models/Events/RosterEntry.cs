@@ -6,7 +6,7 @@ namespace MonkeyButler.Abstractions.Business.Models.Events
     /// <summary>
     /// An entry in the roster of an event.
     /// </summary>
-    public class RosterEntry
+    public record RosterEntry
     {
         /// <summary>
         /// Roles of the entry.

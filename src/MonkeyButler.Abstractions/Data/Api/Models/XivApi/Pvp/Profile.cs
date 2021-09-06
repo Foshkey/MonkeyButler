@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Pvp
     /// <summary>
     /// The profile of the PvP Team.
     /// </summary>
-    public class Profile
+    public record Profile
     {
         /// <summary>
         /// A list of Image URLs that represent the PvP Team crest.

@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.FreeCompany
     /// <summary>
     /// A brief model of the Free Company.
     /// </summary>
-    public class FreeCompanyBrief
+    public record FreeCompanyBrief
     {
         /// <summary>
         /// A list of image URLs that make up the crest.

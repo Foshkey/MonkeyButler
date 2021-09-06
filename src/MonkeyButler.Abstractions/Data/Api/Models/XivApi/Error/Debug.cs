@@ -5,7 +5,7 @@ namespace MonkeyButler.Abstractions.Data.Api.Models.XivApi.Error
     /// <summary>
     /// Debug model for the Error response.
     /// </summary>
-    public class Debug
+    public record Debug
     {
         /// <summary>
         /// File where the error occured.
