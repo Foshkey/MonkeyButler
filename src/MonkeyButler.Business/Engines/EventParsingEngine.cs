@@ -253,7 +253,7 @@ namespace MonkeyButler.Business.Engines
             var dateTime = Combine(time.Value, date.Value, offset);
 
             // Since the offset we've been working is the base offset, check for daylight saving
-            if (IsDaylightSaving(dateTime))
+            if (dateTime.DateTime.IsDaylightSavingTime())
             {
                 offset += TimeSpan.FromHours(1);
                 dateTime = new DateTimeOffset(dateTime.DateTime, offset);
@@ -294,13 +294,6 @@ namespace MonkeyButler.Business.Engines
                 second: time.Second,
                 offset: offset
             );
-        }
-
-        private static bool IsDaylightSaving(DateTimeOffset dateTime)
-        {
-            // Going to base this off of US Eastern time zone for now.
-            var estTz = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-            return estTz.IsDaylightSavingTime(dateTime);
         }
     }
 }
