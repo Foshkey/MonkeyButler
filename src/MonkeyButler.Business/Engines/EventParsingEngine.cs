@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MonkeyButler.Abstractions.Business.Models.Events;
+using Newtonsoft.Json;
 
 namespace MonkeyButler.Business.Engines
 {
@@ -253,7 +254,7 @@ namespace MonkeyButler.Business.Engines
             var dateTime = Combine(time.Value, date.Value, offset);
 
             // Since the offset we've been working is the base offset, check for daylight saving
-            if (dateTime.DateTime.IsDaylightSavingTime())
+            if (IsDaylightSaving(dateTime))
             {
                 offset += TimeSpan.FromHours(1);
                 dateTime = new DateTimeOffset(dateTime.DateTime, offset);
@@ -294,6 +295,14 @@ namespace MonkeyButler.Business.Engines
                 second: time.Second,
                 offset: offset
             );
+        }
+
+        private static bool IsDaylightSaving(DateTimeOffset dateTime)
+        {
+            var tzs = TimeZoneInfo.GetSystemTimeZones();
+            Console.WriteLine(JsonConvert.SerializeObject(tzs));
+            var estTz = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            return estTz.IsDaylightSavingTime(dateTime);
         }
     }
 }
