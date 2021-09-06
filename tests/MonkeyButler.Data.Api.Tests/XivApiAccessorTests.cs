@@ -114,10 +114,16 @@ namespace MonkeyButler.Data.Tests.XivApi
         [Fact]
         public async Task ShouldRetry()
         {
-            var content = JsonSerializer.Serialize(new GetCharacterData
+            var expectedData = new GetCharacterData
             {
                 Character = new CharacterFull()
-            });
+                {
+                    Name = "Jolinar Cast",
+                    Id = 13099353
+                }
+            };
+
+            var content = JsonSerializer.Serialize(expectedData);
 
             _httpMessageHandlerMock.Protected()
                 .SetupSequence<Task<HttpResponseMessage>>(
@@ -150,7 +156,7 @@ namespace MonkeyButler.Data.Tests.XivApi
                 Times.AtLeast(2),
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>());
-            Assert.NotNull(response);
+            Assert.Equal(expectedData, response);
         }
     }
 }

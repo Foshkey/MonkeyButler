@@ -65,7 +65,7 @@ namespace MonkeyButler.Data.Api
                 }
 
                 _logger.LogWarning(ex, "Unsuccessful status code. Retrying...");
-                await Send<T>(uri, tries + 1);
+                return await Send<T>(uri, tries + 1);
             }
 
             using var stream = await response.Content.ReadAsStreamAsync();
