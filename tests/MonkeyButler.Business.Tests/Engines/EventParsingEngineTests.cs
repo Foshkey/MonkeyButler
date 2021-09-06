@@ -236,15 +236,19 @@ namespace MonkeyButler.Business.Tests.Engines
                 }
             };
 
+            // Using DateTimeOffset.Parse here due to using the same in engine
+            var june22 = DateTimeOffset.Parse("June 22");
             yield return new object[]
             {
                 "Specific date parsing on June 22 at 4pm",
                 new Event()
                 {
                     Title = "Specific date parsing",
-                    // Using DateTimeOffset.Parse here due to using the same in engine
-                    // Hour adjustment for DST
-                    EventDateTime = DateTimeOffset.Parse("June 22").AddHours(12 + 4 - 1).ToOffset(_tzOffsetInput + TimeSpan.FromHours(1))
+                    EventDateTime = new DateTimeOffset(
+                        june22.Year,
+                        june22.Month,
+                        june22.Day,
+                        16, 0, 0, _tzOffsetInput.Add(TimeSpan.FromHours(1))) // Extra hour for DST
                 }
             };
 
