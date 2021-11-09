@@ -10,6 +10,6 @@ namespace MonkeyButler.Abstractions.Business.Models.ImportExport
         /// <summary>
         /// The data for the import.
         /// </summary>
-        public IDictionary<string, string> Import { get; set; }
+        public IDictionary<string, string> Import { get; set; } = new Dictionary<string, string>();
     }
 }
