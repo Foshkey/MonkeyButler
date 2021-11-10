@@ -10,9 +10,8 @@ namespace MonkeyButler.Controllers
     /// <summary>
     /// Controller for exporting data from the data storage.
     /// </summary>
-    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [Route("api/[controller]")]
     public class DataController : ControllerBase
     {
         private readonly IImportExportManager _importExportManager;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
@@ -16,6 +17,7 @@ using MonkeyButler.Business;
 using MonkeyButler.Data.Api;
 using MonkeyButler.Data.Storage;
 using MonkeyButler.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MonkeyButler
 {
@@ -46,25 +48,16 @@ namespace MonkeyButler
             services.AddDataStorageServices(_configuration);
             services.Configure<AppOptions>(_configuration);
 
-            // Controllers & versioning
+            // Controllers
             services.AddControllers();
-
-            services.AddApiVersioning(config =>
-            {
-                config.DefaultApiVersion = new ApiVersion(1, 0);
-                config.ReportApiVersions = true;
-            });
-
 
             // Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Monkey Butler", Version = "v1" });
-
+                c.SwaggerDoc("api", new OpenApiInfo() { Title = "Monkey Butler API" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-
             });
 
             // Discord
@@ -120,7 +113,7 @@ namespace MonkeyButler
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("v1/swagger.json", "Monkey Butler V1");
+                c.SwaggerEndpoint("api/swagger.json", "Monkey Butler API");
             });
 
             app.UseRouting();
