@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-namespace MonkeyButler.Data.Storage.Tests
+namespace MonkeyButler.Data.Storage.Tests;
+
+internal static class TestUtility
 {
-    internal static class TestUtility
-    {
-        public static IDistributedCache CreateCache() => new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
-    }
+    public static IDistributedCache CreateCache() => new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
 }

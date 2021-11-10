@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.Options;
@@ -11,197 +8,196 @@ using MonkeyButler.Abstractions.Data.Storage;
 using MonkeyButler.Abstractions.Data.Storage.Models.Guild;
 using MonkeyButler.Business.Engines;
 
-namespace MonkeyButler.Business.Managers
+namespace MonkeyButler.Business.Managers;
+
+internal class GuildOptionsManager : IGuildOptionsManager
 {
-    internal class GuildOptionsManager : IGuildOptionsManager
+    private readonly IXivApiAccessor _xivApiAccessor;
+    private readonly IGuildOptionsAccessor _guildAccessor;
+    private readonly ILogger<GuildOptionsManager> _logger;
+    private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
+    private readonly IValidator<SetPrefixCriteria> _setPrefixValidator;
+    private readonly IValidator<SetSignupEmotesCriteria> _setSignupEmotesValidator;
+    private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
+
+    public GuildOptionsManager(
+        IXivApiAccessor xivApiAccessor,
+        IGuildOptionsAccessor guildAccessor,
+        ILogger<GuildOptionsManager> logger,
+        IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
+        IValidator<SetPrefixCriteria> setPrefixValidator,
+        IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
+        IValidator<SetVerificationCriteria> setVerificationValidator)
     {
-        private readonly IXivApiAccessor _xivApiAccessor;
-        private readonly IGuildOptionsAccessor _guildAccessor;
-        private readonly ILogger<GuildOptionsManager> _logger;
-        private readonly IValidator<GuildOptionsCriteria> _getGuildOptionsValidator;
-        private readonly IValidator<SetPrefixCriteria> _setPrefixValidator;
-        private readonly IValidator<SetSignupEmotesCriteria> _setSignupEmotesValidator;
-        private readonly IValidator<SetVerificationCriteria> _setVerificationValidator;
+        _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
+        _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _getGuildOptionsValidator = getGuildOptionsValidator ?? throw new ArgumentNullException(nameof(getGuildOptionsValidator));
+        _setPrefixValidator = setPrefixValidator ?? throw new ArgumentNullException(nameof(setPrefixValidator));
+        _setSignupEmotesValidator = setSignupEmotesValidator ?? throw new ArgumentNullException(nameof(setSignupEmotesValidator));
+        _setVerificationValidator = setVerificationValidator ?? throw new ArgumentNullException(nameof(setVerificationValidator));
+    }
 
-        public GuildOptionsManager(
-            IXivApiAccessor xivApiAccessor,
-            IGuildOptionsAccessor guildAccessor,
-            ILogger<GuildOptionsManager> logger,
-            IValidator<GuildOptionsCriteria> getGuildOptionsValidator,
-            IValidator<SetPrefixCriteria> setPrefixValidator,
-            IValidator<SetSignupEmotesCriteria> setSignupEmotesValidator,
-            IValidator<SetVerificationCriteria> setVerificationValidator)
+    public async Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria)
+    {
+        _getGuildOptionsValidator.ValidateAndThrow(criteria);
+
+        _logger.LogDebug("Getting options for guild '{GuildId}'.", criteria.GuildId);
+
+        var query = new GetOptionsQuery()
         {
-            _xivApiAccessor = xivApiAccessor ?? throw new ArgumentNullException(nameof(xivApiAccessor));
-            _guildAccessor = guildAccessor ?? throw new ArgumentNullException(nameof(guildAccessor));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _getGuildOptionsValidator = getGuildOptionsValidator ?? throw new ArgumentNullException(nameof(getGuildOptionsValidator));
-            _setPrefixValidator = setPrefixValidator ?? throw new ArgumentNullException(nameof(setPrefixValidator));
-            _setSignupEmotesValidator = setSignupEmotesValidator ?? throw new ArgumentNullException(nameof(setSignupEmotesValidator));
-            _setVerificationValidator = setVerificationValidator ?? throw new ArgumentNullException(nameof(setVerificationValidator));
+            GuildId = criteria.GuildId
+        };
+
+        var options = await _guildAccessor.GetOptions(query);
+
+        if (options is null)
+        {
+            _logger.LogDebug("Options do not exist in storage. Returning null.");
+            return null;
         }
 
-        public async Task<GuildOptionsResult?> GetGuildOptions(GuildOptionsCriteria criteria)
+        return new GuildOptionsResult()
         {
-            _getGuildOptionsValidator.ValidateAndThrow(criteria);
+            GuildId = options.Id,
+            IsVerificationSet = options.FreeCompany?.Id is object && options.VerifiedRoleId > 0,
+            Prefix = options.Prefix,
+            SignupEmotes = options.SignupEmotes,
+            FreeCompanyName = options.FreeCompany?.Name
+        };
+    }
 
-            _logger.LogDebug("Getting options for guild '{GuildId}'.", criteria.GuildId);
+    public async Task<SetPrefixResult> SetPrefix(SetPrefixCriteria criteria)
+    {
+        _setPrefixValidator.ValidateAndThrow(criteria);
 
-            var query = new GetOptionsQuery()
-            {
-                GuildId = criteria.GuildId
-            };
+        _logger.LogDebug("Setting prefix '{Prefix}' for guild '{GuildId}'.", criteria.Prefix, criteria.GuildId);
 
-            var options = await _guildAccessor.GetOptions(query);
-
-            if (options is null)
-            {
-                _logger.LogDebug("Options do not exist in storage. Returning null.");
-                return null;
-            }
-
-            return new GuildOptionsResult()
-            {
-                GuildId = options.Id,
-                IsVerificationSet = options.FreeCompany?.Id is object && options.VerifiedRoleId > 0,
-                Prefix = options.Prefix,
-                SignupEmotes = options.SignupEmotes,
-                FreeCompanyName = options.FreeCompany?.Name
-            };
-        }
-
-        public async Task<SetPrefixResult> SetPrefix(SetPrefixCriteria criteria)
+        var getOptionsQuery = new GetOptionsQuery()
         {
-            _setPrefixValidator.ValidateAndThrow(criteria);
+            GuildId = criteria.GuildId
+        };
 
-            _logger.LogDebug("Setting prefix '{Prefix}' for guild '{GuildId}'.", criteria.Prefix, criteria.GuildId);
+        var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
 
-            var getOptionsQuery = new GetOptionsQuery()
-            {
-                GuildId = criteria.GuildId
-            };
+        options.Id = criteria.GuildId;
+        options.Prefix = criteria.Prefix;
 
-            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
-
-            options.Id = criteria.GuildId;
-            options.Prefix = criteria.Prefix;
-
-            var saveOptionsQuery = new SaveOptionsQuery()
-            {
-                Options = options
-            };
-
-            await _guildAccessor.SaveOptions(saveOptionsQuery);
-
-            return new SetPrefixResult()
-            {
-                Success = true
-            };
-        }
-
-        public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
+        var saveOptionsQuery = new SaveOptionsQuery()
         {
-            _setSignupEmotesValidator.ValidateAndThrow(criteria);
+            Options = options
+        };
 
-            _logger.LogDebug("Setting sign-up emotes options for guild '{GuildId}' with emotes '{Emotes}'.", criteria.GuildId, criteria.Emotes);
+        await _guildAccessor.SaveOptions(saveOptionsQuery);
 
-            var emotes = EmotesEngine.Split(criteria.Emotes);
+        return new SetPrefixResult()
+        {
+            Success = true
+        };
+    }
 
-            if (emotes.Count == 0)
-            {
-                _logger.LogDebug("Valid emotes were not found.");
+    public async Task<SetSignupEmotesResult> SetSignupEmotes(SetSignupEmotesCriteria criteria)
+    {
+        _setSignupEmotesValidator.ValidateAndThrow(criteria);
 
-                return new SetSignupEmotesResult()
-                {
-                    Status = SetSignupEmotesStatus.EmotesNotFound
-                };
-            }
+        _logger.LogDebug("Setting sign-up emotes options for guild '{GuildId}' with emotes '{Emotes}'.", criteria.GuildId, criteria.Emotes);
 
-            var getOptionsQuery = new GetOptionsQuery()
-            {
-                GuildId = criteria.GuildId
-            };
+        var emotes = EmotesEngine.Split(criteria.Emotes);
 
-            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
-
-            options.Id = criteria.GuildId;
-            options.SignupEmotes = emotes;
-
-            var saveOptionsQuery = new SaveOptionsQuery()
-            {
-                Options = options
-            };
-
-            await _guildAccessor.SaveOptions(saveOptionsQuery);
+        if (emotes.Count == 0)
+        {
+            _logger.LogDebug("Valid emotes were not found.");
 
             return new SetSignupEmotesResult()
             {
-                Status = SetSignupEmotesStatus.Success
+                Status = SetSignupEmotesStatus.EmotesNotFound
             };
         }
 
-        public async Task<SetVerificationResult> SetVerification(SetVerificationCriteria criteria)
+        var getOptionsQuery = new GetOptionsQuery()
         {
-            _setVerificationValidator.ValidateAndThrow(criteria);
+            GuildId = criteria.GuildId
+        };
 
-            _logger.LogDebug("Setting verification options for guild '{GuildId}' with role '{RoleId}' and free company '{Query}'.", criteria.GuildId, criteria.RoleId, criteria.FreeCompanyAndServer);
+        var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
 
-            var (name, server) = NameServerEngine.Parse(criteria.FreeCompanyAndServer);
+        options.Id = criteria.GuildId;
+        options.SignupEmotes = emotes;
 
-            var fcSearchQuery = new SearchFreeCompanyQuery()
-            {
-                Name = name,
-                Server = server
-            };
+        var saveOptionsQuery = new SaveOptionsQuery()
+        {
+            Options = options
+        };
 
-            _logger.LogDebug("Searching for free company '{FreeCompanyName}' on server '{ServerName}'", name, server);
+        await _guildAccessor.SaveOptions(saveOptionsQuery);
 
-            var fcSearchData = await _xivApiAccessor.SearchFreeCompany(fcSearchQuery);
+        return new SetSignupEmotesResult()
+        {
+            Status = SetSignupEmotesStatus.Success
+        };
+    }
 
-            // Find single, exact match.
-            var fc = fcSearchData.Results?.SingleOrDefault(x =>
-                (x.Name?.Equals(name, StringComparison.OrdinalIgnoreCase) ?? false) &&
-                (x.Server?.Equals(server, StringComparison.OrdinalIgnoreCase) ?? false));
+    public async Task<SetVerificationResult> SetVerification(SetVerificationCriteria criteria)
+    {
+        _setVerificationValidator.ValidateAndThrow(criteria);
 
-            if (fc is null)
-            {
-                _logger.LogDebug("Could not find single exact match of '{FreeCompanyName}' on server '{ServerName}'", name, server);
+        _logger.LogDebug("Setting verification options for guild '{GuildId}' with role '{RoleId}' and free company '{Query}'.", criteria.GuildId, criteria.RoleId, criteria.FreeCompanyAndServer);
 
-                return new SetVerificationResult()
-                {
-                    Status = SetVerificationStatus.FreeCompanyNotFound
-                };
-            }
+        var (name, server) = NameServerEngine.Parse(criteria.FreeCompanyAndServer);
 
-            _logger.LogDebug("Found free company '{FreeCompanyName}' with Id '{FreeCompanyId}'. Saving verification options to database.", fc.Name, fc.Id);
+        var fcSearchQuery = new SearchFreeCompanyQuery()
+        {
+            Name = name,
+            Server = server
+        };
 
-            var getOptionsQuery = new GetOptionsQuery()
-            {
-                GuildId = criteria.GuildId
-            };
+        _logger.LogDebug("Searching for free company '{FreeCompanyName}' on server '{ServerName}'", name, server);
 
-            var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
+        var fcSearchData = await _xivApiAccessor.SearchFreeCompany(fcSearchQuery);
 
-            options.Id = criteria.GuildId;
-            options.VerifiedRoleId = criteria.RoleId;
-            options.FreeCompany = new Abstractions.Data.Storage.Models.Guild.FreeCompany()
-            {
-                Id = fc.Id,
-                Name = fc.Name,
-                Server = fc.Server
-            };
+        // Find single, exact match.
+        var fc = fcSearchData.Results?.SingleOrDefault(x =>
+            (x.Name?.Equals(name, StringComparison.OrdinalIgnoreCase) ?? false) &&
+            (x.Server?.Equals(server, StringComparison.OrdinalIgnoreCase) ?? false));
 
-            var saveOptionsQuery = new SaveOptionsQuery()
-            {
-                Options = options
-            };
-
-            await _guildAccessor.SaveOptions(saveOptionsQuery);
+        if (fc is null)
+        {
+            _logger.LogDebug("Could not find single exact match of '{FreeCompanyName}' on server '{ServerName}'", name, server);
 
             return new SetVerificationResult()
             {
-                Status = SetVerificationStatus.Success
+                Status = SetVerificationStatus.FreeCompanyNotFound
             };
         }
+
+        _logger.LogDebug("Found free company '{FreeCompanyName}' with Id '{FreeCompanyId}'. Saving verification options to database.", fc.Name, fc.Id);
+
+        var getOptionsQuery = new GetOptionsQuery()
+        {
+            GuildId = criteria.GuildId
+        };
+
+        var options = await _guildAccessor.GetOptions(getOptionsQuery) ?? new GuildOptions();
+
+        options.Id = criteria.GuildId;
+        options.VerifiedRoleId = criteria.RoleId;
+        options.FreeCompany = new Abstractions.Data.Storage.Models.Guild.FreeCompany()
+        {
+            Id = fc.Id,
+            Name = fc.Name,
+            Server = fc.Server
+        };
+
+        var saveOptionsQuery = new SaveOptionsQuery()
+        {
+            Options = options
+        };
+
+        await _guildAccessor.SaveOptions(saveOptionsQuery);
+
+        return new SetVerificationResult()
+        {
+            Status = SetVerificationStatus.Success
+        };
     }
 }

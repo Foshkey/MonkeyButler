@@ -1,13 +1,12 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.FreeCompanySearch
+﻿namespace MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
+
+/// <summary>
+/// Criteria for searching for free companies.
+/// </summary>
+public record FreeCompanySearchCriteria
 {
     /// <summary>
-    /// Criteria for searching for free companies.
+    /// String query for name and server.
     /// </summary>
-    public record FreeCompanySearchCriteria
-    {
-        /// <summary>
-        /// String query for name and server.
-        /// </summary>
-        public string Query { get; set; } = "";
-    }
+    public string Query { get; set; } = "";
 }

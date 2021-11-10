@@ -1,13 +1,12 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.Options
+﻿namespace MonkeyButler.Abstractions.Business.Models.Options;
+
+/// <summary>
+/// Result of setting verification.
+/// </summary>
+public record SetVerificationResult
 {
     /// <summary>
-    /// Result of setting verification.
+    /// The status of setting verification.
     /// </summary>
-    public record SetVerificationResult
-    {
-        /// <summary>
-        /// The status of setting verification.
-        /// </summary>
-        public SetVerificationStatus Status { get; set; }
-    }
+    public SetVerificationStatus Status { get; set; }
 }

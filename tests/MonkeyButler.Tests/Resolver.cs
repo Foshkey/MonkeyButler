@@ -6,55 +6,54 @@ using MonkeyButler.Business;
 using MonkeyButler.Data.Api;
 using MonkeyButler.Data.Storage;
 
-namespace MonkeyButler.Tests
-{
-    public static class Resolver
-    {
-        public static T Resolve<T>() where T : class => new ResolverBuilder().Resolve<T>();
+namespace MonkeyButler.Tests;
 
-        public static ResolverBuilder Add<T>(T service) where T : class => new ResolverBuilder().Add(service);
+public static class Resolver
+{
+    public static T Resolve<T>() where T : class => new ResolverBuilder().Resolve<T>();
+
+    public static ResolverBuilder Add<T>(T service) where T : class => new ResolverBuilder().Add(service);
+}
+
+public class ResolverBuilder
+{
+    private readonly IServiceCollection _services;
+
+    public ResolverBuilder()
+    {
+        var config = new ConfigurationBuilder()
+           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+           .Build();
+
+        _services = new ServiceCollection()
+            .AddBusinessServices()
+            .AddDataApiServices(config)
+            .AddDataStorageServices(config)
+            .AddLogging(logBuilder =>
+            {
+                logBuilder.SetMinimumLevel(LogLevel.Debug);
+                logBuilder.AddConsole();
+            });
     }
 
-    public class ResolverBuilder
+    public ResolverBuilder Add<T>() where T : class
     {
-        private readonly IServiceCollection _services;
+        _services.AddTransient<T>();
+        return this;
+    }
 
-        public ResolverBuilder()
-        {
-            var config = new ConfigurationBuilder()
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .Build();
+    public ResolverBuilder Add<T>(T service) where T : class
+    {
+        _services.AddTransient(_ => service);
+        return this;
+    }
 
-            _services = new ServiceCollection()
-                .AddBusinessServices()
-                .AddDataApiServices(config)
-                .AddDataStorageServices(config)
-                .AddLogging(logBuilder =>
-                {
-                    logBuilder.SetMinimumLevel(LogLevel.Debug);
-                    logBuilder.AddConsole();
-                });
-        }
+    public T Resolve<T>() where T : class
+    {
+        _services.TryAddTransient<T>();
 
-        public ResolverBuilder Add<T>() where T : class
-        {
-            _services.AddTransient<T>();
-            return this;
-        }
-
-        public ResolverBuilder Add<T>(T service) where T : class
-        {
-            _services.AddTransient(_ => service);
-            return this;
-        }
-
-        public T Resolve<T>() where T : class
-        {
-            _services.TryAddTransient<T>();
-
-            return _services
-                .BuildServiceProvider()
-                .GetRequiredService<T>();
-        }
+        return _services
+            .BuildServiceProvider()
+            .GetRequiredService<T>();
     }
 }

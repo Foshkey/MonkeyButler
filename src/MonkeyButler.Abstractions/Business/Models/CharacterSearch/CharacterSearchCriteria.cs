@@ -1,13 +1,12 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.CharacterSearch
+﻿namespace MonkeyButler.Abstractions.Business.Models.CharacterSearch;
+
+/// <summary>
+/// The criteria for searching for characters.
+/// </summary>
+public record CharacterSearchCriteria
 {
     /// <summary>
-    /// The criteria for searching for characters.
+    /// String query for name and server.
     /// </summary>
-    public record CharacterSearchCriteria
-    {
-        /// <summary>
-        /// String query for name and server.
-        /// </summary>
-        public string Query { get; set; } = "";
-    }
+    public string Query { get; set; } = "";
 }

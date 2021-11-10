@@ -1,16 +1,15 @@
 ﻿using System.Net;
 
-namespace MonkeyButler.Abstractions.Business.Models.Info
+namespace MonkeyButler.Abstractions.Business.Models.Info;
+
+/// <summary>
+/// The result for information about the bot.
+/// </summary>
+public record InfoResult
 {
     /// <summary>
-    /// The result for information about the bot.
+    /// The current public IP address of the bot.
     /// </summary>
-    public record InfoResult
-    {
-        /// <summary>
-        /// The current public IP address of the bot.
-        /// </summary>
-        /// <remarks>Only returned on <see cref="InfoRequest.IpAddress"/>.</remarks>
-        public IPAddress? IpAddress { get; set; }
-    }
+    /// <remarks>Only returned on <see cref="InfoRequest.IpAddress"/>.</remarks>
+    public IPAddress? IpAddress { get; set; }
 }
