@@ -1,40 +1,39 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MonkeyButler.Data.Api.Json
+namespace MonkeyButler.Data.Api.Json;
+
+internal class DateTimeOffsetNumberJsonConverter : JsonConverter<DateTimeOffset?>
 {
-    internal class DateTimeOffsetNumberJsonConverter : JsonConverter<DateTimeOffset?>
+    public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        if (reader.TokenType == JsonTokenType.Null)
         {
-            if (reader.TokenType == JsonTokenType.Null)
-            {
-                return default;
-            }
-
-            if (reader.TokenType == JsonTokenType.Number)
-            {
-                return DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64());
-            }
-
-            if (DateTimeOffset.TryParse(reader.GetString(), out var dateTime))
-            {
-                return dateTime;
-            }
-
-            return null;
+            return default;
         }
 
-        public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+        if (reader.TokenType == JsonTokenType.Number)
         {
-            if (value.HasValue)
-            {
-                writer.WriteNumberValue(value.Value.ToUnixTimeSeconds());
-            }
-            else
-            {
-                writer.WriteNullValue();
-            }
+            return DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64());
+        }
+
+        if (DateTimeOffset.TryParse(reader.GetString(), out var dateTime))
+        {
+            return dateTime;
+        }
+
+        return null;
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+    {
+        if (value.HasValue)
+        {
+            writer.WriteNumberValue(value.Value.ToUnixTimeSeconds());
+        }
+        else
+        {
+            writer.WriteNullValue();
         }
     }
 }

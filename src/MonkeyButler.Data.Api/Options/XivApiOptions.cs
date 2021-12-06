@@ -1,8 +1,7 @@
-﻿namespace MonkeyButler.Data.Api.Options
+﻿namespace MonkeyButler.Data.Api.Options;
+
+internal class XivApiOptions
 {
-    internal class XivApiOptions
-    {
-        public string? Key { get; set; }
-        public string? BaseUrl { get; set; }
-    }
+    public string? Key { get; set; }
+    public string? BaseUrl { get; set; }
 }
