@@ -13,6 +13,11 @@ namespace MonkeyButler.Data.Api.Json
         /// <inheritdoc />
         public override long Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+            {
+                return default;
+            }
+
             if (reader.TokenType == JsonTokenType.String)
             {
                 var span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;

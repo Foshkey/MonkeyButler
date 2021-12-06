@@ -7,6 +7,11 @@ namespace MonkeyButler.Data.Api.Json
     {
         public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+            {
+                return default;
+            }
+
             if (reader.TokenType == JsonTokenType.Number)
             {
                 return DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64());
