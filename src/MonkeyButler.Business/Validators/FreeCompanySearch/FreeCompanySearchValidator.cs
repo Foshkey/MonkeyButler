@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.FreeCompanySearch;
 
-namespace MonkeyButler.Business.Validators.FreeCompanySearch
+namespace MonkeyButler.Business.Validators.FreeCompanySearch;
+
+internal class FreeCompanySearchValidator : AbstractValidator<FreeCompanySearchCriteria>
 {
-    internal class FreeCompanySearchValidator : AbstractValidator<FreeCompanySearchCriteria>
+    public FreeCompanySearchValidator()
     {
-        public FreeCompanySearchValidator()
-        {
-            RuleFor(x => x.Query)
-                .NotEmpty();
-        }
+        RuleFor(x => x.Query)
+            .NotEmpty();
     }
 }

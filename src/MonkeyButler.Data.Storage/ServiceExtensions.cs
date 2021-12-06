@@ -3,33 +3,32 @@ using Microsoft.Extensions.DependencyInjection;
 using MonkeyButler.Abstractions.Data.Storage;
 using StackExchange.Redis;
 
-namespace MonkeyButler.Data.Storage
+namespace MonkeyButler.Data.Storage;
+
+/// <summary>
+/// Extensions class for services.
+/// </summary>
+public static class ServiceExtensions
 {
     /// <summary>
-    /// Extensions class for services.
+    /// Adds the required services for this component.
     /// </summary>
-    public static class ServiceExtensions
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddDataStorageServices(this IServiceCollection services, IConfiguration configuration)
     {
-        /// <summary>
-        /// Adds the required services for this component.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddDataStorageServices(this IServiceCollection services, IConfiguration configuration)
+        services.AddSingleton<IGuildOptionsAccessor, GuildOptionsAccessor>();
+        services.AddSingleton<IUserAccessor, UserAccessor>();
+
+        services.AddTransient<IImportExportAccessor, ImportExportAccessor>();
+        services.AddTransient<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration["Redis:ConnectionString"]));
+
+        services.AddStackExchangeRedisCache(options =>
         {
-            services.AddSingleton<IGuildOptionsAccessor, GuildOptionsAccessor>();
-            services.AddSingleton<IUserAccessor, UserAccessor>();
+            options.Configuration = configuration["Redis:ConnectionString"];
+        });
 
-            services.AddTransient<IImportExportAccessor, ImportExportAccessor>();
-            services.AddTransient<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(configuration["Redis:ConnectionString"]));
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = configuration["Redis:ConnectionString"];
-            });
-
-            return services;
-        }
+        return services;
     }
 }

@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.Events;
 
-namespace MonkeyButler.Business.Validators.Events
+namespace MonkeyButler.Business.Validators.Events;
+
+internal class EventValidator : AbstractValidator<Event>
 {
-    internal class EventValidator : AbstractValidator<Event>
+    public EventValidator()
     {
-        public EventValidator()
-        {
-            RuleFor(x => x.Id)
-                .GreaterThan((ulong)0);
-        }
+        RuleFor(x => x.Id)
+            .GreaterThan((ulong)0);
     }
 }

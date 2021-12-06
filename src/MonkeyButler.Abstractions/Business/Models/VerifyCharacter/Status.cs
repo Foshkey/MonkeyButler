@@ -1,28 +1,27 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.VerifyCharacter
+﻿namespace MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
+
+/// <summary>
+/// The status of the verification.
+/// </summary>
+public enum Status
 {
     /// <summary>
-    /// The status of the verification.
+    /// The character failed verification.
     /// </summary>
-    public enum Status
-    {
-        /// <summary>
-        /// The character failed verification.
-        /// </summary>
-        NotVerified,
+    NotVerified,
 
-        /// <summary>
-        /// The character is verified.
-        /// </summary>
-        Verified,
+    /// <summary>
+    /// The character is verified.
+    /// </summary>
+    Verified,
 
-        /// <summary>
-        /// Free company is not defined and character cannot be verified.
-        /// </summary>
-        FreeCompanyUndefined,
+    /// <summary>
+    /// Free company is not defined and character cannot be verified.
+    /// </summary>
+    FreeCompanyUndefined,
 
-        /// <summary>
-        /// Character has already been verified under another user.
-        /// </summary>
-        CharacterAlreadyVerified
-    }
+    /// <summary>
+    /// Character has already been verified under another user.
+    /// </summary>
+    CharacterAlreadyVerified
 }

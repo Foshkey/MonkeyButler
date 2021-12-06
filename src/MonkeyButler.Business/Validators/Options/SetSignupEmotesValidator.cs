@@ -1,23 +1,22 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.Options;
 
-namespace MonkeyButler.Business.Validators.Options
+namespace MonkeyButler.Business.Validators.Options;
+
+/// <summary>
+/// Validator for setting sign-up emotes.
+/// </summary>
+public class SetSignupEmotesValidator : AbstractValidator<SetSignupEmotesCriteria>
 {
     /// <summary>
-    /// Validator for setting sign-up emotes.
+    /// Constructor.
     /// </summary>
-    public class SetSignupEmotesValidator : AbstractValidator<SetSignupEmotesCriteria>
+    public SetSignupEmotesValidator()
     {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public SetSignupEmotesValidator()
-        {
-            RuleFor(x => x.GuildId)
-                .GreaterThan((ulong)0);
+        RuleFor(x => x.GuildId)
+            .GreaterThan((ulong)0);
 
-            RuleFor(x => x.Emotes)
-                .NotEmpty();
-        }
+        RuleFor(x => x.Emotes)
+            .NotEmpty();
     }
 }

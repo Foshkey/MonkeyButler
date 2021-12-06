@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
+﻿namespace MonkeyButler.Abstractions.Business.Models.ImportExport;
 
-namespace MonkeyButler.Abstractions.Business.Models.ImportExport
+/// <summary>
+/// Criteria for importing data
+/// </summary>
+public record ImportCriteria
 {
     /// <summary>
-    /// Criteria for importing data
+    /// The data for the import.
     /// </summary>
-    public record ImportCriteria
-    {
-        /// <summary>
-        /// The data for the import.
-        /// </summary>
-        public IDictionary<string, string> Import { get; set; }
-    }
+    public IDictionary<string, string> Import { get; set; } = new Dictionary<string, string>();
 }

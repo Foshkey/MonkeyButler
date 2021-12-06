@@ -1,13 +1,12 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.Events
+﻿namespace MonkeyButler.Abstractions.Business.Models.Events;
+
+/// <summary>
+/// The criteria for deleting an event.
+/// </summary>
+public record DeleteEventCriteria
 {
     /// <summary>
-    /// The criteria for deleting an event.
+    /// The Id of the event to delete.
     /// </summary>
-    public record DeleteEventCriteria
-    {
-        /// <summary>
-        /// The Id of the event to delete.
-        /// </summary>
-        public long EventId { get; set; }
-    }
+    public long EventId { get; set; }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,146 +12,145 @@ using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace MonkeyButler.Data.Tests.XivApi
+namespace MonkeyButler.Data.Tests.XivApi;
+
+public class XivApiAccessorTests
 {
-    public class XivApiAccessorTests
+    private readonly HttpClient _httpClient;
+    private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock = new();
+    private readonly Mock<ILogger<XivApiAccessor>> _loggerMock = new();
+    private readonly Mock<IOptionsMonitor<JsonSerializerOptions>> _jsonOptionsMock = new();
+    private readonly Mock<IOptionsMonitor<XivApiOptions>> _xivApiOptionsMock = new();
+
+    public XivApiAccessorTests()
     {
-        private readonly HttpClient _httpClient;
-        private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock = new();
-        private readonly Mock<ILogger<XivApiAccessor>> _loggerMock = new();
-        private readonly Mock<IOptionsMonitor<JsonSerializerOptions>> _jsonOptionsMock = new();
-        private readonly Mock<IOptionsMonitor<XivApiOptions>> _xivApiOptionsMock = new();
-
-        public XivApiAccessorTests()
+        _httpClient = new HttpClient(_httpMessageHandlerMock.Object)
         {
-            _httpClient = new HttpClient(_httpMessageHandlerMock.Object)
+            BaseAddress = new Uri("https://test.com")
+        };
+
+        _xivApiOptionsMock.Setup(x => x.CurrentValue)
+            .Returns(new XivApiOptions()
             {
-                BaseAddress = new Uri("https://test.com")
-            };
+                Key = "abc"
+            });
 
-            _xivApiOptionsMock.Setup(x => x.CurrentValue)
-                .Returns(new XivApiOptions()
-                {
-                    Key = "abc"
-                });
+        _jsonOptionsMock.Setup(x => x.Get(It.IsAny<string>()))
+            .Returns(new JsonSerializerOptions());
+    }
 
-            _jsonOptionsMock.Setup(x => x.Get(It.IsAny<string>()))
-                .Returns(new JsonSerializerOptions());
-        }
+    private XivApiAccessor GetAccessor() => new(
+        _httpClient,
+        _loggerMock.Object,
+        _jsonOptionsMock.Object,
+        _xivApiOptionsMock.Object);
 
-        private XivApiAccessor GetAccessor() => new(
-            _httpClient,
-            _loggerMock.Object,
-            _jsonOptionsMock.Object,
-            _xivApiOptionsMock.Object);
+    private IXivApiAccessor GetRealAccessor() => new ServiceCollection()
+        .AddTestDataServices()
+        .BuildServiceProvider()
+        .GetRequiredService<IXivApiAccessor>();
 
-        private IXivApiAccessor GetRealAccessor() => new ServiceCollection()
-            .AddTestDataServices()
-            .BuildServiceProvider()
-            .GetRequiredService<IXivApiAccessor>();
-
-        [Fact(Skip = "External call")]
-        public async Task SearchCharacterShouldReturnCharacter()
+    [Fact(Skip = "External call")]
+    public async Task SearchCharacterShouldReturnCharacter()
+    {
+        var query = new SearchCharacterQuery()
         {
-            var query = new SearchCharacterQuery()
+            Name = "Jolinar Cast",
+            Server = "Diabolos"
+        };
+
+        var data = await GetRealAccessor().SearchCharacter(query);
+
+        Assert.NotNull(data);
+        Assert.NotEqual(0, data.Results.First().Id);
+    }
+
+    [Fact(Skip = "External call")]
+    public async Task GetCharacterShouldReturnCharacter()
+    {
+        var query = new GetCharacterQuery()
+        {
+            Id = 13099353
+        };
+
+        var data = await GetRealAccessor().GetCharacter(query);
+
+        Assert.NotNull(data?.Character);
+        Assert.NotEqual(0, data!.Character!.Id);
+    }
+
+    [Fact]
+    public async Task ShouldHandleConstant500s()
+    {
+        _httpMessageHandlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.InternalServerError
+            });
+
+        var query = new GetCharacterQuery()
+        {
+            Id = 13099353
+        };
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => GetAccessor().GetCharacter(query));
+
+        _httpMessageHandlerMock.Protected().Verify("SendAsync",
+            Times.AtLeast(5),
+            ItExpr.IsAny<HttpRequestMessage>(),
+            ItExpr.IsAny<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ShouldRetry()
+    {
+        var expectedData = new GetCharacterData
+        {
+            Character = new CharacterFull()
             {
                 Name = "Jolinar Cast",
-                Server = "Diabolos"
-            };
-
-            var data = await GetRealAccessor().SearchCharacter(query);
-
-            Assert.NotNull(data);
-            Assert.NotEqual(0, data.Results.First().Id);
-        }
-
-        [Fact(Skip = "External call")]
-        public async Task GetCharacterShouldReturnCharacter()
-        {
-            var query = new GetCharacterQuery()
-            {
                 Id = 13099353
-            };
+            }
+        };
 
-            var data = await GetRealAccessor().GetCharacter(query);
+        var content = JsonSerializer.Serialize(expectedData);
 
-            Assert.NotNull(data?.Character);
-            Assert.NotEqual(0, data!.Character!.Id);
-        }
-
-        [Fact]
-        public async Task ShouldHandleConstant500s()
-        {
-            _httpMessageHandlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.InternalServerError
-                });
-
-            var query = new GetCharacterQuery()
-            {
-                Id = 13099353
-            };
-
-            await Assert.ThrowsAsync<HttpRequestException>(() => GetAccessor().GetCharacter(query));
-
-            _httpMessageHandlerMock.Protected().Verify("SendAsync",
-                Times.AtLeast(5),
+        _httpMessageHandlerMock.Protected()
+            .SetupSequence<Task<HttpResponseMessage>>(
+                "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>());
-        }
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.InternalServerError
+            })
+            .ReturnsAsync(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.InternalServerError
+            })
+            .ReturnsAsync(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(content, Encoding.UTF8, "application/json")
+            });
 
-        [Fact]
-        public async Task ShouldRetry()
+        var query = new GetCharacterQuery()
         {
-            var expectedData = new GetCharacterData
-            {
-                Character = new CharacterFull()
-                {
-                    Name = "Jolinar Cast",
-                    Id = 13099353
-                }
-            };
+            Id = 13099353
+        };
 
-            var content = JsonSerializer.Serialize(expectedData);
+        var response = await GetAccessor().GetCharacter(query);
 
-            _httpMessageHandlerMock.Protected()
-                .SetupSequence<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.InternalServerError
-                })
-                .ReturnsAsync(new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.InternalServerError
-                })
-                .ReturnsAsync(new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(content, Encoding.UTF8, "application/json")
-                });
-
-            var query = new GetCharacterQuery()
-            {
-                Id = 13099353
-            };
-
-            var response = await GetAccessor().GetCharacter(query);
-
-            _httpMessageHandlerMock.Protected().Verify("SendAsync",
-                Times.AtLeast(2),
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>());
-            Assert.Equal(expectedData, response);
-        }
+        _httpMessageHandlerMock.Protected().Verify("SendAsync",
+            Times.AtLeast(2),
+            ItExpr.IsAny<HttpRequestMessage>(),
+            ItExpr.IsAny<CancellationToken>());
+        Assert.Equal(expectedData, response);
     }
 }

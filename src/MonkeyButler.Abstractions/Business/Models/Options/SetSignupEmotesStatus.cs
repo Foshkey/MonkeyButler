@@ -1,18 +1,17 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.Options
+﻿namespace MonkeyButler.Abstractions.Business.Models.Options;
+
+/// <summary>
+/// Status of setting sign-up emotes.
+/// </summary>
+public enum SetSignupEmotesStatus
 {
     /// <summary>
-    /// Status of setting sign-up emotes.
+    /// Success.
     /// </summary>
-    public enum SetSignupEmotesStatus
-    {
-        /// <summary>
-        /// Success.
-        /// </summary>
-        Success,
+    Success,
 
-        /// <summary>
-        /// Valid emotes were not found in the criteria.
-        /// </summary>
-        EmotesNotFound
-    }
+    /// <summary>
+    /// Valid emotes were not found in the criteria.
+    /// </summary>
+    EmotesNotFound
 }

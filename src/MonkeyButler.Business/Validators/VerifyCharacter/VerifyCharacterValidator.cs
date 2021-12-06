@@ -1,20 +1,19 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
 
-namespace MonkeyButler.Business.Validators.VerifyCharacter
+namespace MonkeyButler.Business.Validators.VerifyCharacter;
+
+internal class VerifyCharacterValidator : AbstractValidator<VerifyCharacterCriteria>
 {
-    internal class VerifyCharacterValidator : AbstractValidator<VerifyCharacterCriteria>
+    public VerifyCharacterValidator()
     {
-        public VerifyCharacterValidator()
-        {
-            RuleFor(x => x.GuildId)
-                .GreaterThan((ulong)0);
+        RuleFor(x => x.GuildId)
+            .GreaterThan((ulong)0);
 
-            RuleFor(x => x.UserId)
-                .GreaterThan((ulong)0);
+        RuleFor(x => x.UserId)
+            .GreaterThan((ulong)0);
 
-            RuleFor(x => x.Query)
-                .NotEmpty();
-        }
+        RuleFor(x => x.Query)
+            .NotEmpty();
     }
 }

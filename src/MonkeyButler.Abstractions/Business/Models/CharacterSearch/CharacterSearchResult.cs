@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
+﻿namespace MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 
-namespace MonkeyButler.Abstractions.Business.Models.CharacterSearch
+/// <summary>
+/// The character search result.
+/// </summary>
+public record CharacterSearchResult
 {
     /// <summary>
-    /// The character search result.
+    /// An async enumerable of the characters, returned as data is retrieved.
     /// </summary>
-    public record CharacterSearchResult
-    {
-        /// <summary>
-        /// An async enumerable of the characters, returned as data is retrieved.
-        /// </summary>
-        public IAsyncEnumerable<Character>? Characters { get; set; }
-    }
+    public IAsyncEnumerable<Character>? Characters { get; set; }
 }

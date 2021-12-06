@@ -1,20 +1,19 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.Events;
 
-namespace MonkeyButler.Business.Validators.Events
+namespace MonkeyButler.Business.Validators.Events;
+
+internal class CreateEventValidator : AbstractValidator<CreateEventCriteria>
 {
-    internal class CreateEventValidator : AbstractValidator<CreateEventCriteria>
+    public CreateEventValidator()
     {
-        public CreateEventValidator()
-        {
-            RuleFor(x => x.GuildId)
-                .GreaterThan((ulong)0);
+        RuleFor(x => x.GuildId)
+            .GreaterThan((ulong)0);
 
-            RuleFor(x => x.Query)
-                .NotEmpty();
+        RuleFor(x => x.Query)
+            .NotEmpty();
 
-            RuleFor(x => x.VoiceRegionId)
-                .NotEmpty();
-        }
+        RuleFor(x => x.VoiceRegionId)
+            .NotEmpty();
     }
 }

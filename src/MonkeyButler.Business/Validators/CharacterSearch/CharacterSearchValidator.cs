@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 
-namespace MonkeyButler.Business.Validators.CharacterSearch
+namespace MonkeyButler.Business.Validators.CharacterSearch;
+
+internal class CharacterSearchValidator : AbstractValidator<CharacterSearchCriteria>
 {
-    internal class CharacterSearchValidator : AbstractValidator<CharacterSearchCriteria>
+    public CharacterSearchValidator()
     {
-        public CharacterSearchValidator()
-        {
-            RuleFor(x => x.Query)
-                .NotEmpty();
-        }
+        RuleFor(x => x.Query)
+            .NotEmpty();
     }
 }

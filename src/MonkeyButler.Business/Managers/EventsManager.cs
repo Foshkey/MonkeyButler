@@ -1,83 +1,80 @@
-﻿using System;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.Events;
 using MonkeyButler.Business.Engines;
 
-namespace MonkeyButler.Business.Managers
+namespace MonkeyButler.Business.Managers;
+
+internal class EventsManager : IEventsManager
 {
-    internal class EventsManager : IEventsManager
+    private readonly ILogger<EventsManager> _logger;
+    private readonly IValidator<CreateEventCriteria> _createValidator;
+    private readonly IValidator<SaveEventCriteria> _saveValidator;
+    private readonly IValidator<UpdateEventCriteria> _updateValidator;
+    private readonly IValidator<DeleteEventCriteria> _deleteValidator;
+
+    public EventsManager(
+        ILogger<EventsManager> logger,
+        IValidator<CreateEventCriteria> createValidator,
+        IValidator<SaveEventCriteria> saveValidator,
+        IValidator<UpdateEventCriteria> updateValidator,
+        IValidator<DeleteEventCriteria> deleteValidator)
     {
-        private readonly ILogger<EventsManager> _logger;
-        private readonly IValidator<CreateEventCriteria> _createValidator;
-        private readonly IValidator<SaveEventCriteria> _saveValidator;
-        private readonly IValidator<UpdateEventCriteria> _updateValidator;
-        private readonly IValidator<DeleteEventCriteria> _deleteValidator;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
+        _saveValidator = saveValidator ?? throw new ArgumentNullException(nameof(saveValidator));
+        _updateValidator = updateValidator ?? throw new ArgumentNullException(nameof(updateValidator));
+        _deleteValidator = deleteValidator ?? throw new ArgumentNullException(nameof(deleteValidator));
+    }
 
-        public EventsManager(
-            ILogger<EventsManager> logger,
-            IValidator<CreateEventCriteria> createValidator,
-            IValidator<SaveEventCriteria> saveValidator,
-            IValidator<UpdateEventCriteria> updateValidator,
-            IValidator<DeleteEventCriteria> deleteValidator)
+    public Task<CreateEventResult> CreateEvent(CreateEventCriteria criteria)
+    {
+        _createValidator.ValidateAndThrow(criteria);
+
+        Event newEvent;
+
+        try
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _createValidator = createValidator ?? throw new ArgumentNullException(nameof(createValidator));
-            _saveValidator = saveValidator ?? throw new ArgumentNullException(nameof(saveValidator));
-            _updateValidator = updateValidator ?? throw new ArgumentNullException(nameof(updateValidator));
-            _deleteValidator = deleteValidator ?? throw new ArgumentNullException(nameof(deleteValidator));
+            newEvent = EventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
         }
-
-        public Task<CreateEventResult> CreateEvent(CreateEventCriteria criteria)
+        catch (Exception ex)
         {
-            _createValidator.ValidateAndThrow(criteria);
-
-            Event newEvent;
-
-            try
-            {
-                newEvent = EventParsingEngine.Parse(criteria.Query, new TimeSpan(-5, 0, 0));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Error in creating event with query '{Query}'.", criteria.Query);
-                return Task.FromResult(new CreateEventResult()
-                {
-                    IsSuccessful = false
-                });
-            }
-
+            _logger.LogWarning(ex, "Error in creating event with query '{Query}'.", criteria.Query);
             return Task.FromResult(new CreateEventResult()
             {
-                Event = newEvent,
-                IsSuccessful = true
+                IsSuccessful = false
             });
         }
 
-        public async Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria)
+        return Task.FromResult(new CreateEventResult()
         {
-            _saveValidator.ValidateAndThrow(criteria);
+            Event = newEvent,
+            IsSuccessful = true
+        });
+    }
 
-            return new SaveEventResult()
-            {
-                IsSuccessful = true
-            };
-        }
+    public async Task<SaveEventResult> SaveEvent(SaveEventCriteria criteria)
+    {
+        _saveValidator.ValidateAndThrow(criteria);
 
-        public async Task<UpdateEventResult> UpdateEvent(UpdateEventCriteria criteria)
+        return new SaveEventResult()
         {
-            _updateValidator.ValidateAndThrow(criteria);
+            IsSuccessful = true
+        };
+    }
 
-            return new UpdateEventResult();
-        }
+    public async Task<UpdateEventResult> UpdateEvent(UpdateEventCriteria criteria)
+    {
+        _updateValidator.ValidateAndThrow(criteria);
 
-        public async Task<DeleteEventResult> DeleteEvent(DeleteEventCriteria criteria)
-        {
-            _deleteValidator.ValidateAndThrow(criteria);
+        return new UpdateEventResult();
+    }
 
-            return new DeleteEventResult();
-        }
+    public async Task<DeleteEventResult> DeleteEvent(DeleteEventCriteria criteria)
+    {
+        _deleteValidator.ValidateAndThrow(criteria);
+
+        return new DeleteEventResult();
     }
 }

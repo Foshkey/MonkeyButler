@@ -1,13 +1,12 @@
-﻿namespace MonkeyButler.Abstractions.Business.Models.Options
+﻿namespace MonkeyButler.Abstractions.Business.Models.Options;
+
+/// <summary>
+/// Result of the set prefix action
+/// </summary>
+public record SetPrefixResult
 {
     /// <summary>
-    /// Result of the set prefix action
+    /// Indicates whether the prefix was successfully set or not.
     /// </summary>
-    public record SetPrefixResult
-    {
-        /// <summary>
-        /// Indicates whether the prefix was successfully set or not.
-        /// </summary>
-        public bool Success { get; set; } = false;
-    }
+    public bool Success { get; set; } = false;
 }

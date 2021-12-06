@@ -1,45 +1,42 @@
-﻿using System;
-using System.Threading.Tasks;
-using Discord.Commands;
+﻿using Discord.Commands;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.Info;
 
-namespace MonkeyButler.Modules.Commands
+namespace MonkeyButler.Modules.Commands;
+
+/// <summary>
+/// Class for info commands.
+/// </summary>
+[Group("Info")]
+public class Info : ModuleBase<SocketCommandContext>
 {
+    private readonly IInfoManager _infoManager;
+
     /// <summary>
-    /// Class for info commands.
+    /// Constructor.
     /// </summary>
-    [Group("Info")]
-    public class Info : ModuleBase<SocketCommandContext>
+    /// <param name="infoManager"></param>
+    public Info(IInfoManager infoManager)
     {
-        private readonly IInfoManager _infoManager;
+        _infoManager = infoManager ?? throw new ArgumentNullException(nameof(infoManager));
+    }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="infoManager"></param>
-        public Info(IInfoManager infoManager)
+    /// <summary>
+    /// Gets the current public IP of the bot.
+    /// </summary>
+    [Command("IP")]
+    [RequireOwner] // Only for owners, as this is sensitive information meant for debugging.
+    public async Task GetIpAddress()
+    {
+        using var setTyping = Context.Channel.EnterTypingState();
+
+        var criteria = new InfoCriteria()
         {
-            _infoManager = infoManager ?? throw new ArgumentNullException(nameof(infoManager));
-        }
+            InfoRequest = InfoRequest.IpAddress
+        };
 
-        /// <summary>
-        /// Gets the current public IP of the bot.
-        /// </summary>
-        [Command("IP")]
-        [RequireOwner] // Only for owners, as this is sensitive information meant for debugging.
-        public async Task GetIpAddress()
-        {
-            using var setTyping = Context.Channel.EnterTypingState();
+        var result = await _infoManager.GetInfo(criteria);
 
-            var criteria = new InfoCriteria()
-            {
-                InfoRequest = InfoRequest.IpAddress
-            };
-
-            var result = await _infoManager.GetInfo(criteria);
-
-            await ReplyAsync($"My current public IP Address is `{result.IpAddress}`.");
-        }
+        await ReplyAsync($"My current public IP Address is `{result.IpAddress}`.");
     }
 }

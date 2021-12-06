@@ -1,5 +1,4 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,6 +13,11 @@ namespace MonkeyButler.Data.Api.Json
         /// <inheritdoc />
         public override int Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+            {
+                return default;
+            }
+
             if (reader.TokenType == JsonTokenType.String)
             {
                 var span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;

@@ -1,17 +1,16 @@
 ﻿using FluentValidation;
 using BusinessUser = MonkeyButler.Abstractions.Business.Models.User.User;
 
-namespace MonkeyButler.Business.Validators.User
-{
-    internal class UserValidator : AbstractValidator<BusinessUser>
-    {
-        public UserValidator()
-        {
-            RuleFor(x => x.Id)
-                .GreaterThan((ulong)0);
+namespace MonkeyButler.Business.Validators.User;
 
-            RuleFor(x => x.CharacterIds)
-                .NotNull();
-        }
+internal class UserValidator : AbstractValidator<BusinessUser>
+{
+    public UserValidator()
+    {
+        RuleFor(x => x.Id)
+            .GreaterThan((ulong)0);
+
+        RuleFor(x => x.CharacterIds)
+            .NotNull();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentValidation;
 using MonkeyButler.Abstractions.Business.Models.CharacterSearch;
 using MonkeyButler.Abstractions.Data.Api;
@@ -9,83 +7,82 @@ using MonkeyButler.Business.Managers;
 using Moq;
 using Xunit;
 
-namespace MonkeyButler.Business.Tests.Managers
+namespace MonkeyButler.Business.Tests.Managers;
+
+public class CharacterSearchManagerTests
 {
-    public class CharacterSearchManagerTests
+    private readonly Fixture _fixture = new();
+    private readonly Mock<IXivApiAccessor> _xivApiAccessor = new();
+    private readonly SearchCharacterData _searchCharacterData = new();
+
+    public CharacterSearchManagerTests()
     {
-        private readonly Fixture _fixture = new();
-        private readonly Mock<IXivApiAccessor> _xivApiAccessor = new();
-        private readonly SearchCharacterData _searchCharacterData = new();
+        _xivApiAccessor.Setup(x => x.SearchCharacter(It.IsAny<SearchCharacterQuery>()))
+            .ReturnsAsync(_searchCharacterData);
+        _xivApiAccessor.Setup(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()))
+            .ReturnsAsync(_fixture.Create<GetCharacterData>());
+    }
 
-        public CharacterSearchManagerTests()
+    private CharacterSearchManager _manager => Resolver
+        .Add(_xivApiAccessor.Object)
+        .Resolve<CharacterSearchManager>();
+
+    private static CharacterSearchCriteria _defaultCriteria => new()
+    {
+        Query = "Jolinar Cast Diabolos"
+    };
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task InvalidQueryShouldThrow(string query)
+    {
+        var criteria = new CharacterSearchCriteria()
         {
-            _xivApiAccessor.Setup(x => x.SearchCharacter(It.IsAny<SearchCharacterQuery>()))
-                .ReturnsAsync(_searchCharacterData);
-            _xivApiAccessor.Setup(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()))
-                .ReturnsAsync(_fixture.Create<GetCharacterData>());
-        }
-
-        private CharacterSearchManager _manager => Resolver
-            .Add(_xivApiAccessor.Object)
-            .Resolve<CharacterSearchManager>();
-
-        private static CharacterSearchCriteria _defaultCriteria => new()
-        {
-            Query = "Jolinar Cast Diabolos"
+            Query = query
         };
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public async Task InvalidQueryShouldThrow(string query)
+        await Assert.ThrowsAsync<ValidationException>(() => _manager.Process(criteria));
+    }
+
+    [Fact]
+    public async Task ShouldOnlyTakeTopFive()
+    {
+        _searchCharacterData.Results = _fixture.CreateMany<CharacterBrief>(10).ToList();
+
+        var result = await _manager.Process(_defaultCriteria);
+        var characters = await result.Characters!.ToListAsync();
+
+        _xivApiAccessor.Verify(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()), Times.Exactly(5));
+        Assert.Equal(5, characters.Count);
+    }
+
+    [Fact]
+    public async Task ShouldGetDetailsBasedOnId()
+    {
+        var id1 = 56847;
+        var id2 = 65168;
+        _searchCharacterData.Results = new()
         {
-            var criteria = new CharacterSearchCriteria()
+            new()
             {
-                Query = query
-            };
-
-            await Assert.ThrowsAsync<ValidationException>(() => _manager.Process(criteria));
-        }
-
-        [Fact]
-        public async Task ShouldOnlyTakeTopFive()
-        {
-            _searchCharacterData.Results = _fixture.CreateMany<CharacterBrief>(10).ToList();
-
-            var result = await _manager.Process(_defaultCriteria);
-            var characters = await result.Characters!.ToListAsync();
-
-            _xivApiAccessor.Verify(x => x.GetCharacter(It.IsAny<GetCharacterQuery>()), Times.Exactly(5));
-            Assert.Equal(5, characters.Count);
-        }
-
-        [Fact]
-        public async Task ShouldGetDetailsBasedOnId()
-        {
-            var id1 = 56847;
-            var id2 = 65168;
-            _searchCharacterData.Results = new()
+                Id = id1
+            },
+            new()
             {
-                new()
-                {
-                    Id = id1
-                },
-                new()
-                {
-                    Id = id2
-                }
-            };
+                Id = id2
+            }
+        };
 
-            var result = await _manager.Process(_defaultCriteria);
-            var characters = await result.Characters!.ToListAsync();
+        var result = await _manager.Process(_defaultCriteria);
+        var characters = await result.Characters!.ToListAsync();
 
-            _xivApiAccessor.Verify(x => x.GetCharacter(It.Is<GetCharacterQuery>(q => q.Id == id1 && q.Data == "CJ,FC")));
-            _xivApiAccessor.Verify(x => x.GetCharacter(It.Is<GetCharacterQuery>(q => q.Id == id2 && q.Data == "CJ,FC")));
+        _xivApiAccessor.Verify(x => x.GetCharacter(It.Is<GetCharacterQuery>(q => q.Id == id1 && q.Data == "CJ,FC")));
+        _xivApiAccessor.Verify(x => x.GetCharacter(It.Is<GetCharacterQuery>(q => q.Id == id2 && q.Data == "CJ,FC")));
 
-            Assert.Collection(characters,
-                x => Assert.Equal(id1, x.Id),
-                x => Assert.Equal(id2, x.Id));
-        }
+        Assert.Collection(characters,
+            x => Assert.Equal(id1, x.Id),
+            x => Assert.Equal(id2, x.Id));
     }
 }
