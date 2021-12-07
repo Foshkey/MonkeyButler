@@ -54,7 +54,7 @@ public class UserController : ControllerBase
     public Task PutCollection([FromBody] IDictionary<ulong, IEnumerable<long>> collection) => _userManager.AddCharacterIds(collection);
 
     /// <summary>
-    /// Links a character to the given user Id.
+    /// Links a character to the given user Id (Without verification).
     /// </summary>
     /// <param name="criteria"></param>
     /// <returns></returns>
@@ -74,7 +74,7 @@ public class UserController : ControllerBase
     }
 
     /// <summary>
-    /// Endpoint for verifying a character with a user.
+    /// Verifies a character exists within the guild's FC and links it to the user if so.
     /// </summary>
     /// <param name="criteria"></param>
     /// <returns></returns>
