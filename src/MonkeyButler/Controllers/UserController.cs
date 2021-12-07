@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyButler.Abstractions.Business;
+using MonkeyButler.Abstractions.Business.Models.LinkCharacter;
 using MonkeyButler.Abstractions.Business.Models.User;
 
 namespace MonkeyButler.Controllers;
@@ -12,13 +13,15 @@ namespace MonkeyButler.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly ILinkCharacterManager _linkCharacterManager;
     private readonly IUserManager _userManager;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public UserController(IUserManager userManager)
+    public UserController(ILinkCharacterManager linkCharacterManager, IUserManager userManager)
     {
+        _linkCharacterManager = linkCharacterManager ?? throw new ArgumentNullException(nameof(linkCharacterManager));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
     }
 
@@ -46,4 +49,24 @@ public class UserController : ControllerBase
     [ProducesDefaultResponseType()]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public Task PutCollection([FromBody] IDictionary<ulong, IEnumerable<long>> collection) => _userManager.AddCharacterIds(collection);
+
+    /// <summary>
+    /// Links a character to the given user Id.
+    /// </summary>
+    /// <param name="criteria"></param>
+    /// <returns></returns>
+    [HttpPost("Link")]
+    [ProducesDefaultResponseType()]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<LinkCharacterResult> LinkCharacter([FromBody] LinkCharacterCriteria criteria)
+    {
+        var result = await _linkCharacterManager.Process(criteria);
+
+        if (!result.Success)
+        {
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        }
+
+        return result;
+    }
 }

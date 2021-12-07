@@ -49,7 +49,7 @@ internal class LinkCharacterManager : ILinkCharacterManager
             Server = server,
         });
 
-        var character = searchData.Results.SingleOrDefault();
+        var character = searchData.Results?.SingleOrDefault();
 
         if (character is null)
         {
@@ -70,7 +70,8 @@ internal class LinkCharacterManager : ILinkCharacterManager
 
         return new()
         {
-            Success = true
+            Success = true,
+            CharacterId = characterId,
         };
     }
 }
