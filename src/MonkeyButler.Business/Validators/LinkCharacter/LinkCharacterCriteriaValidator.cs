@@ -10,6 +10,9 @@ internal class LinkCharacterCriteriaValidator : AbstractValidator<LinkCharacterC
         RuleFor(x => x.UserId)
             .GreaterThan((ulong)0);
 
+        RuleFor(x => x.GuildId)
+            .GreaterThan((ulong)0);
+
         RuleFor(x => x.Query)
             .NotEmpty();
     }
