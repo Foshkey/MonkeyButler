@@ -192,4 +192,14 @@ public class VerifyCharacterManagerTests
 
         Assert.Equal(Status.CharacterAlreadyVerified, result.Status);
     }
+
+    [Fact]
+    public async Task VerifiedShouldReturnVerifiedUserId()
+    {
+        var criteria = _defaultCriteria;
+
+        var result = await _manager.Process(criteria);
+
+        Assert.Equal(_userId, result.VerifiedUserId);
+    }
 }

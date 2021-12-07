@@ -131,6 +131,7 @@ internal class VerifyCharacterManager : IVerifyCharacterManager
         }
 
         result.Status = Status.Verified;
+        result.VerifiedUserId = criteria.UserId;
         _logger.LogDebug("{Name} has been verified with Free Company Id {FcId}.", result.Name, guildOptions.FreeCompany.Id);
 
         // Save character-user map to database.
