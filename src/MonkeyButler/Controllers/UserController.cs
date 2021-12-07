@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MonkeyButler.Abstractions.Business;
 using MonkeyButler.Abstractions.Business.Models.LinkCharacter;
 using MonkeyButler.Abstractions.Business.Models.User;
+using MonkeyButler.Abstractions.Business.Models.VerifyCharacter;
 
 namespace MonkeyButler.Controllers;
 
@@ -15,14 +16,16 @@ public class UserController : ControllerBase
 {
     private readonly ILinkCharacterManager _linkCharacterManager;
     private readonly IUserManager _userManager;
+    private readonly IVerifyCharacterManager _verifyCharacterManager;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public UserController(ILinkCharacterManager linkCharacterManager, IUserManager userManager)
+    public UserController(ILinkCharacterManager linkCharacterManager, IUserManager userManager, IVerifyCharacterManager verifyCharacterManager)
     {
         _linkCharacterManager = linkCharacterManager ?? throw new ArgumentNullException(nameof(linkCharacterManager));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        _verifyCharacterManager = verifyCharacterManager ?? throw new ArgumentNullException(nameof(verifyCharacterManager));
     }
 
     /// <summary>
@@ -56,13 +59,33 @@ public class UserController : ControllerBase
     /// <param name="criteria"></param>
     /// <returns></returns>
     [HttpPost("Link")]
-    [ProducesDefaultResponseType()]
+    [ProducesDefaultResponseType(typeof(LinkCharacterResult))]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<LinkCharacterResult> LinkCharacter([FromBody] LinkCharacterCriteria criteria)
     {
         var result = await _linkCharacterManager.Process(criteria);
 
         if (!result.Success)
+        {
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Endpoint for verifying a character with a user.
+    /// </summary>
+    /// <param name="criteria"></param>
+    /// <returns></returns>
+    [HttpPost("Verify")]
+    [ProducesDefaultResponseType(typeof(VerifyCharacterResult))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<VerifyCharacterResult> VerifyCharacter([FromBody] VerifyCharacterCriteria criteria)
+    {
+        var result = await _verifyCharacterManager.Process(criteria);
+
+        if (result.Status != Status.Verified)
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
